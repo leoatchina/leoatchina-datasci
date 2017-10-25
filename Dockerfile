@@ -17,58 +17,65 @@ RUN conda config --add channels bioconda && \
     conda config --add channels conda-forge && \
     conda config --add channels http://mirrors.ustc.edu.cn/anaconda/pkgs/free/ && \
     conda config --set show_channel_urls yes
+## R
+RUN conda install -c r r-essentials -y && \
+    conda clean -a -y
+
+## install complile tools 
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install build-essential -y --fix-missing && \
+    apt-get install gfortran -y && \
+    apt-get install libcairo2-dev libxt-dev -y && \
+    apt-get clean && apt-get purge
+## install R
+RUN echo "deb http://mirrors.ustc.edu.cn/CRAN/bin/linux/ubuntu xenial/" >> /etc/apt/sources.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys  E084DAB9
+RUN apt-get update -y && \
+    apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | \
+    xargs apt-get install -y r-base && \
+    apt-get clean && apt-get purge
 ## rstudio-server
 RUN cd /tmp && \
     curl https://s3.amazonaws.com/rstudio-server/current.ver -o /tmp/rstudio.ver && \
     curl http://download2.rstudio.org/rstudio-server-$(cat /tmp/rstudio.ver)-amd64.deb -o /tmp/rstudio.deb && \
     gdebi --non-interactive  /tmp/rstudio.deb && \
-    rm /tmp/* && \
+    rm /tmp/rstudio.deb && \
+    rm /tmp/rstudio.ver && \
     apt-get clean && apt-get purge
-## install complile tools 
-RUN apt-get update -y && \
-    apt-get install build-essential -y --fix-missing && \
-    apt-get install gfortran -y && \
-    apt-get install openjdk-8-jdk -y && \
-    apt-get clean && apt-get purge
-## R
-RUN conda install -c r r-essentials && \
-    conda clean -a -y
-RUN conda install -c r r-rcurl r-jpeg r-png r-roxygen2 r-xml r-xml2 r-curl  r-rjava -y && \
-    conda clean -a -y
+## rice
 RUN pip  --no-cache-dir install rice 
-## install something for https or http
-RUN conda install redis redis-py celery pika \
-    libssh2  \
-    krb5 -y  && \
-    conda clean -a -y
 
-## install others
-RUN apt-get update -y && \
-    apt-get install libcairo2-dev libxt-dev -y && \
+## install java
+RUN apt-get install openjdk-8-jdk -y && \
     apt-get clean && apt-get purge
+RUN ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java
+ENV JAVA_HOME=/usr/lib/jvm/java
 
-# configuration
 ## config R 
 RUN R -e 'options(encoding = "UTF-8"); \
         source("https://bioconductor.org/biocLite.R"); \
         options(BioC_mirror="http://mirrors.ustc.edu.cn/bioc/"); \
         options("repos" = c(CRAN="http://mirrors.ustc.edu.cn/anaconda/CRAN/")); \
-        options(download.file.method = "curl")'
-        ###如果rstudio-server里不能下载pkgs，在console里执行上面最后一句
+        options(download.file.method = "libcurl")'
+        ###如果rstudio-server里不能下载pkgs，download.file.method改成curl或者wget
 
-## install others , for example , your can "conda install samtools -y"
+## install others
 
+## install something for https or http
+# RUN conda install redis redis-py celery pika \
+#     conda clean -a -y
 
+# configuration
 ## ENV for java
-RUN ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java
-ENV JAVA_HOME=/usr/lib/jvm/java
 RUN R CMD javareconf
 ## env for rstudio-server
-ENV RSTUDIO_WHICH_R=/opt/anaconda3/bin/R
+ENV RSTUDIO_WHICH_R=/usr/bin/R
 RUN mkdir -p /etc/rstudio
 ## config dir
 COPY rserver.conf /etc/rstudio
 COPY jupyter_notebook_config.py /opt/
+COPY jupyter_lab_config.py /opt/
 COPY supervisord.conf /opt/
 ## users
 RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
