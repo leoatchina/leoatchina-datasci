@@ -1,0 +1,9 @@
+*DS_Store
+*.tar.*
+*.tar
+*.zip
+*.rar
+*.rpm
+*.deb
+*.bin
+*.run
