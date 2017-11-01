@@ -44,23 +44,21 @@ RUN cd /tmp && \
     gdebi --non-interactive  /tmp/rstudio.deb && \
     apt-get clean && apt-get purge && rm -rf /tmp/*
 ## install java
-RUN apt-get install openjdk-8-jdk -y && \
-    apt-get clean && apt-get purge && rm -rf /tmp/*
-
-RUN ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java
-ENV JAVA_HOME=/usr/lib/jvm/java
+# RUN apt-get install openjdk-8-jdk -y && \
+#     apt-get clean && apt-get purge && rm -rf /tmp/*
+# 
+# RUN ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java
+# ENV JAVA_HOME=/usr/lib/jvm/java
 
 ## install something for http and https
 RUN conda install redis redis-py celery pika  -y && \
     conda clean -a -y
 
-RUN conda install zeromq -y && \
-    conda clean -a -y
 RUN apt-get install -y libzmq3-dev libtool && \
     apt-get clean && apt-get purge && rm -rf /tmp/*
 # configuration
 ## ENV for java
-RUN R CMD javareconf
+# RUN R CMD javareconf
 ## config dir
 RUN mkdir -p /etc/rstudio/
 COPY rserver.conf /etc/rstudio/
