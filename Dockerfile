@@ -13,6 +13,7 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y build-essential gfortran libcairo2-dev libxt-dev && \
     apt-get install -y libapparmor1 libedit2 libc6 psmisc rrdtool && \
     apt-get install -y neovim ctags zsh && \
+    apt-get install -y libzmq3-dev libtool && \
     apt-get clean && apt-get purge && rm -rf /tmp/*
 # PATH
 ENV PATH=/opt/anaconda3/bin:$PATH
@@ -53,9 +54,6 @@ RUN cd /tmp && \
 ## install something for http and https
 RUN conda install redis redis-py celery pika  -y && \
     conda clean -a -y
-
-RUN apt-get install -y libzmq3-dev libtool && \
-    apt-get clean && apt-get purge && rm -rf /tmp/*
 # configuration
 ## ENV for java
 # RUN R CMD javareconf
