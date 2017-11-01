@@ -54,6 +54,44 @@ RUN cd /tmp && \
 ## install something for http and https
 RUN conda install redis redis-py celery pika  -y && \
     conda clean -a -y
+    
+## R kernel for anaconda3
+RUN Rscript -e "options(encoding = 'UTF-8');\
+    source('https://bioconductor.org/biocLite.R');\
+    options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc/');\
+    options(download.file.method = 'libcurl');\
+    options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
+    install.packages(c('rstudioapi', 'miniUI'), type = 'source');\
+    install.packages('devtools');\
+    install.packages('RCurl');\
+    install.packages('crayon');\
+    install.packages('repr');\
+    library(devtools);\
+    install_github('rstudio/addinexamples');\
+    install_github('armstrtw/rzmq');\
+    install_github('takluyver/IRkernel');\
+    install.packages('IRdisplay');\
+    install.packages('pbdZMQ');\
+    IRkernel::installspec();\
+    system('rm -rf /tmp/*') "
+
+## Download and install Shiny Server
+RUN cd /tmp && \
+    curl https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION -o version.txt && \
+    VERSION=$(cat version.txt)  && \
+    curl https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-$VERSION-amd64.deb -o shiny-server-latest.deb && \
+    gdebi -n shiny-server-latest.deb && \
+    rm -rf * 
+
+RUN Rscript -e "options(encoding = 'UTF-8');\
+    options(download.file.method = 'libcurl');\
+    options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
+    install.packages(c('shiny', 'rmarkdown', 'rsconnect','RSQLite','RMySQL')) ;\
+    install.packages( c('shinydashboard','DT','reshape2')); \
+    install.packages( c('shinyBS','GGally','shinyAce','knitr')); \
+    install.packages( c('rmarkdown','shinyjs' )); \
+    system('rm -rf /tmp/*') "
+
 # configuration
 ## ENV for java
 # RUN R CMD javareconf
