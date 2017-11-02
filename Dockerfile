@@ -94,19 +94,19 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     system('rm -rf /tmp/*') "
 
 # configuration
-## ENV for java
+## users
+RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
+WORKDIR /home/jupyter
 ## config dir
-RUN mkdir -p /etc/rstudio/ /opt/shiny-server  /etc/shiny-server  /opt/config /opt/log
-RUN cp -R /usr/local/lib/R/site-library/shiny/examples/* /opt/shiny-server/
+RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log
+RUN chmod -R 777 /opt/config /opt/log
 
 COPY rserver.conf /etc/rstudio/
 COPY shiny-server.conf /etc/shiny-server
 COPY jupyter_notebook_config.py /opt/config
 COPY jupyter_lab_config.py /opt/config
 COPY supervisord.conf /opt/config
-## users
-RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
-WORKDIR /home/jupyter
+
 CMD ["/usr/bin/supervisord","-c","/opt/config/supervisord.conf"]
 
 ## share
