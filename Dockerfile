@@ -96,9 +96,11 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
 # configuration
 ## ENV for java
 ## config dir
-RUN mkdir -p /etc/rstudio/ /opt/shiny-server /opt/config /opt/log
+RUN mkdir -p /etc/rstudio/ /opt/shiny-server  /etc/shiny-server  /opt/config /opt/log
+RUN cp -R /usr/local/lib/R/site-library/shiny/examples/* /opt/shiny-server/
 
 COPY rserver.conf /etc/rstudio/
+COPY shiny-server.conf /etc/shiny-server
 COPY jupyter_notebook_config.py /opt/config
 COPY jupyter_lab_config.py /opt/config
 COPY supervisord.conf /opt/config
