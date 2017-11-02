@@ -18,15 +18,15 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
 # PATH
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
-RUN cd /tmp && curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.0.0.1-Linux-x86_64.sh -O && \
-    bash Anaconda3-5.0.0.1-Linux-x86_64.sh -b -p /opt/anaconda3 && rm Anaconda3-5.0.0.1-Linux-x86_64.sh && \
+RUN cd /tmp && curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.0.0.1-Linux-x86_64.sh -o Anaconda3.sh && \
+    bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \ 
+    conda clean  -a -y
 ## 重要的channel 放后面
-    conda config --add channels bioconda && \
+RUN conda config --add channels bioconda && \
     conda config --add channels r && \
     conda config --add channels conda-forge && \
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
-    conda config --set show_channel_urls yes && \
-    conda clean  -a -y
+    conda config --set show_channel_urls yes
 
 ## install R
 RUN echo "deb https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/linux/ubuntu xenial/" >> /etc/apt/sources.list && \
@@ -50,6 +50,7 @@ RUN cd /tmp && \
 # 
 # RUN ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java
 # ENV JAVA_HOME=/usr/lib/jvm/java
+# RUN R CMD javareconf
 
 ## install something for http and https
 RUN conda install redis redis-py celery pika  -y && \
@@ -94,7 +95,6 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
 
 # configuration
 ## ENV for java
-# RUN R CMD javareconf
 ## config dir
 RUN mkdir -p /etc/rstudio/
 COPY rserver.conf /etc/rstudio/
@@ -107,5 +107,5 @@ WORKDIR /home/jupyter
 CMD ["/usr/bin/supervisord","-c","/opt/supervisord.conf"]
 
 ## share
-EXPOSE 15672 8888 8787 80
+EXPOSE 15672 8888 8787 3838
 VOLUME ["/home/jupyter","/mnt","/disks","/oss","/work","/data"]
