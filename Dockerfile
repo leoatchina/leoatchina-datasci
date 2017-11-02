@@ -98,8 +98,10 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
 RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
 WORKDIR /home/jupyter
 ## config dir
-RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log
+RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server
 RUN chmod -R 777 /opt/config /opt/log
+# RUN cp -R /usr/local/lib/R/site-library/shiny/examples/* /opt/shiny-server/
+
 
 COPY rserver.conf /etc/rstudio/
 COPY shiny-server.conf /etc/shiny-server
