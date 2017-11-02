@@ -96,15 +96,16 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
 # configuration
 ## ENV for java
 ## config dir
-RUN mkdir -p /etc/rstudio/
+RUN mkdir -p /etc/rstudio/ /opt/shiny-server /opt/config /opt/log
+
 COPY rserver.conf /etc/rstudio/
-COPY jupyter_notebook_config.py /opt/
-COPY jupyter_lab_config.py /opt/
-COPY supervisord.conf /opt/
+COPY jupyter_notebook_config.py /opt/config
+COPY jupyter_lab_config.py /opt/config
+COPY supervisord.conf /opt/config
 ## users
 RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
 WORKDIR /home/jupyter
-CMD ["/usr/bin/supervisord","-c","/opt/supervisord.conf"]
+CMD ["/usr/bin/supervisord","-c","/opt/config/supervisord.conf"]
 
 ## share
 EXPOSE 15672 8888 8787 3838
