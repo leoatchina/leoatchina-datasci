@@ -92,9 +92,18 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('shinyBS','GGally','shinyAce','knitr')); \
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
-RUN apt-get install -y perl && \
-    apt-get clean && apt-get purge && rm -rf /tmp/*
+    
 # configuration
+## system config
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+ENV LANG="en_US.UTF-8" 
+RUN echo "export LC_ALL=en_US.UTF-8"  >>  /etc/profile
+RUN git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative" && \
+    git config --global alias.st status && \
+    git config --global alias.co checkout && \
+    git config --global alias.ci commit && \
+    git config --global alias.br branch && \
+    git config --global alias.rs reset
 ## users
 RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
 WORKDIR /home/jupyter
