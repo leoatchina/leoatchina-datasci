@@ -104,6 +104,7 @@ RUN git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%
     git config --global alias.ci commit && \
     git config --global alias.br branch && \
     git config --global alias.rs reset
+    
 ## users
 RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
 WORKDIR /home/jupyter
@@ -123,4 +124,19 @@ CMD ["/usr/bin/supervisord","-c","/opt/config/supervisord.conf"]
 
 ## share
 EXPOSE 15672 8888 8787 3838
-VOLUME ["/home/jupyter","/mnt","/disks","/oss","/work","/data"]
+VOLUME ["/home/jupyter","/mnt","/disks","/oss","/data"]
+
+
+## bioinformatic tools
+RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/mro/ && \
+    conda config --set show_channel_urls yes
+
+RUN curl http://data.biostarhandbook.com/install/conda.txt | xargs conda install -c biocore -c bioconda -c conda-forge -y star multiqc bedtools freebayes gatk && \
+    conda clean -a -y
+    
+    
+    
