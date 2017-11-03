@@ -92,7 +92,8 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('shinyBS','GGally','shinyAce','knitr')); \
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
-
+RUN apt-get install -y perl && \
+    apt-get clean && apt-get purge && rm -rf /tmp/*
 # configuration
 ## users
 RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
