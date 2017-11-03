@@ -22,9 +22,11 @@ RUN cd /tmp && curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anacon
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \ 
     conda clean  -a -y
 ## 重要的channel 放后面
-RUN conda config --add channels bioconda && \
-    conda config --add channels r && \
-    conda config --add channels conda-forge && \
+RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/mro/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ && \
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
     conda config --set show_channel_urls yes
 
@@ -37,6 +39,8 @@ RUN apt-get update -y && \
     apt-get clean && apt-get purge && rm -rf /tmp/*
 ## rice
 RUN pip --no-cache-dir install rice
+## binfo tools intall directory
+ENV BIOINFO /root/bioinfo
 ## rstudio-server
 ENV RSTUDIO_WHICH_R=/usr/bin/R
 RUN cd /tmp && \
@@ -44,18 +48,7 @@ RUN cd /tmp && \
     curl http://download2.rstudio.org/rstudio-server-$(cat /tmp/rstudio.ver)-amd64.deb -o /tmp/rstudio.deb && \
     gdebi --non-interactive  /tmp/rstudio.deb && \
     apt-get clean && apt-get purge && rm -rf /tmp/*
-## install java
-# RUN apt-get install openjdk-8-jdk -y && \
-#     apt-get clean && apt-get purge && rm -rf /tmp/*
-# 
-# RUN ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java
-# ENV JAVA_HOME=/usr/lib/jvm/java
-# RUN R CMD javareconf
 
-## install something for http and https
-RUN conda install redis redis-py celery pika  -y && \
-    conda clean -a -y
-    
 ## R kernel for anaconda3
 RUN Rscript -e "options(encoding = 'UTF-8');\
     source('https://bioconductor.org/biocLite.R');\
@@ -92,27 +85,36 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('shinyBS','GGally','shinyAce','knitr')); \
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
+
     
+RUN curl http://data.biostarhandbook.com/install/conda.txt | xargs conda install -y \
+    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
+    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ \
+    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ \
+    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/mro/ \
+    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ \
+    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
+    star multiqc perl-bioperl && \
+    conda clean -a -y
+
 # configuration
 ## system config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
 ENV LANG="en_US.UTF-8" 
 RUN echo "export LC_ALL=en_US.UTF-8"  >>  /etc/profile
+## git shortcuts
 RUN git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative" && \
     git config --global alias.st status && \
     git config --global alias.co checkout && \
     git config --global alias.ci commit && \
     git config --global alias.br branch && \
     git config --global alias.rs reset
-    
 ## users
-RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
-WORKDIR /home/jupyter
+RUN echo root:jupyter | chpasswd
+WORKDIR /root
 ## config dir
 RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server
 RUN chmod -R 777 /opt/config /opt/log
-# RUN cp -R /usr/local/lib/R/site-library/shiny/examples/* /opt/shiny-server/
-
 
 COPY rserver.conf /etc/rstudio/
 COPY shiny-server.conf /etc/shiny-server
@@ -121,22 +123,6 @@ COPY jupyter_lab_config.py /opt/config
 COPY supervisord.conf /opt/config
 
 CMD ["/usr/bin/supervisord","-c","/opt/config/supervisord.conf"]
-
 ## share
-EXPOSE 15672 8888 8787 3838
-VOLUME ["/home/jupyter","/mnt","/disks","/oss","/data"]
-
-
-## bioinformatic tools
-RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/mro/ && \
-    conda config --set show_channel_urls yes
-
-RUN curl http://data.biostarhandbook.com/install/conda.txt | xargs conda install -c biocore -c bioconda -c conda-forge -y star multiqc bedtools freebayes gatk && \
-    conda clean -a -y
-    
-    
-    
+EXPOSE 8888 8787 7777 3838
+VOLUME ["/root","/mnt","/disks","/oss","/data"]
