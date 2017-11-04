@@ -110,8 +110,8 @@ RUN git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%
     git config --global alias.br branch && \
     git config --global alias.rs reset
 ## users
-RUN echo root:jupyter | chpasswd
-WORKDIR /root
+RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
+WORKDIR /home/jupyter
 ## config dir
 RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server
 RUN chmod -R 777 /opt/config /opt/log
@@ -125,4 +125,4 @@ COPY supervisord.conf /opt/config
 CMD ["/usr/bin/supervisord","-c","/opt/config/supervisord.conf"]
 ## share
 EXPOSE 8888 8787 7777 3838
-VOLUME ["/root","/mnt","/disks","/oss","/data"]
+VOLUME ["/home/jupyter","/mnt","/disks","/oss","/data"]
