@@ -9,9 +9,9 @@ export TERM=xterm-256color
 ```
 in rstudio console，set up rstudio config
 ```
-Sys.setenv(PATH="/opt/anaconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin")
 Sys.setenv(TERM="xterm-256color")
 options(encoding = "UTF-8")
+Sys.setenv(LC_ALL="en_US.UTF-8")
 ```
 
 在目标文件夹下建立`~/workspace/shiny-server`文件夹，把`/usr/local/lib/R/site-library/shiny/examples/`下的东西考过去,并重启container

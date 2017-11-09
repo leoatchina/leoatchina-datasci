@@ -73,26 +73,14 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
 
-ENV R_HOME /usr/bin/R
-# RUN which R  && whereis R
-# RUN R --version 
-# RUN curl http://data.biostarhandbook.com/install/conda.txt | xargs conda install -y \
-#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
-#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ \
-#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ \
-#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/mro/ \
-#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ \
-#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
-#     star multiqc perl-bioperl && \
-#     conda clean -a -y
-
 # configuration
-## system config
-
+## system local config
+RUN apt-get update -y && apt-get install -y locales && \
+    locale-gen en_US.UTF-8 && \
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+    
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
-RUN echo "export LC_ALL=en_US.UTF-8"  >>  /etc/profile
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
+RUN echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
 
 ## git shortcuts
 RUN git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative" && \
