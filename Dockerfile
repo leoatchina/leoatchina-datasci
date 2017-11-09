@@ -14,7 +14,7 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y libapparmor1 libedit2 libc6 psmisc rrdtool && \
     apt-get install -y neovim ctags zsh && \
     apt-get install -y libzmq3-dev libtool && \
-    apt-get clean && apt-get purge && rm -rf /tmp/*
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 # PATH
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
@@ -31,29 +31,29 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
     conda config --set show_channel_urls yes
 
 ## install R
-RUN echo "deb https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/linux/ubuntu xenial/" >> /etc/apt/sources.list && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys  E084DAB9
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
+    add-apt-repository 'deb [arch=amd64,i386] https://mirrors.ustc.edu.cn/CRAN/bin/linux/ubuntu xenial/'
 RUN apt-get update -y && \
-    apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | \
-    xargs apt-get install -y r-base && \
-    apt-get clean && apt-get purge && rm -rf /tmp/*
+    apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
+    apt-get install -y r-base r-base-dev && \
+    cd /tmp && \
+    curl https://s3.amazonaws.com/rstudio-server/current.ver -o rstudio.ver && \
+    curl http://download2.rstudio.org/rstudio-server-$(cat rstudio.ver)-amd64.deb -o rstudio.deb && \
+    gdebi -n rstudio.deb && \
+    curl https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION -o shiny.txt && \
+    curl https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-$(cat shiny.txt)-amd64.deb -o shiny-server-latest.deb && \
+    gdebi -n shiny-server-latest.deb && \
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+
 ## rice
 RUN pip --no-cache-dir install rice
-## binfo tools intall directory
-ENV BIOINFO /root/bioinfo
 ## rstudio-server
-ENV RSTUDIO_WHICH_R=/usr/bin/R
-RUN cd /tmp && \
-    curl https://s3.amazonaws.com/rstudio-server/current.ver -o /tmp/rstudio.ver && \
-    curl http://download2.rstudio.org/rstudio-server-$(cat /tmp/rstudio.ver)-amd64.deb -o /tmp/rstudio.deb && \
-    gdebi --non-interactive  /tmp/rstudio.deb && \
-    apt-get clean && apt-get purge && rm -rf /tmp/*
+# ENV RSTUDIO_WHICH_R=/usr/bin/R
 
 ## R kernel for anaconda3
 RUN Rscript -e "options(encoding = 'UTF-8');\
     source('https://bioconductor.org/biocLite.R');\
     options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc/');\
-    options(download.file.method = 'libcurl');\
     options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
     install.packages(c('rstudioapi', 'miniUI'), type = 'source');\
     install.packages('devtools');\
@@ -67,41 +67,33 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages('IRdisplay');\
     install.packages('pbdZMQ');\
     IRkernel::installspec();\
-    system('rm -rf /tmp/*') "
-
-## Download and install Shiny Server
-RUN cd /tmp && \
-    curl https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION -o version.txt && \
-    VERSION=$(cat version.txt)  && \
-    curl https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-$VERSION-amd64.deb -o shiny-server-latest.deb && \
-    gdebi -n shiny-server-latest.deb && \
-    rm -rf * 
-
-RUN Rscript -e "options(encoding = 'UTF-8');\
-    options(download.file.method = 'libcurl');\
-    options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
     install.packages(c('shiny', 'rmarkdown', 'rsconnect','RSQLite','RMySQL')) ;\
     install.packages( c('shinydashboard','DT','reshape2')); \
     install.packages( c('shinyBS','GGally','shinyAce','knitr')); \
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
 
-    
-RUN curl http://data.biostarhandbook.com/install/conda.txt | xargs conda install -y \
-    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
-    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ \
-    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ \
-    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/mro/ \
-    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ \
-    -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
-    star multiqc perl-bioperl && \
-    conda clean -a -y
+ENV R_HOME /usr/bin/R
+# RUN which R  && whereis R
+# RUN R --version 
+# RUN curl http://data.biostarhandbook.com/install/conda.txt | xargs conda install -y \
+#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
+#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ \
+#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ \
+#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/mro/ \
+#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ \
+#     -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
+#     star multiqc perl-bioperl && \
+#     conda clean -a -y
 
 # configuration
 ## system config
+
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
-ENV LANG="en_US.UTF-8" 
 RUN echo "export LC_ALL=en_US.UTF-8"  >>  /etc/profile
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+
 ## git shortcuts
 RUN git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative" && \
     git config --global alias.st status && \
