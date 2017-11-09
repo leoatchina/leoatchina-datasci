@@ -79,8 +79,8 @@ RUN apt-get update -y && apt-get install -y locales && \
     locale-gen en_US.UTF-8 && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
     
-RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
-RUN echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
+    echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
 
 ## git shortcuts
 RUN git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative" && \
@@ -93,15 +93,14 @@ RUN git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%
 RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
 WORKDIR /home/jupyter
 ## config dir
-RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server
-RUN chmod -R 777 /opt/config /opt/log
-
+RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server && \
+    chmod -R 777 /opt/config /opt/log
 COPY rserver.conf /etc/rstudio/
 COPY shiny-server.conf /etc/shiny-server
 COPY jupyter_notebook_config.py /opt/config
 COPY jupyter_lab_config.py /opt/config
 COPY supervisord.conf /opt/config
-
+## start server
 CMD ["/usr/bin/supervisord","-c","/opt/config/supervisord.conf"]
 ## share
 EXPOSE 8888 8787 7777 3838
