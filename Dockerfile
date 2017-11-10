@@ -5,16 +5,18 @@ ADD sources.list /etc/apt/sources.list
 ## update system
 RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y software-properties-common && \
-    add-apt-repository ppa:neovim-ppa/stable -y && \
+    add-apt-repository -y ppa:neovim-ppa/stable && \
     apt-get update  -y && \
     apt-get install -y apt-utils gdebi-core && \
     apt-get install -y libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https && \
     apt-get install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag && \ 
     apt-get install -y build-essential gfortran libcairo2-dev libxt-dev && \
     apt-get install -y libapparmor1 libedit2 libc6 psmisc rrdtool && \
-    apt-get install -y neovim ctags zsh && \
     apt-get install -y libzmq3-dev libtool && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+    apt-get install -y neovim ctags zsh && \
+    apt-get install -y locales && \
+    locale-gen en_US.UTF-8 && \
+    apt-get clean && apt-get purge && apt-get autoremove && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 # PATH
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
@@ -41,14 +43,12 @@ RUN apt-get update -y && \
     curl http://download2.rstudio.org/rstudio-server-$(cat rstudio.ver)-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     curl https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION -o shiny.txt && \
-    curl https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-$(cat shiny.txt)-amd64.deb -o shiny-server-latest.deb && \
-    gdebi -n shiny-server-latest.deb && \
+    curl https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-$(cat shiny.txt)-amd64.deb -o shiny.deb && \
+    gdebi -n shiny.deb && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 
 ## rice
 RUN pip --no-cache-dir install rice
-## rstudio-server
-# ENV RSTUDIO_WHICH_R=/usr/bin/R
 
 ## R kernel for anaconda3
 RUN Rscript -e "options(encoding = 'UTF-8');\
@@ -75,13 +75,8 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
 
 # configuration
 ## system local config
-RUN apt-get update -y && apt-get install -y locales && \
-    locale-gen en_US.UTF-8 && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
-    
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
-
 ## git shortcuts
 RUN git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative" && \
     git config --global alias.st status && \
@@ -91,15 +86,15 @@ RUN git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%
     git config --global alias.rs reset
 ## users
 RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
-WORKDIR /home/jupyter
+WORKDIR /home/jupyter/
 ## config dir
 RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server && \
     chmod -R 777 /opt/config /opt/log
 COPY rserver.conf /etc/rstudio/
-COPY shiny-server.conf /etc/shiny-server
-COPY jupyter_notebook_config.py /opt/config
-COPY jupyter_lab_config.py /opt/config
-COPY supervisord.conf /opt/config
+COPY shiny-server.conf /etc/shiny-server/
+COPY jupyter_notebook_config.py /opt/config/
+COPY jupyter_lab_config.py /opt/config/
+COPY supervisord.conf /opt/config/
 ## start server
 CMD ["/usr/bin/supervisord","-c","/opt/config/supervisord.conf"]
 ## share

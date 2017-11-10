@@ -4,6 +4,9 @@ leoatchina的jupyter dockerfile，集成了rstudio-server和anacondalab和shinyR
 ## 启动后可能要的配置 
 ### bashrc,或者zshrc里要加的内容
 ```
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
 export PATH=/opt/anaconda3/bin:$PATH
 export TERM=xterm-256color
 ```
