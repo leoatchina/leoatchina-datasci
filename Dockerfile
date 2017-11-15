@@ -73,12 +73,9 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
 
-RUN apt-get -y update && apt-get -y upgrade && \
-    #curl -fsSL https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg | apt-key add - && \
-    #add-apt-repository "deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu $(lsb_release -cs) stable"  && \
-    #apt-get update -y && apt-get install -y docker-ce && \
-    apt-get install docker.io -y && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+
+RUN apt-get update -y && apt-get install bing ifconfig -y && \
+    apt-get clean && apt-get purge && apt-get autoremove && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 
 # configuration
 ## system local config
