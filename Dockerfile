@@ -74,7 +74,7 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     system('rm -rf /tmp/*') "
 
 
-RUN apt-get update -y && apt-get install bing ifconfig -y && \
+RUN apt-get update -y && apt-get install net-tools -y && \
     apt-get clean && apt-get purge && apt-get autoremove && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 
 # configuration
