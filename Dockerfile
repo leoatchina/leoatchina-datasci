@@ -74,10 +74,10 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     system('rm -rf /tmp/*') "
 
 RUN apt-get -y update && apt-get -y upgrade && \
-    apt-get install apt-transport-https ca-certificates && \
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"  && \
-    apt-get update -y && apt-get install -y docker-ce && \
+    #curl -fsSL https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg | apt-key add - && \
+    #add-apt-repository "deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu $(lsb_release -cs) stable"  && \
+    #apt-get update -y && apt-get install -y docker-ce && \
+    apt-get install docker.io -y && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 
 # configuration
