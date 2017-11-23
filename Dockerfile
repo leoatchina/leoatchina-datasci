@@ -74,12 +74,47 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('shinyBS','GGally','shinyAce','knitr')); \
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
-
+## install neovim with python && python3 support
 RUN add-apt-repository -y ppa:neovim-ppa/stable && \
     apt-get update -y && \
-    apt-get install -y neovim && \
-    apt-get install -y python-dev  python3-dev  && \
+    apt-get install -y \
+            lua5.1 liblua5.1-dev luajit libluajit-5.1 \
+            python-dev python-pip python3-dev python3-pip \
+            ruby-dev libperl-dev libatk1.0-dev libx11-dev libxpm-dev \
+            neovim && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+RUN pip3 install neovim && pip2 install neovim && \
+    rm -rf /root/.cache/pip
+    
+## install vim8 install python && lua support
+RUN cd /tmp && \
+    git clone --depth=1 https://github.com/vim/vim.git && \
+    cd vim && \
+    ./configure \
+      --prefix=/usr/local \
+      --enable-multibyte \
+      --enable-perlinterp \
+      --enable-rubyinterp \
+      --enable-pythoninterp \
+      --with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu \
+      --enable-luainterp \
+      --with-lua-prefix=/usr/ \
+      --with-luajit \
+      --enable-cscope \
+      --enable-gui=auto \
+      --with-features=huge \
+      --with-x \
+      --enable-fontset \
+      --enable-largefile \
+      --disable-netbeans \
+      --enable-fail-if-missing && \
+    make && make install && \
+    cd /tmp && rm -rf vim
+# RUN update-alternatives --install /usr/bin/vi vi /usr/bin/vim 80 && \
+#     update-alternatives --config vi
+# RUN update-alternatives --install /usr/bin/vim vim /usr/bin/vim 80 && \
+#     update-alternatives --config vim
+    
 # configuration
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
