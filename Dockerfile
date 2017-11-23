@@ -1,11 +1,10 @@
-FROM ubuntu:latest
+FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
 ADD sources.list /etc/apt/sources.list
 # installation
 ## update system
 RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y software-properties-common && \
-    add-apt-repository -y ppa:neovim-ppa/stable && \
     apt-get update  -y && \
     apt-get install -y apt-utils gdebi-core && \
     apt-get install -y libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https && \
@@ -13,14 +12,17 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y build-essential gfortran libcairo2-dev libxt-dev && \
     apt-get install -y libapparmor1 libedit2 libc6 psmisc rrdtool && \
     apt-get install -y libzmq3-dev libtool && \
-    apt-get install -y neovim ctags zsh && \
+    apt-get install -y cmake ctags zsh && \
+    apt-get install -y net-tools iputils-ping && \
     apt-get install -y locales && \
     locale-gen en_US.UTF-8 && \
     apt-get clean && apt-get purge && apt-get autoremove && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 # PATH
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
-RUN cd /tmp && curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.0.0.1-Linux-x86_64.sh -o Anaconda3.sh && \
+RUN cd /tmp && \
+    version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
+    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \ 
     conda clean  -a -y
 ## 重要的channel 放后面
@@ -73,24 +75,18 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
 
-
-RUN apt-get update -y && apt-get install net-tools -y && \
-    apt-get clean && apt-get purge && apt-get autoremove && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
-
+RUN add-apt-repository -y ppa:neovim-ppa/stable && \
+    apt-get update -y && \
+    apt-get install -y neovim && \
+    apt-get install -y python-dev  python3-dev  && \
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 # configuration
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
-## git shortcuts
-RUN git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative" && \
-    git config --global alias.st status && \
-    git config --global alias.co checkout && \
-    git config --global alias.ci commit && \
-    git config --global alias.br branch && \
-    git config --global alias.rs reset
 ## users
-RUN useradd jupyter -d /home/jupyter && echo jupyter:jupyter | chpasswd
-WORKDIR /home/jupyter/
+RUN useradd rserver -d /home/rserver &&  mkdir /work
+WORKDIR /work
 ## config dir
 RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server && \
     chmod -R 777 /opt/config /opt/log
@@ -99,9 +95,13 @@ COPY shiny-server.conf /etc/shiny-server/
 COPY jupyter_notebook_config.py /opt/config/
 COPY jupyter_lab_config.py /opt/config/
 COPY supervisord.conf /opt/config/
-## start server
-CMD ["/usr/bin/supervisord","-c","/opt/config/supervisord.conf"]
 ## share
 EXPOSE 8888 8787 7777 3838
-VOLUME ["/home/jupyter","/mnt","/disks","/oss","/data"]
-
+VOLUME ["/home/rserver","/work","/mnt","/disks","/oss","/data"]
+## set up passwd in entrypoin.sh
+COPY passwd.py /opt/config/
+ENV PASSWD=jupyter
+COPY entrypoint.sh /opt/config/
+ENTRYPOINT ["/opt/config/entrypoint.sh"]
+## start server
+#CMD ["/usr/bin/supervisord","-c","/opt/config/supervisord.conf"]
