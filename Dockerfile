@@ -75,15 +75,12 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
 ## install neovim with python && python3 support
-RUN add-apt-repository -y ppa:neovim-ppa/stable && \
+RUN add-apt-repository ppa:jonathonf/vim && \
     apt-get update -y && \
-    apt-get install -y \
-            python-dev python-pip python3-dev python3-pip \
-            neovim && \
+    apt-get install -y vim && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
-RUN pip3 install neovim && pip2 install neovim && \
-    rm -rf /root/.cache/pip
-    
+RUN pip install neovim  && rm -rf /root/.cache/pip
+
 # configuration
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
