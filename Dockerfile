@@ -5,6 +5,7 @@ ADD sources.list /etc/apt/sources.list
 ## update system
 RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y software-properties-common && \
+    add-apt-repository ppa:jonathonf/vim && \
     apt-get update  -y && \
     apt-get install -y apt-utils gdebi-core && \
     apt-get install -y libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https && \
@@ -16,16 +17,20 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y net-tools iputils-ping && \
     apt-get install -y locales && \
     locale-gen en_US.UTF-8 && \
-    apt-get clean && apt-get purge && apt-get autoremove && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+    apt-get install -y vim python3-dev python3-pip && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+ADD pip.conf /root/.pip/
+RUN pip3 --no-cache-dir install --upgrade pip && pip3 --no-cache-dir install neovim && rm -rf /root/.cache/pip/*
+
 # PATH
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
 RUN cd /tmp && \
     version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
-    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh -o Anaconda3.sh && \
-    bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \ 
+    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
+    bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
     conda clean  -a -y
-## 重要的channel 放后面
+## 使用清华的源
 RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
@@ -49,9 +54,6 @@ RUN apt-get update -y && \
     gdebi -n shiny.deb && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 
-## rice
-RUN pip --no-cache-dir install rice
-
 ## R kernel for anaconda3
 RUN Rscript -e "options(encoding = 'UTF-8');\
     source('https://bioconductor.org/biocLite.R');\
@@ -74,17 +76,14 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('shinyBS','GGally','shinyAce','knitr')); \
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
-## install neovim with python && python3 support
-RUN add-apt-repository ppa:jonathonf/vim && \
-    apt-get update -y && \
-    apt-get install -y vim && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-ADD pip.conf /root/.pip/
-RUN pip install neovim  && rm -Rf /root/.cache/pip/*
-## .oh-my-zsh
-RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
+
+## rice and neovim in anaconda3
+RUN pip --no-cache-dir install rice neovim
 
 # configuration
+## .oh-my-zsh
+ADD .zshrc /root/
+RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
@@ -94,17 +93,16 @@ WORKDIR /jupyter
 ## config dir
 RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server && \
     chmod -R 777 /opt/config /opt/log
-COPY .zshrc /root/
-COPY rserver.conf /etc/rstudio/
-COPY shiny-server.conf /etc/shiny-server/
-COPY jupyter_notebook_config.py /opt/config/
-COPY jupyter_lab_config.py /opt/config/
-COPY supervisord.conf /opt/config/
+ADD rserver.conf /etc/rstudio/
+ADD shiny-server.conf /etc/shiny-server/
+ADD jupyter_notebook_config.py /opt/config/
+ADD jupyter_lab_config.py /opt/config/
+ADD supervisord.conf /opt/config/
 ## share
 EXPOSE 8888 8787 7777 3838
 VOLUME ["/home/rserver","/jupyter","/mnt","/disks","/oss","/data"]
 ## set up passwd in entrypoin.sh
-COPY passwd.py /opt/config/
+ADD passwd.py /opt/config/
 ENV PASSWD=jupyter
-COPY entrypoint.sh /opt/config/
+ADD entrypoint.sh /opt/config/
 ENTRYPOINT ["/opt/config/entrypoint.sh"]
