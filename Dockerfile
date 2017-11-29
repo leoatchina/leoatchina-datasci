@@ -75,20 +75,20 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
 ## install neovim with python && python3 support
-ADD pip.conf /root/.pip/
 RUN add-apt-repository ppa:jonathonf/vim && \
     apt-get update -y && \
     apt-get install -y vim && \
-    pip install neovim && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+ADD pip.conf /root/.pip/
+RUN pip install neovim  && rm -Rf /root/.cache/pip/*
 
 # configuration
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
 ## users
-RUN useradd rserver -d /home/rserver &&  mkdir /work
-WORKDIR /work
+RUN useradd rserver -d /home/rserver &&  mkdir /jupyter
+WORKDIR /jupyter
 ## config dir
 RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server && \
     chmod -R 777 /opt/config /opt/log
@@ -99,11 +99,12 @@ COPY jupyter_lab_config.py /opt/config/
 COPY supervisord.conf /opt/config/
 ## share
 EXPOSE 8888 8787 7777 3838
-VOLUME ["/home/rserver","/work","/mnt","/disks","/oss","/data"]
+VOLUME ["/home/rserver","/jupyter","/mnt","/disks","/oss","/data"]
 ## set up passwd in entrypoin.sh
 COPY passwd.py /opt/config/
 ENV PASSWD=jupyter
 COPY entrypoint.sh /opt/config/
 ENTRYPOINT ["/opt/config/entrypoint.sh"]
-## start server
-#CMD ["/usr/bin/supervisord","-c","/opt/config/supervisord.conf"]
+## oh-my-zsh
+RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
+ADD .zshrc /root/
