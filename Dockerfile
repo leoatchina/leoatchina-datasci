@@ -81,6 +81,8 @@ RUN add-apt-repository ppa:jonathonf/vim && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ADD pip.conf /root/.pip/
 RUN pip install neovim  && rm -Rf /root/.cache/pip/*
+## .oh-my-zsh
+RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
 
 # configuration
 ## system local config
@@ -92,6 +94,7 @@ WORKDIR /jupyter
 ## config dir
 RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server && \
     chmod -R 777 /opt/config /opt/log
+COPY .zshrc /root/
 COPY rserver.conf /etc/rstudio/
 COPY shiny-server.conf /etc/shiny-server/
 COPY jupyter_notebook_config.py /opt/config/
@@ -105,6 +108,3 @@ COPY passwd.py /opt/config/
 ENV PASSWD=jupyter
 COPY entrypoint.sh /opt/config/
 ENTRYPOINT ["/opt/config/entrypoint.sh"]
-## oh-my-zsh
-RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
-ADD .zshrc /root/
