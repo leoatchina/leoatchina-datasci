@@ -82,8 +82,8 @@ RUN pip --no-cache-dir install rice neovim
 
 # configuration
 ## .oh-my-zsh
-ADD .zshrc /root/
 RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
+ADD .zshrc /root/
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
