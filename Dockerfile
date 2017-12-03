@@ -81,9 +81,6 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
 RUN pip --no-cache-dir install rice neovim
 
 # configuration
-## .oh-my-zsh
-RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
-ADD .zshrc /root/
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
@@ -106,3 +103,6 @@ ADD passwd.py /opt/config/
 ENV PASSWD=jupyter
 ADD entrypoint.sh /opt/config/
 ENTRYPOINT ["/opt/config/entrypoint.sh"]
+## .oh-my-zsh
+RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
+ADD .zshrc /root/
