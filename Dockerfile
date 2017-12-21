@@ -106,3 +106,4 @@ ENTRYPOINT ["/opt/config/entrypoint.sh"]
 ## .oh-my-zsh
 RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
 ADD .zshrc /root/
+ADD .bashrc /root/
