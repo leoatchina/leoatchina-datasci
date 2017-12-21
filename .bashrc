@@ -99,6 +99,7 @@ fi
 #fi
 
 
+export TERM=xterm-256color
 if [ -f /jupyter/.jupyterc ]; then
     source /jupyter/.jupyterc
 fi
