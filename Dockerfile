@@ -7,9 +7,9 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y software-properties-common && \
     add-apt-repository ppa:jonathonf/vim && \
     apt-get update  -y && \
+    apt-get install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag && \ 
     apt-get install -y apt-utils gdebi-core && \
     apt-get install -y libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https && \
-    apt-get install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag && \ 
     apt-get install -y build-essential gfortran libcairo2-dev libxt-dev && \
     apt-get install -y libapparmor1 libedit2 libc6 psmisc rrdtool && \
     apt-get install -y libzmq3-dev libtool && \
@@ -20,6 +20,7 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y vim python3-dev python3-pip && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ADD pip.conf /root/.pip/
+# neovim
 RUN pip3 --no-cache-dir install --upgrade pip && pip3 --no-cache-dir install neovim && rm -rf /root/.cache/pip/*
 
 # PATH
@@ -43,7 +44,7 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
     add-apt-repository 'deb [arch=amd64,i386] https://mirrors.ustc.edu.cn/CRAN/bin/linux/ubuntu xenial/'
 RUN apt-get update -y && \
-    apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
+    #apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
     apt-get install -y r-base r-base-dev && \
     cd /tmp && \
     curl https://s3.amazonaws.com/rstudio-server/current.ver -o rstudio.ver && \
@@ -77,9 +78,7 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
 
-## rice and neovim in anaconda3
-RUN pip --no-cache-dir install rice neovim
-
+#RUN conda update -y jupyterlab && conda clean -a -y
 # configuration
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
