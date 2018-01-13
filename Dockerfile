@@ -78,6 +78,9 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages( c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
 
+## softwares for lint check
+RUN pip3 --no-cache-dir install pylint flake8 pep8 && \
+    rm -rf /root/.cache/pip/*
 #RUN conda update -y jupyterlab && conda clean -a -y
 # configuration
 ## system local config
