@@ -100,7 +100,7 @@ docker run --name jupyter  \
 众所周知，bash/zsh在启动时，会加载用户目录下的`.bashrc/.zshrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置，在我的做出来的`jupyter`镜像中，为了达到`安装的软件和container分离`，在删除container时不删除安装的软件的目的，我做了如下source次序
 - root目录下的`.bashrc`或者`.zshrc`(在镜像里已经写入) ： `source /juoyter/.jupyterc`
 - 在映射过去的 `/jupyter/.jupyterc中`（另外自行建立）:  `source /jupyter/.bioinforc`
-- 贴出 `.jupyterc`和`.bioinforc`
+- 贴出我的 `.jupyterc`和`.bioinforc`
 
 **/jupyter/.jupyterc**
 ``` 
@@ -137,9 +137,30 @@ export PATH=/jupyter/biotools/RSEM-1.3.0:$PATH
 export PATH=/jupyter/biotools/express-1.5.1-linux_x86_64:$PATH
 ```
 
-- 这样，你们可以看到，`/opt/anaconda3/bin`在$PATH变量中优先级最高，而安装在`/jupyter/envs/bioinfo/bin`等目录下的可执行文件不需要输入全路径也运行，这是搞哪一出？
+- 你们可以看到，`/opt/anaconda3/bin`在$PATH变量中优先级最高，而安装在`/jupyter/envs/bioinfo/bin`，`/jupyter/envs/entrez-direct/bin`等目录下的可执行文件不需要输入全路径也运行，这是搞哪一出？
 
 
+#### conda install -p 快速安装软件
+各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境，但其实还有一个参数`-p`用于指定安装目录。
+利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`实际的硬盘`上。
+举例如下安装`trimmomatic`:`conda install -p /jupyter/envs/bioinfo trimmomatc`，
+![install trim](http://oxa21co60.bkt.clouddn.com/99acb90192939d988774b08cd910aaf7.png)
+如此，就安装到对应的位置，如samtools,bcftools,varscan等一众生信软件都可以如此安装。
+![](http://oxa21co60.bkt.clouddn.com/67697b228ccd03b2d790ffa431f42f56.png)
 
-#### conda install -p 
-可能各们前面注意到了，我
+关键的，在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装，不需要重装，不需要重装**。
+
+有用的时刻？
+1. 启动分析流程后，发现代码写错了要结束，只要删除container就行了，不需要一个个去kill进程
+2. 在另一个机器上快速搭建分析环境，把`docker-file`在新机器上`bulid`下，各个`.xxxrc`文件放到正确的位置，然后把已经装上的软件复制过去。
+
+
+#### 网页端的shell
+本docker中集成的jupyter lab的功能不用太多介绍，我要介绍的是集成的zsh环境，通过`file->new->terminal`输入`zsh`,就会打开一个有高亮的 shell环境
+![](http://oxa21co60.bkt.clouddn.com/8a01aa9e432b7aec038509dea20617ec.png)
+
+![](http://oxa21co60.bkt.clouddn.com/a5bcb9e27ae5bc575a42bdd6fc00d3d6.png)
+
+有两个好处
+1. 只要你记得你的访问密码PASSWORD（仔细看我的启动脚本)，IP、端口，就可以通过网页端进行操作。
+2. 启动分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开还是在继续运行你的脚本 。这个，请保位随便找个分析流程，自己体会下。
