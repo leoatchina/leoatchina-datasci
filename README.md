@@ -51,12 +51,12 @@ services:
     image: jupyter  # 使用前面做出来的jupyter镜像
     environment:
       - PASSWD=mitipass   # PASSWD ， 在Docker-file里的 `ENV PASSWD=jupyter`
-    ports:     # 端口映射，右边是container里的商品，左边是实际商品
+    ports:     # 端口映射，右边是container里的端口，左边是实际端口，比如我就喜欢实际端口在内部端口前加2或1。
       - 28787:8787
       - 27777:7777
       - 28888:8888
       - 23838:3838
-    volumes:   # 位置映射，右docker，左实际
+    volumes:   # 位置映射，右docker内部，左实际
       - /data/bioinfo:/mnt/bioinfo   # 个人习惯，里面会放一些参考基因组等  
       - /home/github:/mnt/github     # 习惯2，比如我的vim配置会放里面
       - /tmp:/tmp 
@@ -72,7 +72,7 @@ services:
 
 
 ##### 使用docker run命令
-和使用docker-compose差不多的意义
+和docker-compose差不多的意义
 ```
 docker run --name jupyter  \
 -v /data/bioinfo:/mnt/bioinfo \ 
@@ -100,7 +100,7 @@ docker run --name jupyter  \
 
 
 #### `.bashrc`和`.zshrc`,我玩的小花招
-众所周知，bash/zsh在启动时，会加载用户目录下的`.bashrc/.zshrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置，在我的做出来的`jupyter`镜像中，为了达到`安装的软件和container分离`，在删除container时不删除安装的软件的目的，我做了如下source次序
+众所周知，bash/zsh在启动时，会加载用户目录下的`.bashrc|.zshrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置，在我的做出来的`jupyter`镜像中，为了达到`安装的软件和container分离`，在删除container时不删除安装的软件的目的，我做了如下source次序
 - root目录下的`.bashrc`或者`.zshrc`(在镜像里已经写入) ： `source /juoyter/.jupyterc`
 - 在映射过去的 `/jupyter/.jupyterc中`（另外自行建立）:  `source /jupyter/.bioinforc`
 - 贴出我的 `.jupyterc`和`.bioinforc`
@@ -166,4 +166,4 @@ export PATH=/jupyter/biotools/express-1.5.1-linux_x86_64:$PATH
 
 有两个好处
 1. 只要你记得你的访问密码PASSWORD（仔细看我的启动脚本)，IP、端口，就可以通过网页端进行操作。
-2. 启动`perl`，`python`,`shell`的分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开该页面还是在继续运行你的脚本 。这个，请各位写个分析流程，自行体会下。
+2. 启动`perl`，`python`,`shell`的分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开该页面还是在继续运行你的脚本 。这个，请各位写个分析流程，自行体会下，也是我认为本次教程的最大亮点。
