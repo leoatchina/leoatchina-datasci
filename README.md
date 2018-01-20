@@ -63,7 +63,7 @@ services:
       - /data/disks:/disks           
       - /data/work:/work
       - /home/root/.ssh:/root/.ssh   # 这个是为了一次通过ssh-keygen生成密钥后，能多次使用
-      - /home/root/.vim:/root/.vim   # 为了使用我配置的vim
+      - /home/root/.vim:/root/.vim   # 为了不同的container能重复利用一套已经下载的vim插件
       - /root/.vimrc.local:/root/.vimrc.local  # 同上
       - /home/jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录 
       - /home/rserver:/home/rserver  # 关键目录之2，rtudio的工作目录 
