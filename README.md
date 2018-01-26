@@ -24,7 +24,6 @@ docker build -t jupyter .
 - 用`supervisor`启动后台web服务
 - 集成`zsh`以及`oh-my-zsh`,`vim8`,`neovim`
 
-
 #### 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
@@ -92,9 +91,6 @@ docker run --name jupyter  \
 -d jupyter    #使用jupyter镜像， -d代表在后台工作
 ```
 
-##### 访问
-
-
 ##### 运行后的调整
 - 如上，通过`IP:[27777|28888|28787|23838]`进行访问
 - 打开  `运行机器的IP:28787`，修改下R的源，bioClite源
@@ -102,12 +98,9 @@ docker run --name jupyter  \
 - shinny的运行目录是在 `/home/rsever/shinny-server`
 - 进入`rstudio-server`的用户名是`rserver`
 
-
-
 #### 网页端的shell
 本docker中集成的`jupyter lab`，`rstudio`的功能不用太多介绍，我要介绍的是集成的zsh环境，通过`file->new->terminal`输入`zsh`,就会打开一个有高亮的 shell环境,当然bash也是支持的。
 ![](http://oxa21co60.bkt.clouddn.com/8a01aa9e432b7aec038509dea20617ec.png)
-
 ![](http://oxa21co60.bkt.clouddn.com/a5bcb9e27ae5bc575a42bdd6fc00d3d6.png)
 
 有两个好处
@@ -116,8 +109,8 @@ docker run --name jupyter  \
 
 #### `.jupyterc`和`.bioinforc`,我玩的小花招
 众所周知，bash/zsh在启动时，会加载用户目录下的`.bashrc|.zshrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置，在我的做出来的`jupyter`镜像中，为了达到`安装的生信软件`和`container分离`的目的，在删除container时不删除安装的软件的目的，我设置如下source次序
-- root目录下的`.bashrc`或者`.zshrc`(在镜像里已经写入) : `source /juoyter/.jupyterc`
-- 在映射过去的 `/jupyter/.jupyterc中` （另外自行建立）:  `source /jupyter/.bioinforc`
+- root目录下的`.bashrc`或者`.zshrc`（集成在镜像里) : `source /juoyter/.jupyterc`(自己建立)
+- 在 `/jupyter/.jupyterc中`（注意这个没集成) :  `source /jupyter/.bioinforc`
 
 贴出我的配置
 
