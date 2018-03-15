@@ -101,7 +101,7 @@ ADD jupyter_lab_config.py /opt/config/
 ADD supervisord.conf /opt/config/
 ## share
 EXPOSE 8888 8787 7777 3838
-VOLUME ["/home/rserver","/jupyter","/mnt","/disks","/oss","/data"]
+VOLUME ["/home/rserver","/jupyter","/mnt","/disks"]
 ## set up passwd in entrypoin.sh
 ADD passwd.py /opt/config/
 ENV PASSWD=jupyter
