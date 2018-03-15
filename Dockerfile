@@ -45,7 +45,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD5
     add-apt-repository 'deb [arch=amd64,i386] https://mirrors.ustc.edu.cn/CRAN/bin/linux/ubuntu xenial/'
 
 RUN apt-get update -y && \
-    #apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
+    apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
     apt-get install -y r-base r-base-dev && \
     cd /tmp && \
     curl https://s3.amazonaws.com/rstudio-server/current.ver -o rstudio.ver && \
@@ -82,6 +82,8 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
 ## softwares for lint check
 RUN pip3 --no-cache-dir install pylint flake8 pep8 && \
     rm -rf /root/.cache/pip/*
+RUN conda install mysql-connector-python && \
+    conda clean -a -y 
 # configuration
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
