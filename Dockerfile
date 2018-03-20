@@ -80,10 +80,10 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     system('rm -rf /tmp/*') "
 
 ## softwares for lint check
-RUN pip3 --no-cache-dir install pylint flake8 pep8 && \
+RUN pip3 --no-cache-dir install pylint flake8 pep8 mysql-connector-python && \
     rm -rf /root/.cache/pip/*
-RUN conda install mysql-connector-python -y && \
-    conda clean -a -y 
+#RUN conda install mysql-connector-python -y && \
+    #conda clean -a -y 
 # configuration
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
