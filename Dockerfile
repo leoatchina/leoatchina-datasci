@@ -48,12 +48,16 @@ RUN apt-get update -y && \
     apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
     apt-get install -y r-base r-base-dev && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-Run cd /tmp && \
-    curl https://s3.amazonaws.com/rstudio-server/current.ver -o rstudio.ver && \
-    curl http://download2.rstudio.org/rstudio-server-$(cat rstudio.ver)-amd64.deb -o rstudio.deb && \
+
+## install rstudio
+RUN cd /tmp && \ 
+    curl https://download2.rstudio.org/rstudio-server-1.1.442-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
-    curl https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION -o shiny.txt && \
-    curl https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-$(cat shiny.txt)-amd64.deb -o shiny.deb && \
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+
+## install shinny
+RUN cd /tmp && \ 
+    curl https://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.5.6.875-amd64.deb -o shiny.deb && \
     gdebi -n shiny.deb && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 
