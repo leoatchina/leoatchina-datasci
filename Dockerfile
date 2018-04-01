@@ -47,7 +47,8 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD5
 RUN apt-get update -y && \
     apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
     apt-get install -y r-base r-base-dev && \
-    cd /tmp && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+Run cd /tmp && \
     curl https://s3.amazonaws.com/rstudio-server/current.ver -o rstudio.ver && \
     curl http://download2.rstudio.org/rstudio-server-$(cat rstudio.ver)-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
