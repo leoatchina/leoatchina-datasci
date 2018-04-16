@@ -21,7 +21,7 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ADD pip.conf /root/.pip/
 # neovim
-RUN pip3 --no-cache-dir install --upgrade pip && pip3 --no-cache-dir install neovim && rm -rf /root/.cache/pip/*
+RUN pip3 --no-cache-dir install neovim && rm -rf /root/.cache/pip/*
 
 # PATH
 ENV PATH=/opt/anaconda3/bin:$PATH

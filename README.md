@@ -12,7 +12,7 @@
 ```
 git clone https://github.com/leoatchina/dockerfile_jupyter.git
 cd docker_jupyter
-docker build -t jupyter . 
+docker build -t jupyter .
 ```
 *说明,这个镜像的名字是`jupyter`，你们可以改成其他自己喜欢的任何名字*
 
@@ -46,35 +46,35 @@ docker build -t jupyter .
 ```
 version: "3"  # xml版本
 services:
-  jupyter:  
+  jupyter:
     image: jupyter  # 使用前面做出来的jupyter镜像
     environment:
-      - PASSWD=mitipass   # PASSWD ， 在Docker-file里的 `ENV PASSWD=jupyter`
+      - PASSWD=password   # PASSWD ， 在Docker-file里的 `ENV PASSWD=jupyter`
     ports:     # 端口映射，右边是container里的端口，左边是实际端口，比如我就喜欢实际端口在内部端口前加2或1。
       - 28787:8787
       - 27777:7777
       - 28888:8888
       - 23838:3838
     volumes:   # 位置映射，右docker内部，左实际
-      - /data/bioinfo:/mnt/bioinfo   # 个人习惯，里面会放一些参考基因组等  
+      - /data/bioinfo:/mnt/bioinfo   # 个人习惯，里面会放一些参考基因组等
       - /home/github:/mnt/github     # 个人习惯2，比如我的vim配置会放里面
-      - /tmp:/tmp 
-      - /data/disks:/disks           
+      - /tmp:/tmp
+      - /data/disks:/disks
       - /data/work:/work
       - /home/root/.ssh:/root/.ssh   # 这个是为了一次通过ssh-keygen生成密钥后，能多次使用
       - /home/root/.vim:/root/.vim   # 为了不同的container能重复利用一套已经下载的vim插件
       - /root/.vimrc.local:/root/.vimrc.local
-      - /home/jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录 
-      - /home/rserver:/home/rserver  # 关键目录之2，rtudio的工作目录 
+      - /home/jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录
+      - /home/rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
 ```
-会运行一个名为`bioinfo_jupyter_1`的`container`，是由目录`bioinfo`+镜像`jupyter`+数字`1`组成 
+会运行一个名为`bioinfo_jupyter_1`的`container`，是由目录`bioinfo`+镜像`jupyter`+数字`1`组成
 
 
 ##### 2. 使用docker run命令
 和docker-compose差不多的意义
 ```
 docker run --name jupyter  \
--v /data/bioinfo:/mnt/bioinfo \ 
+-v /data/bioinfo:/mnt/bioinfo \
 -v /home/github:/mnt/github \
 -v /tmp:/tmp \
 -v /data/disks:/disks \
@@ -87,7 +87,7 @@ docker run --name jupyter  \
 -p 28787:8787 \
 -p 28888:8888 \
 -p 23838:3838 \
--e PASSWD=mitipass \    
+-e PASSWD=password \
 -d jupyter    #使用jupyter镜像， -d代表在后台工作
 ```
 
@@ -115,8 +115,8 @@ docker run --name jupyter  \
 贴出我的配置
 
 **/jupyter/.jupyterc**
-``` 
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+```
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # PATH I write or complied
 export PATH=/jupyter/usr/bin:$PATH
 # bioinfo path
