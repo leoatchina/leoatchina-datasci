@@ -17,7 +17,7 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y net-tools iputils-ping && \
     apt-get install -y locales && \
     locale-gen en_US.UTF-8 && \
-    apt-get install -y vim python3-dev python3-pip && \
+    apt-get install -y vim python3-dev python3-pip sudo && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ADD pip.conf /root/.pip/
 # neovim
