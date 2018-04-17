@@ -13,7 +13,7 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y build-essential gfortran libcairo2-dev libxt-dev && \
     apt-get install -y libapparmor1 libedit2 libc6 psmisc rrdtool && \
     apt-get install -y libzmq3-dev libtool && \
-    apt-get install -y cmake ctags zsh && \
+    apt-get install -y cmake ctags zsh sudo && \
     apt-get install -y net-tools iputils-ping && \
     apt-get install -y locales && \
     locale-gen en_US.UTF-8 && \
@@ -28,7 +28,7 @@ ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
 RUN cd /tmp && \
     version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
-    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
+    curl --limit-rate 1M https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
     conda clean  -a -y
 ## 使用清华的源
