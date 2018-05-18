@@ -86,6 +86,7 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
 
 ## softwares for lint check
 RUN pip3 --no-cache-dir install pylint flake8 pep8 mysql-connector-python && \
+    pip3 install --upgrade pip && \
     rm -rf /root/.cache/pip/*
 #RUN conda install mysql-connector-python -y && \
     #conda clean -a -y 
