@@ -116,3 +116,8 @@ ENTRYPOINT ["/opt/config/entrypoint.sh"]
 RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
 ADD .zshrc /root/
 ADD .bashrc /root/
+
+## pandas
+RUN apt-get update -y && \
+    apt-get install pandoc texlive-full texlive-xetex -y && \
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
