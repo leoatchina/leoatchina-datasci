@@ -118,5 +118,6 @@ ADD .bashrc /root/
 
 ## pandas
 RUN apt-get update -y && \
-    apt-get install pandoc texlive-full texlive-xetex -y && \
+    apt-get install pandoc -y && \
+    apt-get install texlive-full -y && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
