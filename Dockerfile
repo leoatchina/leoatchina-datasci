@@ -21,14 +21,13 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ADD pip.conf /root/.pip/
 # neovim
-RUN pip3 --no-cache-dir install neovim && rm -rf /root/.cache/pip/*
-
+RUN pip3 --no-cache-dir install jedi neovim && rm -rf /root/.cache/pip/*
 # PATH
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
 RUN cd /tmp && \
     version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
-    curl --limit-rate 1M https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
+    curl --limit-rate 4M https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
     conda clean  -a -y
 ## 使用清华的源
