@@ -116,8 +116,12 @@ RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
 ADD .zshrc /root/
 ADD .bashrc /root/
 
-## pandas
+## pandoc
+RUN cd /tmp && \
+    wget https://github.com/jgm/pandoc/releases/download/2.2.1/pandoc-2.2.1-1-amd64.deb  && \
+    dpkg -i pandoc-2.2.1-1-amd64.deb && \
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+
 RUN apt-get update -y && \
-    apt-get install pandoc -y && \
     apt-get install texlive-full -y && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
