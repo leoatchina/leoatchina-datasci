@@ -83,7 +83,6 @@ RUN useradd rserver -d /home/rserver &&  mkdir /jupyter
 WORKDIR /jupyter
 ## config dir
 RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server && chmod -R 777 /opt/config /opt/log
-ADD install_require_pkgs.R /home/rserver
 ADD rserver.conf /etc/rstudio/
 ADD shiny-server.conf /etc/shiny-server/
 ADD jupyter_notebook_config.py /opt/config/
@@ -101,4 +100,5 @@ ADD .bashrc /root/
 ## share
 EXPOSE 8888 8787 7777 3838
 VOLUME ["/home/rserver","/jupyter","/mnt","/disks"]
-
+# install_require_pkgs.R is the packages for R
+ADD install_require_pkgs.R /home/rserver
