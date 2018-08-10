@@ -20,8 +20,6 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y vim python3-dev python3-pip sudo && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ADD pip.conf /root/.pip/
-# neovim
-RUN pip3 --no-cache-dir install jedi neovim && rm -rf /root/.cache/pip/*
 # PATH
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
@@ -61,7 +59,7 @@ RUN cd /tmp && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 
 ## softwares for lint check
-RUN pip3 --no-cache-dir install pylint flake8 pep8 mysql-connector-python python-language-server && \
+RUN pip3 --no-cache-dir install pylint flake8 pep8 jedi neovim mysql-connector-python python-language-server && \
     pip3 install --upgrade pip && \
     rm -rf /root/.cache/pip/* /tmp/*
 
