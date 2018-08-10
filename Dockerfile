@@ -50,29 +50,29 @@ RUN apt-get update -y && \
 RUN cd /tmp && \ 
     curl https://download2.rstudio.org/rstudio-server-1.1.442-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 ## install shinny
 RUN cd /tmp && \ 
     curl https://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.5.6.875-amd64.deb -o shiny.deb && \
     gdebi -n shiny.deb && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
-
-## softwares for lint check
-RUN pip3 --no-cache-dir install pylint flake8 pep8 jedi neovim mysql-connector-python python-language-server && \
-    pip3 install --upgrade pip && \
-    rm -rf /root/.cache/pip/* /tmp/*
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 ## pandoc
 RUN cd /tmp && \
     wget https://github.com/jgm/pandoc/releases/download/2.2.1/pandoc-2.2.1-1-amd64.deb  && \
     dpkg -i pandoc-2.2.1-1-amd64.deb && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 ## textlive
 RUN apt-get update -y && \
     apt-get install texlive-full -y && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
+## softwares for lint check
+RUN pip3 --no-cache-dir install pylint flake8 pep8 jedi neovim mysql-connector-python python-language-server && \
+    pip3 install --upgrade pip && \
+    rm -rf /root/.cache/pip/* /tmp/*
 
 # configuration
 ## system local config
