@@ -60,33 +60,21 @@ RUN cd /tmp && \
     gdebi -n shiny.deb && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 
-## R kernel for anaconda3
-RUN Rscript -e "options(encoding = 'UTF-8');\
-    source('https://bioconductor.org/biocLite.R');\
-    options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc/');\
-    options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
-    install.packages(c('rstudioapi', 'miniUI'), type = 'source');\
-    install.packages('devtools');\
-    install.packages('RCurl');\
-    install.packages('crayon');\
-    install.packages('repr');\
-    library(devtools);\
-    install_github('rstudio/addinexamples');\
-    install_github('armstrtw/rzmq');\
-    install_github('takluyver/IRkernel');\
-    install.packages('IRdisplay');\
-    install.packages('pbdZMQ');\
-    IRkernel::installspec();\
-    install.packages(c('shiny', 'rmarkdown', 'rsconnect','RSQLite','RMySQL')) ;\
-    install.packages( c('shinydashboard','DT','reshape2')); \
-    install.packages( c('shinyBS','GGally','shinyAce','knitr')); \
-    install.packages( c('rmarkdown','shinyjs' )); \
-    system('rm -rf /tmp/*') "
-
 ## softwares for lint check
-RUN pip3 --no-cache-dir install pylint flake8 pep8 mysql-connector-python && \
+RUN pip3 --no-cache-dir install pylint flake8 pep8 mysql-connector-python python-language-server && \
     pip3 install --upgrade pip && \
-    rm -rf /root/.cache/pip/*
+    rm -rf /root/.cache/pip/* /tmp/*
+
+## pandoc
+RUN cd /tmp && \
+    wget https://github.com/jgm/pandoc/releases/download/2.2.1/pandoc-2.2.1-1-amd64.deb  && \
+    dpkg -i pandoc-2.2.1-1-amd64.deb && \
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
+
+## textlive
+RUN apt-get update -y && \
+    apt-get install texlive-full -y && \
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 
 # configuration
 ## system local config
@@ -96,16 +84,13 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' 
 RUN useradd rserver -d /home/rserver &&  mkdir /jupyter
 WORKDIR /jupyter
 ## config dir
-RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server && \
-    chmod -R 777 /opt/config /opt/log
+RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server && chmod -R 777 /opt/config /opt/log
+ADD install_require_pkgs.R /home/rserver
 ADD rserver.conf /etc/rstudio/
 ADD shiny-server.conf /etc/shiny-server/
 ADD jupyter_notebook_config.py /opt/config/
 ADD jupyter_lab_config.py /opt/config/
 ADD supervisord.conf /opt/config/
-## share
-EXPOSE 8888 8787 7777 3838
-VOLUME ["/home/rserver","/jupyter","/mnt","/disks"]
 ## set up passwd in entrypoin.sh
 ADD passwd.py /opt/config/
 ENV PASSWD=jupyter
@@ -115,13 +100,7 @@ ENTRYPOINT ["/opt/config/entrypoint.sh"]
 RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
 ADD .zshrc /root/
 ADD .bashrc /root/
+## share
+EXPOSE 8888 8787 7777 3838
+VOLUME ["/home/rserver","/jupyter","/mnt","/disks"]
 
-## pandoc
-RUN cd /tmp && \
-    wget https://github.com/jgm/pandoc/releases/download/2.2.1/pandoc-2.2.1-1-amd64.deb  && \
-    dpkg -i pandoc-2.2.1-1-amd64.deb && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
-
-RUN apt-get update -y && \
-    apt-get install texlive-full -y && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* 
