@@ -101,4 +101,4 @@ ADD .bashrc /root/
 EXPOSE 8888 8787 7777 3838
 VOLUME ["/home/rserver","/jupyter","/mnt","/disks"]
 # install_require_pkgs.R is the packages for R
-ADD install_require_pkgs.R /opt/config
+ADD install_require_pkgs.R /opt/config/
