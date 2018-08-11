@@ -4,6 +4,7 @@ options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc/')
 options("repos" = c(CRAN="http://mirrors.ustc.edu.cn/CRAN/"))
 require_packages = c(
   "shiny",
+  "shinyjs",
   "openxlsx",
   "nortest",
   "shinythemes",

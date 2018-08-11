@@ -67,7 +67,7 @@ RUN cd /tmp && \
 ## textlive
 RUN apt-get update -y && \
     apt-get install texlive-full -y && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 ## softwares for lint check
 RUN pip3 --no-cache-dir install pylint flake8 pep8 jedi neovim mysql-connector-python python-language-server && \
