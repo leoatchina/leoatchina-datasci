@@ -69,6 +69,29 @@ RUN apt-get update -y && \
     apt-get install texlive-full -y && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
+## R kernel for anaconda3, and shiny
+RUN Rscript -e "options(encoding = 'UTF-8');\
+    options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
+    source('https://bioconductor.org/biocLite.R');\
+    options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc/');\
+    install.packages(c('rstudioapi', 'miniUI'), type = 'source');\
+    install.packages('devtools');\
+    install.packages('RCurl');\
+    install.packages('crayon');\
+    install.packages('repr');\
+    library(devtools);\
+    install_github('rstudio/addinexamples');\
+    install_github('armstrtw/rzmq');\
+    install_github('takluyver/IRkernel');\
+    install.packages('IRdisplay');\
+    install.packages('pbdZMQ');\
+    IRkernel::installspec();\
+    install.packages(c('shiny', 'rmarkdown', 'rsconnect','RSQLite','RMySQL')) ;\
+    install.packages(c('shinydashboard','DT','reshape2')); \
+    install.packages(c('shinyBS','GGally','shinyAce','knitr')); \
+    install.packages(c('rmarkdown','shinyjs' )); \
+    system('rm -rf /tmp/*') "
+
 ## softwares for lint check
 RUN pip3 --no-cache-dir install pylint flake8 pep8 jedi neovim mysql-connector-python python-language-server && \
     pip3 install --upgrade pip && \
