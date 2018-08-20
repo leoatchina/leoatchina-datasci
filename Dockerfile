@@ -19,7 +19,13 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     locale-gen en_US.UTF-8 && \
     apt-get install -y vim python3-dev python3-pip sudo && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
+## softwares for vim
 ADD pip.conf /root/.pip/
+RUN pip3 --no-cache-dir install pylint flake8 pep8 jedi neovim mysql-connector-python python-language-server && \
+    pip3 install --upgrade pip && \
+    rm -rf /root/.cache/pip/* /tmp/*
+
 # PATH
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
@@ -36,39 +42,23 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ && \
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
     conda config --set show_channel_urls yes
-
 ## install R
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
     add-apt-repository 'deb [arch=amd64,i386] https://mirrors.ustc.edu.cn/CRAN/bin/linux/ubuntu xenial/'
-
 RUN apt-get update -y && \
     apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
     apt-get install -y r-base r-base-dev && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
 ## install rstudio
 RUN cd /tmp && \ 
     curl https://download2.rstudio.org/rstudio-server-1.1.442-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
 ## install shinny
 RUN cd /tmp && \ 
     curl https://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.5.6.875-amd64.deb -o shiny.deb && \
     gdebi -n shiny.deb && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
-## pandoc
-RUN cd /tmp && \
-    wget https://github.com/jgm/pandoc/releases/download/2.2.1/pandoc-2.2.1-1-amd64.deb  && \
-    dpkg -i pandoc-2.2.1-1-amd64.deb && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
-## textlive
-RUN apt-get update -y && \
-    apt-get install texlive-full -y && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
 ## R kernel for anaconda3, and shiny
 RUN Rscript -e "options(encoding = 'UTF-8');\
     options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
@@ -91,12 +81,15 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages(c('shinyBS','GGally','shinyAce','knitr')); \
     install.packages(c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
-
-## softwares for lint check
-RUN pip3 --no-cache-dir install pylint flake8 pep8 jedi neovim mysql-connector-python python-language-server && \
-    pip3 install --upgrade pip && \
-    rm -rf /root/.cache/pip/* /tmp/*
-
+## pandoc
+RUN cd /tmp && \
+    wget https://github.com/jgm/pandoc/releases/download/2.2.1/pandoc-2.2.1-1-amd64.deb  && \
+    dpkg -i pandoc-2.2.1-1-amd64.deb && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+## textlive
+RUN apt-get update -y && \
+    apt-get install texlive-full -y && \
+    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # configuration
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
