@@ -2,36 +2,27 @@ FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
 ADD sources.list /etc/apt/sources.list
 # installation
-## update system
 RUN apt-get update  -y && apt-get upgrade -y &&  \
-    apt-get install -y software-properties-common && \
-    add-apt-repository ppa:jonathonf/vim && \
-    apt-get update  -y && \
-    apt-get install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag && \ 
-    apt-get install -y apt-utils gdebi-core && \
-    apt-get install -y libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https && \
-    apt-get install -y build-essential gfortran libcairo2-dev libxt-dev && \
-    apt-get install -y libapparmor1 libedit2 libc6 psmisc rrdtool && \
-    apt-get install -y libzmq3-dev libtool && \
-    apt-get install -y cmake ctags zsh sudo && \
-    apt-get install -y net-tools iputils-ping && \
-    apt-get install -y locales && \
-    locale-gen en_US.UTF-8 && \
-    apt-get install -y vim python3-dev python3-pip sudo && \
+    apt-get install -y apt-utils gdebi-core net-tools iputils-ping && \
+    apt-get install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag cmake zsh sudo ctags \
+    libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https  libncurses5-dev \
+    build-essential gfortran libcairo2-dev libxt-dev automake autoconf \
+    libapparmor1 libedit2 libc6 psmisc rrdtool libzmq3-dev libtool software-properties-common \
+    locales && locale-gen en_US.UTF-8 && \
+    cd /tmp && \
+    wget https://github.com/vim/vim/archive/v8.1.0329.tar.gz  && \
+    tar xvzf v8.1.0329.tar.gz && \
+    cd vim-8.1.0329 && \
+    ./configure --enable-multibyte --enable-cscope --with-features=huge --enable-largefile --disable-netbeans  --enable-fail-if-missing && \
+    make -j8 && make install && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
-## softwares for vim
-ADD pip.conf /root/.pip/
-RUN pip3 --no-cache-dir install pylint flake8 pep8 jedi neovim mysql-connector-python python-language-server && \
-    pip3 install --upgrade pip && \
-    rm -rf /root/.cache/pip/* /tmp/*
-
-# PATH
+# PATH, if not set here, conda clean not works in the next RUN
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
 RUN cd /tmp && \
     version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
-    curl --limit-rate 4M https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
+    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
     conda clean  -a -y
 ## 使用清华的源
@@ -42,9 +33,15 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ && \
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
     conda config --set show_channel_urls yes
+##  change pip.conf
+ADD pip.conf /root/.pip/
+## install into /opt/anaconda3
+RUN pip --no-cache-dir install neovim mysql-connector-python python-language-server && \
+    rm -rf /root/.cache/pip/* /tmp/*
 ## install R
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
-    add-apt-repository 'deb [arch=amd64,i386] https://mirrors.ustc.edu.cn/CRAN/bin/linux/ubuntu xenial/'
+    add-apt-repository 'deb [arch=amd64,i386] https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/linux/ubuntu xenial/'
+
 RUN apt-get update -y && \
     apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
     apt-get install -y r-base r-base-dev && \
@@ -81,6 +78,7 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages(c('shinyBS','GGally','shinyAce','knitr')); \
     install.packages(c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
+
 ## pandoc
 RUN cd /tmp && \
     wget https://github.com/jgm/pandoc/releases/download/2.2.1/pandoc-2.2.1-1-amd64.deb  && \
