@@ -61,22 +61,13 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
     source('https://bioconductor.org/biocLite.R');\
     options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc/');\
-    install.packages(c('rstudioapi', 'miniUI'), type = 'source');\
-    install.packages('devtools');\
-    install.packages('RCurl');\
-    install.packages('crayon');\
-    install.packages('repr');\
+    install.packages(c('devtools', 'RCurl', 'crayon', 'repr'));\
+    install.packages(c('shiny', 'shinyjs', 'shinyBS', 'shinydashboard', 'rmarkdown', 'rsconnect','RSQLite','RMySQL', 'DT', 'reshape2')) ;\
+    install.packages(c('shinyBS','GGally','shinyAce','knitr', 'IRdisplay', 'pbdZMQ')); \
     library(devtools);\
-    install_github('rstudio/addinexamples');\
     install_github('armstrtw/rzmq');\
     install_github('takluyver/IRkernel');\
-    install.packages('IRdisplay');\
-    install.packages('pbdZMQ');\
     IRkernel::installspec();\
-    install.packages(c('shiny', 'rmarkdown', 'rsconnect','RSQLite','RMySQL')) ;\
-    install.packages(c('shinydashboard','DT','reshape2')); \
-    install.packages(c('shinyBS','GGally','shinyAce','knitr')); \
-    install.packages(c('rmarkdown','shinyjs' )); \
     system('rm -rf /tmp/*') "
 
 ## pandoc
