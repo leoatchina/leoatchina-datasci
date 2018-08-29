@@ -9,12 +9,6 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     build-essential gfortran libcairo2-dev libxt-dev automake autoconf \
     libapparmor1 libedit2 libc6 psmisc rrdtool libzmq3-dev libtool software-properties-common \
     locales && locale-gen en_US.UTF-8 && \
-    cd /tmp && \
-    wget https://github.com/vim/vim/archive/v8.1.0329.tar.gz  && \
-    tar xvzf v8.1.0329.tar.gz && \
-    cd vim-8.1.0329 && \
-    ./configure --enable-multibyte --enable-cscope --with-features=huge --enable-largefile --disable-netbeans  --enable-fail-if-missing && \
-    make -j8 && make install && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 # PATH, if not set here, conda clean not works in the next RUN
@@ -79,6 +73,20 @@ RUN cd /tmp && \
 RUN apt-get update -y && \
     apt-get install texlive-full -y && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
+## vim8
+RUN cd /tmp && \
+    wget https://github.com/vim/vim/archive/v8.1.0329.tar.gz  && \
+    tar xvzf v8.1.0329.tar.gz && \
+    cd vim-8.1.0329 && \
+    ./configure --enable-multibyte \
+                --enable-cscope \
+                --with-features=huge \
+                --enable-largefile \
+                --disable-netbeans  \
+                --enable-fail-if-missing && \
+    make -j8 && make install && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # configuration
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
