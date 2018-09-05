@@ -72,11 +72,6 @@ ADD pip.conf /root/.pip/
 RUN pip install neovim mysql-connector-python python-language-server && \
     rm -rf /root/.cache/pip/* /tmp/*
 
-## install bioconda tools
-RUN conda install -y -c bioconda sra-tools trimmomatic cutadapt fastqc multiqc trim-galore star hisat2 bowtie2 \
-    subread htseq bedtools deeptools salmon bwa samtools bcftools vcftools -y && \
-    conda clean  -a -y
-
 ## vim8 without "+lua", "+python", "+python3"
 RUN cd /tmp && \
     wget https://github.com/vim/vim/archive/v8.1.0329.tar.gz  && \
