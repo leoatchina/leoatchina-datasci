@@ -78,21 +78,18 @@ RUN conda install -y -c bioconda sra-tools trimmomatic cutadapt fastqc multiqc t
     subread htseq bedtools deeptools salmon bwa samtools bcftools vcftools -y && \
     conda clean  -a -y
 
-## vim8
-#RUN cd /tmp && \
-    #wget https://github.com/vim/vim/archive/v8.1.0329.tar.gz  && \
-    #tar xvzf v8.1.0329.tar.gz && \
-    #cd vim-8.1.0329 && \
-    #./configure --enable-multibyte \
-                #--enable-cscope \
-                #--with-features=huge \
-                #--enable-largefile \
-                #--disable-netbeans  \
-                #--enable-fail-if-missing && \
-    #make -j8 && make install && \
-    #apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-RUN apt-get update -y && apt-get install software-properties-common -y && add-apt-repository ppa:jonathonf/vim && apt-get update -y && \
-    apt-get install -y vim && \ 
+## vim8 without "+lua", "+python", "+python3"
+RUN cd /tmp && \
+    wget https://github.com/vim/vim/archive/v8.1.0329.tar.gz  && \
+    tar xvzf v8.1.0329.tar.gz && \
+    cd vim-8.1.0329 && \
+    ./configure --enable-multibyte \
+                --enable-cscope \
+                --with-features=huge \
+                --enable-largefile \
+                --disable-netbeans  \
+                --enable-fail-if-missing && \
+    make -j8 && make install && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 # configuration
