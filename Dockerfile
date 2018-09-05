@@ -70,7 +70,6 @@ RUN cd /tmp && \
 ## install into /opt/anaconda3
 ADD pip.conf /root/.pip/
 RUN pip --no-cache-dir install neovim pep8 flake8 mysql-connector-python python-language-server && \
-    pip install --upgrade pip && \ 
     rm -rf /root/.cache/pip/* /tmp/*
 
 ## install bioconda tools
