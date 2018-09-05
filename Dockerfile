@@ -27,11 +27,6 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ && \
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
     conda config --set show_channel_urls yes
-##  change pip.conf
-ADD pip.conf /root/.pip/
-## install into /opt/anaconda3
-RUN pip --no-cache-dir install neovim mysql-connector-python python-language-server && \
-    rm -rf /root/.cache/pip/* /tmp/*
 ## install R
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
     add-apt-repository 'deb [arch=amd64,i386] https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/linux/ubuntu xenial/'
@@ -69,10 +64,18 @@ RUN cd /tmp && \
     wget https://github.com/jgm/pandoc/releases/download/2.2.1/pandoc-2.2.1-1-amd64.deb  && \
     dpkg -i pandoc-2.2.1-1-amd64.deb && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
 ## textlive
 RUN apt-get update -y && \
     apt-get install texlive-full -y && \
     apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
+##  change pip.conf
+ADD pip.conf /root/.pip/
+
+## install into /opt/anaconda3
+RUN pip --no-cache-dir install neovim pep8 flake8 mysql-connector-python python-language-server && \
+    rm -rf /root/.cache/pip/* /tmp/*
 
 ## vim8
 RUN cd /tmp && \
