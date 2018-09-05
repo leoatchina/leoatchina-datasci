@@ -59,37 +59,42 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     IRkernel::installspec();\
     system('rm -rf /tmp/*') "
 
-## pandoc
+## texlive for laxtex 
 RUN cd /tmp && \
-    wget https://github.com/jgm/pandoc/releases/download/2.2.1/pandoc-2.2.1-1-amd64.deb  && \
-    dpkg -i pandoc-2.2.1-1-amd64.deb && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
-## textlive
-RUN apt-get update -y && \
+    wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
+    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
+    apt-get update -y && \
     apt-get install texlive-full -y && \
-    apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
-##  change pip.conf
-ADD pip.conf /root/.pip/
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 ## install into /opt/anaconda3
+ADD pip.conf /root/.pip/
 RUN pip --no-cache-dir install neovim pep8 flake8 mysql-connector-python python-language-server && \
+    pip install --upgrade pip && \ 
     rm -rf /root/.cache/pip/* /tmp/*
 
+## install bioconda tools
+RUN conda install -y -c bioconda sra-tools trimmomatic cutadapt fastqc multiqc trim-galore star hisat2 bowtie2 \
+    subread htseq bedtools deeptools salmon bwa samtools bcftools vcftools -y && \
+    conda clean  -a -y
+
 ## vim8
-RUN cd /tmp && \
-    wget https://github.com/vim/vim/archive/v8.1.0329.tar.gz  && \
-    tar xvzf v8.1.0329.tar.gz && \
-    cd vim-8.1.0329 && \
-    ./configure --enable-multibyte \
-                --enable-cscope \
-                --with-features=huge \
-                --enable-largefile \
-                --disable-netbeans  \
-                --enable-fail-if-missing && \
-    make -j8 && make install && \
+#RUN cd /tmp && \
+    #wget https://github.com/vim/vim/archive/v8.1.0329.tar.gz  && \
+    #tar xvzf v8.1.0329.tar.gz && \
+    #cd vim-8.1.0329 && \
+    #./configure --enable-multibyte \
+                #--enable-cscope \
+                #--with-features=huge \
+                #--enable-largefile \
+                #--disable-netbeans  \
+                #--enable-fail-if-missing && \
+    #make -j8 && make install && \
+    #apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+RUN apt-get update -y && apt-get install software-properties-common -y && add-apt-repository ppa:jonathonf/vim && apt-get update -y && \
+    apt-get install -y vim && \ 
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
 # configuration
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
