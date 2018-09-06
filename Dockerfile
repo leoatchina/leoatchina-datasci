@@ -112,3 +112,9 @@ ENTRYPOINT ["/opt/config/entrypoint.sh"]
 ## share
 EXPOSE 8888 8787 7777 3838
 VOLUME ["/home/rserver","/jupyter","/mnt"]
+
+## install something for R packages
+RUN add-apt-repository ppa:ubuntugis/ppa -y && \
+    apt-get update  -y &&  \
+    apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
