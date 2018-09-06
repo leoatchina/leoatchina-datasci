@@ -87,6 +87,10 @@ RUN cd /tmp && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 # configuration
+## .oh-my-zsh
+RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
+ADD .zshrc /root/
+ADD .bashrc /root/
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
@@ -105,10 +109,6 @@ ADD passwd.py /opt/config/
 ENV PASSWD=jupyter
 ADD entrypoint.sh /opt/config/
 ENTRYPOINT ["/opt/config/entrypoint.sh"]
-## .oh-my-zsh
-RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
-ADD .zshrc /root/
-ADD .bashrc /root/
 ## share
 EXPOSE 8888 8787 7777 3838
-VOLUME ["/home/rserver","/jupyter","/mnt","/disks"]
+VOLUME ["/home/rserver","/jupyter","/mnt"]
