@@ -86,6 +86,10 @@ RUN cd /tmp && \
     make -j8 && make install && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
+## install something for R packages
+RUN apt-get update  -y &&  \
+    apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # configuration
 ## .oh-my-zsh
 RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
@@ -101,7 +105,6 @@ WORKDIR /jupyter
 RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server && chmod -R 777 /opt/config /opt/log
 ADD rserver.conf /etc/rstudio/
 ADD shiny-server.conf /etc/shiny-server/
-ADD jupyter_notebook_config.py /opt/config/
 ADD jupyter_lab_config.py /opt/config/
 ADD supervisord.conf /opt/config/
 ## set up passwd in entrypoin.sh
@@ -113,8 +116,3 @@ ENTRYPOINT ["/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 7777 3838
 VOLUME ["/home/rserver","/jupyter","/mnt"]
 
-## install something for R packages
-RUN add-apt-repository ppa:ubuntugis/ppa -y && \
-    apt-get update  -y &&  \
-    apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
