@@ -76,6 +76,7 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 export TERM=xterm-256color
+export PATH=$PATH:/jupyter/local/bin
 if [ -f /jupyter/.jupyterc ]; then
     source /jupyter/.jupyterc
 fi

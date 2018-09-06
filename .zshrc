@@ -94,7 +94,6 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 export TERM=xterm-256color
 export PATH=$PATH:/jupyter/local/bin
-
 if [ -f /jupyter/.jupyterc ]; then
     source /jupyter/.jupyterc
 fi
