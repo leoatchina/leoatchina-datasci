@@ -32,7 +32,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD5
     add-apt-repository 'deb [arch=amd64,i386] https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/linux/ubuntu xenial/'
 
 RUN apt-get update -y && \
-    apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
+    #apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
     apt-get install -y r-base r-base-dev && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## install rstudio
@@ -48,8 +48,6 @@ RUN cd /tmp && \
 ## R kernel for anaconda3, and shiny
 RUN Rscript -e "options(encoding = 'UTF-8');\
     options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
-    source('https://bioconductor.org/biocLite.R');\
-    options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc/');\
     install.packages(c('devtools', 'RCurl', 'crayon', 'repr'));\
     install.packages(c('shiny', 'shinyjs', 'shinyBS', 'shinydashboard', 'rmarkdown', 'rsconnect','RSQLite','RMySQL', 'DT', 'reshape2')) ;\
     install.packages(c('shinyBS','GGally','shinyAce','knitr', 'IRdisplay', 'pbdZMQ')); \
