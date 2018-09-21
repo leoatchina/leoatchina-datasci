@@ -79,11 +79,6 @@ RUN cd /tmp && \
     make -j8 && make install && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
-## install into /opt/anaconda3
-ADD pip.conf /root/.pip/
-RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
-    rm -rf /root/.cache/pip/* /tmp/*
-
 ## install something for R packages
 RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     add-apt-repository ppa:lazygit-team/release -y && \
@@ -91,6 +86,11 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev \
                        libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev lazygit && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
+## install into /opt/anaconda3
+ADD pip.conf /root/.pip/
+RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
+    rm -rf /root/.cache/pip/* /tmp/*
 
 # configuration
 ## .oh-my-zsh
