@@ -71,12 +71,12 @@ alias la='ls -A'
 alias l='ls -CF'
 
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
 
 export TERM=xterm-256color
 export PATH=$PATH:/jupyter/local/bin
 if [ -f /jupyter/.jupyterc ]; then
     source /jupyter/.jupyterc
+fi
+if [ -f ~/.aliases ]; then
+    source ~/.aliases
 fi

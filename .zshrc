@@ -97,3 +97,6 @@ export PATH=$PATH:/jupyter/local/bin
 if [ -f /jupyter/.jupyterc ]; then
     source /jupyter/.jupyterc
 fi
+if [ -f ~/.aliases ]; then
+    source ~/.aliases
+fi

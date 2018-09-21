@@ -97,6 +97,7 @@ RUN pip install neovim mysql-connector-python python-language-server urllib3 && 
 RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
 ADD .zshrc /root/
 ADD .bashrc /root/
+ADD .aliases /root/
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
