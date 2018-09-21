@@ -65,11 +65,6 @@ RUN cd /tmp && \
     apt-get install texlive-full -y && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
-## install into /opt/anaconda3
-ADD pip.conf /root/.pip/
-RUN pip install neovim mysql-connector-python python-language-server && \
-    rm -rf /root/.cache/pip/* /tmp/*
-
 ## vim8 without "+lua", "+python", "+python3"
 RUN cd /tmp && \
     wget https://github.com/vim/vim/archive/v8.1.0329.tar.gz  && \
@@ -84,10 +79,19 @@ RUN cd /tmp && \
     make -j8 && make install && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
+## install into /opt/anaconda3
+ADD pip.conf /root/.pip/
+RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
+    rm -rf /root/.cache/pip/* /tmp/*
+
 ## install something for R packages
-RUN add-apt-repository ppa:ubuntugis/ppa -y && apt-get update -y && \
-    apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev && \
+RUN add-apt-repository ppa:ubuntugis/ppa -y && \
+    add-apt-repository ppa:lazygit-team/release -y && \
+    apt-get update -y && \
+    apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev \
+                       libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev lazygit && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
 # configuration
 ## .oh-my-zsh
 RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
