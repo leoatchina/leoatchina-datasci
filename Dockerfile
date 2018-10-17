@@ -65,20 +65,10 @@ RUN cd /tmp && \
     apt-get install texlive-full -y && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
-## vim8 without "+lua", "+python", "+python3"
-RUN cd /tmp && \
-    wget https://github.com/vim/vim/archive/v8.1.0329.tar.gz  && \
-    tar xvzf v8.1.0329.tar.gz && \
-    cd vim-8.1.0329 && \
-    ./configure --enable-multibyte \
-                --enable-cscope \
-                --with-features=huge \
-                --enable-largefile \
-                --disable-netbeans  \
-                --enable-fail-if-missing && \
-    make -j8 && make install && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
+## install into /opt/anaconda3
+ADD pip.conf /root/.pip/
+RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
+    rm -rf /root/.cache/pip/* /tmp/*
 ## install something for R packages
 RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     add-apt-repository ppa:lazygit-team/release -y && \
@@ -86,18 +76,17 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev \
                        libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev lazygit && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
-## install into /opt/anaconda3
-ADD pip.conf /root/.pip/
-RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
-    rm -rf /root/.cache/pip/* /tmp/*
-
+## vim8
+RUN add-apt-repository ppa:jonathonf/vim && \
+    apt update -y && apt install vim -y && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # configuration
 ## .oh-my-zsh
 RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
 ADD .zshrc /root/
 ADD .bashrc /root/
 ADD .aliases /root/
+ADD .vimrc.local /root/
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
