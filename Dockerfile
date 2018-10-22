@@ -97,8 +97,7 @@ ADD supervisord.conf /opt/config/
 ADD passwd.py /opt/config/
 ENV PASSWD=jupyter
 ADD entrypoint.sh /opt/config/
-ENTRYPOINT ["/opt/config/entrypoint.sh"]
+ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share
 EXPOSE 8888 8787 7777 3838
 VOLUME ["/home/rserver","/jupyter","/mnt"]
-
