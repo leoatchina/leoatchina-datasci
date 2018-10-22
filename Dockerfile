@@ -48,22 +48,16 @@ RUN cd /tmp && \
 ## R kernel for anaconda3, and shiny
 RUN Rscript -e "options(encoding = 'UTF-8');\
     options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
-    install.packages(c('devtools', 'RCurl', 'crayon', 'repr'));\
-    install.packages(c('shiny', 'shinyjs', 'shinyBS', 'shinydashboard', 'rmarkdown', 'rsconnect','RSQLite','RMySQL', 'DT', 'reshape2')) ;\
-    install.packages(c('shinyBS','GGally','shinyAce','knitr', 'IRdisplay', 'pbdZMQ')); \
-    library(devtools);\
-    install_github('armstrtw/rzmq');\
+    install.packages(c('devtools', 'RCurl', 'crayon', 'repr', 'IRdisplay', 'crayon', 'pbdZMQ'));\
+    library(devtools); \
     install_github('takluyver/IRkernel');\
     IRkernel::installspec();\
     system('rm -rf /tmp/*') "
 
-## texlive for laxtex 
-RUN cd /tmp && \
-    wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
-    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
-    apt-get update -y && \
-    apt-get install texlive-full -y && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+RUN Rscript -e "options(encoding = 'UTF-8');\
+    install.packages(c('shiny', 'shinyjs', 'shinyBS', 'shinydashboard', 'shinyAce' )); \
+    install.packages(c('GGally', 'knitr',  'rmarkdown', 'rsconnect','RSQLite', 'RMySQL', 'DT', 'reshape2')) ;\
+    system('rm -rf /tmp/*') "
 
 ## install into /opt/anaconda3
 ADD pip.conf /root/.pip/
