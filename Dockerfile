@@ -10,6 +10,10 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     libapparmor1 libedit2 libc6 psmisc rrdtool libzmq3-dev libtool software-properties-common \
     locales && locale-gen en_US.UTF-8 && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+## vim8
+RUN add-apt-repository ppa:jonathonf/vim && \
+    apt update -y && apt install vim -y && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 # PATH, if not set here, conda clean not works in the next RUN
 ENV PATH=/opt/anaconda3/bin:$PATH
@@ -37,7 +41,7 @@ RUN apt-get update -y && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## install rstudio
 RUN cd /tmp && \ 
-    curl https://download2.rstudio.org/rstudio-server-1.1.442-amd64.deb -o rstudio.deb && \
+    curl https://download2.rstudio.org/rstudio-server-1.1.456-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## install shinny
@@ -52,9 +56,6 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     library(devtools); \
     install_github('takluyver/IRkernel');\
     IRkernel::installspec();\
-    system('rm -rf /tmp/*') "
-
-RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages(c('shiny', 'shinyjs', 'shinyBS', 'shinydashboard', 'shinyAce' )); \
     install.packages(c('GGally', 'knitr',  'rmarkdown', 'rsconnect','RSQLite', 'RMySQL', 'DT', 'reshape2')) ;\
     system('rm -rf /tmp/*') "
@@ -69,10 +70,6 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     apt-get update -y && \
     apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev \
                        libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev lazygit && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-## vim8
-RUN add-apt-repository ppa:jonathonf/vim && \
-    apt update -y && apt install vim -y && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # configuration
 ## .oh-my-zsh
