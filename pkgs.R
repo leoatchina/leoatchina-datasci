@@ -1,8 +1,7 @@
 # for some reasons, you should install this packages at first
 options(encoding = 'UTF-8')
 options("repos" = c(CRAN="http://mirrors.ustc.edu.cn/CRAN"))
-source('https://bioconductor.org/biocLite.R')
-options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc')
+
 require_packages = c(
   "AlgDesign",
   "ape",
@@ -131,9 +130,9 @@ require_packages = c(
 install_packages = setdiff(require_packages,unname(installed.packages()[,1]))
 if(length(install_packages)){install.packages(install_packages)}
 # install from github
-# install_github('armstrtw/rzmq')
-# install_github("timelyportfolio/vueR")
 library(devtools)
+source('https://bioconductor.org/biocLite.R')
+options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc')
 install_github('davidgohel/ggiraph')
 install_github("hadley/readxl")
 install_github("hadley/tidyverse")
@@ -144,9 +143,14 @@ install_github("rstudio/pool")
 install_github("mkuhn/dict")
 install_github('thomasp85/ggforce')
 
-biocLite("fgsea")
+biocLite("fgsea", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 install_github("GuangchuangYu/DOSE")
 install_github("GuangchuangYu/enrichplot")
 install_github("GuangchuangYu/clusterProfiler")
-
-biocLite(c('org.Mm.eg.db', 'GEOquery', 'limma', 'simpleaffy', 'AnnotationDbi', 'biomartr'))
+biocLite(c('org.Mm.eg.db', 
+          'GEOquery', 
+          'limma', 
+          'simpleaffy', 
+          'AnnotationDbi', 
+          'biomartr'), suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
+biocLite(c("DESeq2" , "edgeR"), suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
