@@ -36,7 +36,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD5
     add-apt-repository 'deb [arch=amd64,i386] https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/linux/ubuntu xenial/'
 
 RUN apt-get update -y && \
-    #apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
+    apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
     apt-get install -y r-base r-base-dev && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## install rstudio
@@ -52,14 +52,18 @@ RUN cd /tmp && \
 ## R kernel for anaconda3, and shiny
 RUN Rscript -e "options(encoding = 'UTF-8');\
     options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
-    install.packages(c('devtools', 'RCurl', 'crayon', 'repr', 'IRdisplay', 'crayon', 'pbdZMQ'));\
+    install.packages(c('devtools', 'RCurl', 'crayon', 'repr', 'IRdisplay', 'pbdZMQ'));\
     library(devtools); \
     install_github('takluyver/IRkernel');\
     IRkernel::installspec();\
-    install.packages(c('shiny', 'shinyjs', 'shinyBS', 'shinydashboard', 'shinyAce' )); \
-    install.packages(c('GGally', 'knitr',  'rmarkdown', 'rsconnect','RSQLite', 'RMySQL', 'DT', 'reshape2')) ;\
     system('rm -rf /tmp/*') "
-
+# java8
+RUN apt-get update -y && apt-get upgrade -y && add-apt-repository ppa:webupd8team/java -y && \
+    apt-get update -y && apt-get update -y && \
+    echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
+    apt-get install -y oracle-java8-installer && \
+    R CMD javareconf && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## install into /opt/anaconda3
 ADD pip.conf /root/.pip/
 RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
@@ -70,13 +74,6 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     apt-get update -y && \
     apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev \
                        libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev lazygit && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-# java8
-RUN apt-get update -y && apt-get upgrade -y && add-apt-repository ppa:webupd8team/java -y && \
-    apt-get update -y && apt-get update -y && \
-    echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
-    apt-get install -y oracle-java8-installer && \
-    R CMD javareconf && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # configuration
 ## .oh-my-zsh
