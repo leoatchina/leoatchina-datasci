@@ -1,8 +1,8 @@
 # for some reasons, you should install this packages at first
 options(encoding = 'UTF-8')
+options("repos" = c(CRAN="http://mirrors.ustc.edu.cn/CRAN"))
 source('https://bioconductor.org/biocLite.R')
 options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc')
-options("repos" = c(CRAN="http://mirrors.ustc.edu.cn/CRAN"))
 require_packages = c(
   "AlgDesign",
   "ape",
@@ -144,6 +144,7 @@ install_github("rstudio/pool")
 install_github("mkuhn/dict")
 install_github('thomasp85/ggforce')
 
+biocLite("fgsea")
 install_github("GuangchuangYu/DOSE")
 install_github("GuangchuangYu/enrichplot")
 install_github("GuangchuangYu/clusterProfiler")
