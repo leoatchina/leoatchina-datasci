@@ -69,7 +69,7 @@ RUN apt-get update -y && apt-get upgrade -y && add-apt-repository ppa:webupd8tea
 ## install into /opt/anaconda3
 ADD pip.conf /root/.pip/
 RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
-    rm -rf /root/.cache/pip/* /tmp/*
+    rm -rf /root/.cache/pip/* /tmp/* && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # configuration
 ## .oh-my-zsh
