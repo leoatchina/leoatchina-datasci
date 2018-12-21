@@ -32,22 +32,19 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
     conda config --set show_channel_urls yes
 ## install R
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
-    add-apt-repository 'deb [arch=amd64,i386] https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/linux/ubuntu xenial/'
-
-RUN apt-get update -y && \
-    apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
-    apt-get install -y r-base r-base-dev && \
+RUN add-apt-repository ppa:marutter/rrutter3.5  && \
+    add-apt-repository ppa:ubuntugis/ppa -y && \
+    add-apt-repository ppa:lazygit-team/release -y && \
+    apt-get update -y && \
+    #apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
+    apt-get install -y r-api-3.5 && \
+    apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev \
+                       libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev lazygit && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## install rstudio
 RUN cd /tmp && \ 
-    curl https://download2.rstudio.org/rstudio-server-1.1.456-amd64.deb -o rstudio.deb && \
+    curl https://download2.rstudio.org/rstudio-server-1.1.463-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-## install shinny
-RUN cd /tmp && \ 
-    curl https://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.5.6.875-amd64.deb -o shiny.deb && \
-    gdebi -n shiny.deb && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## R kernel for anaconda3, and shiny
 RUN Rscript -e "options(encoding = 'UTF-8');\
@@ -64,16 +61,15 @@ RUN apt-get update -y && apt-get upgrade -y && add-apt-repository ppa:webupd8tea
     apt-get install -y oracle-java8-installer && \
     R CMD javareconf && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+## install shinny
+#RUN cd /tmp && \ 
+    #curl https://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.5.6.875-amd64.deb -o shiny.deb && \
+    #gdebi -n shiny.deb && \
+    #apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## install into /opt/anaconda3
 ADD pip.conf /root/.pip/
 RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
     rm -rf /root/.cache/pip/* /tmp/*
-## install something for R packages
-RUN add-apt-repository ppa:ubuntugis/ppa -y && \
-    add-apt-repository ppa:lazygit-team/release -y && \
-    apt-get update -y && \
-    apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev \
-                       libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev lazygit && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # configuration
 ## .oh-my-zsh
