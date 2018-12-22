@@ -1,7 +1,6 @@
 # for some reasons, you should install this packages at first
 options(encoding = 'UTF-8')
 options("repos" = c(CRAN="http://mirrors.ustc.edu.cn/CRAN"))
-
 require_packages = c(
   "AlgDesign",
   "ape",
