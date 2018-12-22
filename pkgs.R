@@ -13,6 +13,7 @@ require_packages = c(
   "crayon",
   "data.table",
   "DBI",
+  "devtools",
   "downloader",
   "dplyr",
   "DT",
