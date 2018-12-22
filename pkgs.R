@@ -155,13 +155,11 @@ biocLite(c('org.Mm.eg.db',
           'biomartr'), suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 biocLite(c("DESeq2" , "edgeR"), suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 
-
-
 # TCGA
 # Install the main RTCGA package
-biocLite("RTCGA")
+biocLite("RTCGA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 # Install the clinical and mRNA gene expression data packages
-biocLite("RTCGA.clinical") ## 14Mb
-biocLite('RTCGA.rnaseq') ##  (612.6 MB)
-biocLite("RTCGA.mRNA") ##  (85.0 MB)
-biocLite('RTCGA.mutations')  ## (103.8 MB)
+biocLite("RTCGA.clinical", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ## 14Mb
+biocLite('RTCGA.rnaseq', suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (612.6 MB)
+biocLite("RTCGA.mRNA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (85.0 MB)
+biocLite('RTCGA.mutations', suppressUpdates=TRUE, suppressAutoUpdate=TRUE)  ## (103.8 MB)
