@@ -131,8 +131,6 @@ install_packages = setdiff(require_packages,unname(installed.packages()[,1]))
 if(length(install_packages)){install.packages(install_packages)}
 # install from github
 library(devtools)
-source('https://bioconductor.org/biocLite.R')
-options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc')
 install_github('davidgohel/ggiraph')
 install_github("hadley/readxl")
 install_github("hadley/tidyverse")
@@ -142,24 +140,30 @@ install_github("rstudio/rticles")
 install_github("rstudio/pool")
 install_github("mkuhn/dict")
 install_github('thomasp85/ggforce')
-
-biocLite("fgsea", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 install_github("GuangchuangYu/DOSE")
 install_github("GuangchuangYu/enrichplot")
 install_github("GuangchuangYu/clusterProfiler")
-biocLite(c('org.Mm.eg.db', 
-          'GEOquery', 
-          'limma', 
-          'simpleaffy', 
-          'AnnotationDbi', 
-          'biomartr'), suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
-biocLite(c("DESeq2" , "edgeR"), suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
+                       
+# bioconductor
+# source('https://bioconductor.org/biocLite.R')
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc')
+## modern install 
+BiocManager::install("GDCRNATools", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
+BiocManager::install(c("DESeq2" , "edgeR"), suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##)
+BiocManager::install(c('fgsea','org.Mm.eg.db', 'org.Hs.eg.db','GEOquery', 'limma', 'simpleaffy', 'AnnotationDbi', 'biomartr'),suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 
-# TCGA
+BiocManager::install("RTCGA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
+BiocManager::install("RTCGA.clinical", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ## 14Mb
+BiocManager::install('RTCGA.rnaseq', suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (612.6 MB)
+BiocManager::install("RTCGA.mRNA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (85.0 MB)
+BiocManager::install('RTCGA.mutations', suppressUpdates=TRUE, suppressAutoUpdate=TRUE)  ## (103.8 MB)
+# legacy install
 # Install the main RTCGA package
-biocLite("RTCGA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
+#BiocManager::biocLite("RTCGA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 # Install the clinical and mRNA gene expression data packages
-biocLite("RTCGA.clinical", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ## 14Mb
-biocLite('RTCGA.rnaseq', suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (612.6 MB)
-biocLite("RTCGA.mRNA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (85.0 MB)
-biocLite('RTCGA.mutations', suppressUpdates=TRUE, suppressAutoUpdate=TRUE)  ## (103.8 MB)
+#BiocManager::biocLite("RTCGA.clinical", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ## 14Mb
+#BiocManager::biocLite('RTCGA.rnaseq', suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (612.6 MB)
+#BiocManager::biocLite("RTCGA.mRNA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (85.0 MB)
+#BiocManager::biocLite('RTCGA.mutations', suppressUpdates=TRUE, suppressAutoUpdate=TRUE)  ## (103.8 MB)
