@@ -1,6 +1,6 @@
 # for some reasons, you should install this packages at first
 options(encoding = 'UTF-8')
-options("repos" = c(CRAN="http://mirrors.ustc.edu.cn/CRAN"))
+options("repos" = c(CRAN="https://mirrors.ustc.edu.cn/CRAN"))
 require_packages = c(
   "AlgDesign",
   "ape",
@@ -148,7 +148,7 @@ install_github("GuangchuangYu/clusterProfiler")
 # source('https://bioconductor.org/biocLite.R')
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
-options(BioC_mirror='http://mirrors.ustc.edu.cn/bioc')
+options(BioC_mirror='https://mirrors.ustc.edu.cn/bioc')
 ## modern install 
 BiocManager::install("GDCRNATools", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 BiocManager::install(c("DESeq2" , "edgeR"), suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##)
