@@ -6,6 +6,7 @@ require_packages = c(
   "ape",
   "arules",
   "BayesTree",
+  "Ball", # for debug
   "bmp",
   "Cairo",
   "car",
