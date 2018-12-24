@@ -32,6 +32,7 @@ require_packages = c(
   "gcookbook",
   "getopt",
   "GGally",
+  "ggiraph",
   "ggmap",
   "ggplot2",
   "glmnet",
@@ -72,6 +73,7 @@ require_packages = c(
   "plotrix",
   "plyr",
   "png",
+  "pool",
   "pracma",
   "pROC",
   "psych",
@@ -82,6 +84,7 @@ require_packages = c(
   "R6",
   "Rcpp",
   "repr",
+  "readxl",
   "reshape2",
   "RgoogleMaps",
   "rhandsontable",
@@ -98,6 +101,7 @@ require_packages = c(
   "Rserve",
   "RSQLite",
   "rstudioapi",
+  "rticles",
   "RUnit",
   "rvest",
   "rworldmap",
@@ -106,6 +110,7 @@ require_packages = c(
   "shiny",
   "shinyAce",
   "shinyBS",
+  "shinycssloaders",
   "shinydashboard",
   "shinyjs",
   "shinythemes",
@@ -116,6 +121,7 @@ require_packages = c(
   "sqldf",
   "stringi",
   "stringr",
+  "tidyverse",
   "treemapify",
   "vars",
   "vcd",
@@ -132,18 +138,12 @@ install_packages = setdiff(require_packages,unname(installed.packages()[,1]))
 if(length(install_packages)){install.packages(install_packages)}
 # install from github
 library(devtools)
-install_github('davidgohel/ggiraph')
-install_github("hadley/readxl")
-install_github("hadley/tidyverse")
-install_github('rstudio/addinexamples')
-install_github('andrewsali/shinycssloaders')
-install_github("rstudio/rticles")
-install_github("rstudio/pool")
-install_github("mkuhn/dict")
-install_github('thomasp85/ggforce')
-install_github("GuangchuangYu/DOSE")
-install_github("GuangchuangYu/enrichplot")
-install_github("GuangchuangYu/clusterProfiler")
+devtools::install_github('rstudio/addinexamples')
+devtools::install_github("mkuhn/dict")
+devtools::install_github('thomasp85/ggforce')
+devtools::install_github("GuangchuangYu/DOSE")
+devtools::install_github("GuangchuangYu/enrichplot")
+devtools::install_github("GuangchuangYu/clusterProfiler")
                        
 # bioconductor
 # source('https://bioconductor.org/biocLite.R')
