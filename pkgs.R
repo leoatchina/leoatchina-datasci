@@ -138,9 +138,9 @@ install_packages = setdiff(require_packages,unname(installed.packages()[,1]))
 if(length(install_packages)){install.packages(install_packages)}
 # install from github
 library(devtools)
-devtools::install_github('rstudio/addinexamples')
+devtools::install_github("rstudio/addinexamples")
 devtools::install_github("mkuhn/dict")
-devtools::install_github('thomasp85/ggforce')
+devtools::install_github("thomasp85/ggforce")
 devtools::install_github("GuangchuangYu/DOSE")
 devtools::install_github("GuangchuangYu/enrichplot")
 devtools::install_github("GuangchuangYu/clusterProfiler")
@@ -149,11 +149,11 @@ devtools::install_github("GuangchuangYu/clusterProfiler")
 # source('https://bioconductor.org/biocLite.R')
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
-options(BioC_mirror='https://mirrors.ustc.edu.cn/bioc')
+options(BioC_mirror="https://mirrors.ustc.edu.cn/bioc")
 ## modern install 
 BiocManager::install("GDCRNATools", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 BiocManager::install(c("DESeq2" , "edgeR"), suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##)
-BiocManager::install(c('fgsea','org.Mm.eg.db', 'org.Hs.eg.db','GEOquery', 'limma', 'simpleaffy', 'AnnotationDbi', 'biomartr'),suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
+BiocManager::install(c("fgsea","org.Mm.eg.db", "org.Hs.eg.db","GEOquery", "limma", "simpleaffy", "AnnotationDbi", "biomartr"),suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 
 BiocManager::install("RTCGA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 BiocManager::install("RTCGA.clinical", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ## 14Mb
