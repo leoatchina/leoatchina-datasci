@@ -4,7 +4,7 @@ ADD sources.list /etc/apt/sources.list
 # installation
 RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y apt-utils gdebi-core net-tools iputils-ping && \
-    apt-get install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag cmake zsh sudo ctags \
+    apt-get install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag cmake sudo ctags \
     libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https  libncurses5-dev \
     build-essential gfortran libcairo2-dev libxt-dev automake autoconf \
     libapparmor1 libedit2 libc6 psmisc rrdtool libzmq3-dev libtool software-properties-common \
@@ -73,7 +73,6 @@ RUN pip install neovim mysql-connector-python python-language-server urllib3 && 
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # configuration
 ## .oh-my-zsh
-RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
 ADD .zshrc /root/
 ADD .bashrc /root/
 ADD .aliases /root/
