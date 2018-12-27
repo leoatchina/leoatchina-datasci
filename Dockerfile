@@ -73,6 +73,7 @@ RUN pip install neovim mysql-connector-python python-language-server urllib3 && 
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # configuration
 ## .oh-my-zsh
+ADD .inputrc /root/
 ADD .zshrc /root/
 ADD .bashrc /root/
 ADD .aliases /root/
