@@ -19,17 +19,16 @@ docker build -t jupyter .
 #### 我在这个dockerfile里主要做的工作
 - 基于ubuntu16.04
 - 安装了一堆编译、编辑、下载、搜索等用到的工具和库
-- 安装了最新版`anaconda`,`Rstudo`,`Shinny`
+- 安装了最新版`anaconda`,`Rstudo`
 - 安装了部分`bioconductor`工具
 - 用`supervisor`启动后台web服务
-- 集成`zsh`以及`oh-my-zsh`,`vim8`,`neovim`
+- 集成`zsh`以及`oh-my-zsh`,`vim8`
 
 #### 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
   - 7777: for jupyter notebook
   - 8787: for rstudio server
-  - 3838: for shiny
 - 访问密码：
   - 见dockerfile里的`ENV PASSWD=jupyter`
   - 运行时可以修改成你自己喜欢的密码
@@ -54,7 +53,6 @@ services:
       - 28787:8787
       - 27777:7777
       - 28888:8888
-      - 23838:3838
     volumes:   # 位置映射，右docker内部，左实际
       - /data/bioinfo:/mnt/bioinfo   # 个人习惯，里面会放一些参考基因组等
       - /home/github:/mnt/github     # 个人习惯2，比如我的vim配置会放里面
@@ -63,7 +61,6 @@ services:
       - /data/work:/work
       - /home/root/.ssh:/root/.ssh   # 这个是为了一次通过ssh-keygen生成密钥后，能多次使用
       - /home/root/.vim:/root/.vim   # 为了不同的container能重复利用一套已经下载的vim插件
-      - /root/.vimrc.local:/root/.vimrc.local
       - /home/jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录
       - /home/rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
 ```
@@ -86,30 +83,26 @@ docker run --name jupyter  \
 -p 27777:7777 \
 -p 28787:8787 \
 -p 28888:8888 \
--p 23838:3838 \
 -e PASSWD=password \
 -d jupyter    #使用jupyter镜像， -d代表在后台工作
 ```
 
 ##### 运行后的调整
-- 如上，通过`IP:[27777|28888|28787|23838]`进行访问
+- 如上，通过`IP:[27777|28888|28787]`进行访问
 - 打开  `运行机器的IP:28787`，修改下R的源，bioClite源
-- 可能要运行下 `R CMD javareconf`
-- shinny的运行目录是在 `/home/rsever/shinny-server`
 - 进入`rstudio-server`的用户名是`rserver`
+- 请打开`pkgs.R`和`conda.sh`，我收集了一些R包和conda生信软件的安装脚本
 
 #### 网页端的shell
-本docker中集成的`jupyter lab`，`rstudio`的功能不用太多介绍，我要介绍的是集成的zsh环境，通过`file->new->terminal`输入`zsh`,就会打开一个有高亮的 shell环境,当然bash也是支持的。
-![](http://oxa21co60.bkt.clouddn.com/8a01aa9e432b7aec038509dea20617ec.png)
-![](http://oxa21co60.bkt.clouddn.com/a5bcb9e27ae5bc575a42bdd6fc00d3d6.png)
+本docker中集成的`jupyter lab`，`rstudio`的功能不用太多介绍，我要介绍的是集成的bash环境，通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 
 有两个好处
 1. 只要你记得你的访问密码PASSWORD（仔细看我的启动脚本)，IP、端口，就可以通过网页端进行操作。
 2. 启动`perl`，`python`,`shell`的分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开该页面还是在继续运行你的脚本 。这个，请各位写个分析流程，自行体会下，也是我认为本次教程的最大亮点。
 
 #### `.jupyterc`和`.bioinforc`,我玩的小花招
-众所周知，bash/zsh在启动时，会加载用户目录下的`.bashrc|.zshrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置，在我的做出来的`jupyter`镜像中，为了达到`安装的生信软件`和`container分离`的目的，在删除container时不删除安装的软件的目的，我设置如下source次序
-- root目录下的`.bashrc`或者`.zshrc`（集成在镜像里) : `source /juoyter/.jupyterc`(自己建立)
+众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置，在我的做出来的`jupyter`镜像中，为了达到`安装的生信软件`和`container分离`的目的，在删除container时不删除安装的软件的目的，我设置如下source次序
+- root目录下的`.bashrc`（集成在镜像里) : `source /juoyter/.jupyterc`(自己建立)
 - 在 `/jupyter/.jupyterc中`（注意这个没集成) :  `source /jupyter/.bioinforc`
 
 贴出我的配置
