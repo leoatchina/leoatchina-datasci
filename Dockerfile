@@ -55,22 +55,13 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     IRkernel::installspec();\
     system('rm -rf /tmp/*') "
 # java8
-RUN apt-get update -y && apt-get upgrade -y && add-apt-repository ppa:webupd8team/java -y && \
-    apt-get update -y && apt-get update -y && \
-    echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
-    apt-get install -y oracle-java8-installer && \
-    R CMD javareconf && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-## install shinny
-#RUN cd /tmp && \ 
-    #curl https://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.5.6.875-amd64.deb -o shiny.deb && \
-    #gdebi -n shiny.deb && \
-    #apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+RUN conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda java-jdk && conda clean -a -y && R CMD javareconf
 ## install into /opt/anaconda3
 ADD pip.conf /root/.pip/
 RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
     rm -rf /root/.cache/pip/* /tmp/* && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
 # configuration
 ## .oh-my-zsh
 ADD .inputrc /root/
