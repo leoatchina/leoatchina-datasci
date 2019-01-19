@@ -65,7 +65,6 @@ RUN pip install neovim mysql-connector-python python-language-server urllib3 && 
 # configuration
 ## .oh-my-zsh
 ADD .inputrc /root/
-ADD .zshrc /root/
 ADD .bashrc /root/
 ADD .aliases /root/
 ADD .vimrc.local /root/
