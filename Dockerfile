@@ -6,7 +6,7 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
     apt-get install -y apt-utils gdebi-core net-tools iputils-ping && \
     apt-get install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag cmake sudo ctags \
     libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https  libncurses5-dev \
-    build-essential gfortran libcairo2-dev libxt-dev automake autoconf \
+    build-essential gfortran libcairo2-dev libxt-dev automake bash-completion \
     libapparmor1 libedit2 libc6 psmisc rrdtool libzmq3-dev libtool software-properties-common \
     locales && locale-gen en_US.UTF-8 && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*

@@ -75,3 +75,7 @@ function git_branch {
 export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\[\e[30;1m\]\$(git_branch)\[\e[0m\]\n\$ "
 [ -f ~/.configrc ] && source ~/.configrc
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+if [ -f /usr/local/etc/bash_completion ]; then 
+    . /usr/local/etc/bash_completion
+fi
