@@ -4,8 +4,8 @@ alias ll='ls -lh'
 alias lsa='ls -alh'
 alias llt='ls -lthr'
 alias llT='ls -lth'
-alias lls='ls -lStr'
-alias llS='ls -lSt'
+alias lls='ls -lSthr'
+alias llS='ls -lSth'
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
