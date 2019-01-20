@@ -66,7 +66,7 @@ RUN pip install neovim mysql-connector-python python-language-server urllib3 && 
 ## .oh-my-zsh
 ADD .inputrc /root/
 ADD .bashrc /root/
-ADD .aliases /root/
+ADD .configrc /root/
 ADD .vimrc.local /root/
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \

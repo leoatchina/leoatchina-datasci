@@ -48,43 +48,27 @@ if [ -n "$force_color_prompt" ]; then
         color_prompt=
     fi
 fi
-
 unset color_prompt force_color_prompt
-
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias dir='dir --color=auto'
-    alias vdir='vdir --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
 export TERM=xterm-256color
-export PATH=$PATH:/jupyter/local/bin
-[ -f /jupyter/.jupyter] && source /jupyter/.jupyterc 
-[ -f ~/.aliases ] && source ~/.aliases
 
-function git_branch {
-branch="`git branch 2>/dev/null | grep "^\*" | sed -e "s/^\*\ //"`"
-if [ "${branch}" != "" ];then
-  if [ "${branch}" = "(no branch)" ];then
-    branch="(`git rev-parse --short HEAD`...)"
-  fi
-  if [[ `git status --porcelain` ]] ; then
-    branch=$branch" x"
-  else
-    branch=$branch" o"
-  fi
-  echo " $branch"
+if [ -d /jupyter/local/bin ];then
+    export PATH=$PATH:/jupyter/local/bin
+    [ -f /jupyter/.jupyterc ] && source /jupyter/.jupyterc 
 fi
+[ -f ~/.configrc ] && source ~/.configrc
+function git_branch {
+    branch="`git branch 2>/dev/null | grep "^\*" | sed -e "s/^\*\ //"`"
+    if [ "${branch}" != "" ];then
+        if [ "${branch}" = "(no branch)" ];then
+            branch="(`git rev-parse --short HEAD`...)"
+        fi
+        if [[ `git status --porcelain` ]] ; then
+            branch=$branch" x"
+        else
+            branch=$branch" o"
+        fi
+        echo " $branch"
+    fi
 }
 
-export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\[\e[30;1m\]\$(git_branch)\[\e[0m\]\n\$"
+export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\[\e[30;1m\]\$(git_branch)\[\e[0m\]\n\$ "

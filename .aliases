@@ -1,5 +1,0 @@
-alias lg='lazygit'
-alias llt='ls -lthr'
-alias llT='ls -lth'
-alias lls='ls -lStr'
-alias llS='ls -lSt'
