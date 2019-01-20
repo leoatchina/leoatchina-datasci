@@ -1,5 +1,6 @@
 alias lg='lazygit'
 alias ls='ls --color=auto'
+alias ll='ls -lh'
 alias lsa='ls -alh'
 alias llt='ls -lthr'
 alias llT='ls -lth'
