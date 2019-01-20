@@ -58,7 +58,6 @@ if [ -d /jupyter/local/bin ];then
     export PATH=$PATH:/jupyter/local/bin
     [ -f /jupyter/.jupyterc ] && source /jupyter/.jupyterc 
 fi
-[ -f ~/.configrc ] && source ~/.configrc
 function git_branch {
     branch="`git branch 2>/dev/null | grep "^\*" | sed -e "s/^\*\ //"`"
     if [ "${branch}" != "" ];then
@@ -74,3 +73,5 @@ function git_branch {
     fi
 }
 export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\[\e[30;1m\]\$(git_branch)\[\e[0m\]\n\$ "
+[ -f ~/.configrc ] && source ~/.configrc
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
