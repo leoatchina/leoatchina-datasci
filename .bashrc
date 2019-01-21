@@ -54,7 +54,7 @@ fi
 unset color_prompt force_color_prompt
 export TERM=xterm-256color
 
-if [ -d /jupyter/local/bin ];then
+if [ -d /jupyter ];then
     export PATH=$PATH:/jupyter/local/bin
     [ -f /jupyter/.jupyterc ] && source /jupyter/.jupyterc 
 fi
