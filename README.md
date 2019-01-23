@@ -2,13 +2,14 @@
 #### 前言
 众所周知，`conda`和`docker`是进行快速软件安装、平台布置的两大神器，通过它们，在终端前敲几个命令、点点鼠标，软件就装好了。出了问题也不会影响到系统配置，能够很轻松的还原和重建。
 不过，虽说类似`rstudio`或者`jupyter notebook/lab`这样的分析平台能够很快地找到别人已经做好的镜像，但是总归有功能缺失，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让经验的人犯晕。
-本着**不折腾不舒服**的本人一惯风格，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`、`shiny server`，可用于生信分析平台的快速布置，也可供linux初学者练习用。
+本着**不折腾不舒服**的本人一惯风格，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`，可用于生信分析平台的快速布置，也可供linux初学者练习用。
 
 #### 我的dockerfile地址
 [https://github.com/leoatchina/dockerfile_jupyter](https://github.com/leoatchina/dockerfile_jupyter)
 觉得好给个**star**吧!
 
 #### build docker镜像,要先装好`docker-ce`和`git`
+如何安装docker请自行搜索
 ```
 git clone https://github.com/leoatchina/dockerfile_jupyter.git
 cd docker_jupyter
@@ -22,7 +23,6 @@ docker build -t jupyter .
 - 安装了最新版`anaconda`,`Rstudo`
 - 安装了部分`bioconductor`工具
 - 用`supervisor`启动后台web服务
-- 集成`zsh`以及`oh-my-zsh`,`vim8`
 
 #### 主要控制点
 - 开放端口：
@@ -35,7 +35,6 @@ docker build -t jupyter .
 - 主目录:
   - jupyter： `/jupyter`
   - rstudio： `/home/rserver`
-  - shinny ： `/home/rserver/shiny-server`
   - VOLUME ["/home/rserver","/jupyter","/mnt","/disks"]
 
 #### 运行
@@ -51,36 +50,33 @@ services:
       - PASSWD=password   # PASSWD ， 在Docker-file里的 `ENV PASSWD=jupyter`
     ports:     # 端口映射，右边是container里的端口，左边是实际端口，比如我就喜欢实际端口在内部端口前加2或1。
       - 28787:8787
-      - 27777:7777
       - 28888:8888
-    volumes:   # 位置映射，右docker内部，左实际
-      - /data/bioinfo:/mnt/bioinfo   # 个人习惯，里面会放一些参考基因组等
-      - /home/github:/mnt/github     # 个人习惯2，比如我的vim配置会放里面
+    volumes:   # 目录映射，右docker内部，左实际
+      - /mnt/bioinfo:/mnt/bioinfo   # 个人习惯，里面会放一些参考基因组等
+      - /mnt/github:/mnt/github     # 个人习惯2，比如我的vim配置会放里面
       - /tmp:/tmp
-      - /data/disks:/disks
-      - /data/work:/work
+      - /work:/work
       - /home/root/.ssh:/root/.ssh   # 这个是为了一次通过ssh-keygen生成密钥后，能多次使用
       - /home/root/.vim:/root/.vim   # 为了不同的container能重复利用一套已经下载的vim插件
-      - /home/jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录
-      - /home/rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
+      - ./jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录
+      - ./rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
 ```
 会运行一个名为`bioinfo_jupyter_1`的`container`，是由目录`bioinfo`+镜像`jupyter`+数字`1`组成
-
+记:最近发现最后的字会是一长串,原因不明.
 
 ##### 2. 使用docker run命令
 和docker-compose差不多的意义
 ```
 docker run --name jupyter  \
--v /data/bioinfo:/mnt/bioinfo \
--v /home/github:/mnt/github \
+-v /mnt/bioinfo:/mnt/bioinfo \
+-v /mnt/github:/mnt/github \
 -v /tmp:/tmp \
 -v /data/disks:/disks \
 -v /data/work:/work \
 -v /home/root/.ssh:/root/.ssh \
 -v /home/root/.vim:/root/.vim \
--v /home/jupyter:/jupyter \
--v /home/rserver:/home/rserver \
--p 27777:7777 \
+-v ./jupyter:/jupyter \
+-v ./rserver:/home/rserver \
 -p 28787:8787 \
 -p 28888:8888 \
 -e PASSWD=password \
@@ -88,25 +84,24 @@ docker run --name jupyter  \
 ```
 
 ##### 运行后的调整
-- 如上，通过`IP:[27777|28888|28787]`进行访问
+- 如上，通过`IP:[28888|28787]`进行访问
 - 打开  `运行机器的IP:28787`，修改下R的源，bioClite源
 - 进入`rstudio-server`的用户名是`rserver`
 - 请打开`pkgs.R`和`conda.sh`，我收集了一些R包和conda生信软件的安装脚本
 
 #### 网页端的shell
-本docker中集成的`jupyter lab`，`rstudio`的功能不用太多介绍，我要介绍的是集成的bash环境，通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
+本docker中集成的`jupyter lab`的功能不用太多介绍，我要介绍的是集成的bash环境，通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 
 有两个好处
 1. 只要你记得你的访问密码PASSWORD（仔细看我的启动脚本)，IP、端口，就可以通过网页端进行操作。
 2. 启动`perl`，`python`,`shell`的分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开该页面还是在继续运行你的脚本 。这个，请各位写个分析流程，自行体会下，也是我认为本次教程的最大亮点。
 
-#### `.jupyterc`和`.bioinforc`,我玩的小花招
+#### `.jupyterc`我玩的小花招
 众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置，在我的做出来的`jupyter`镜像中，为了达到`安装的生信软件`和`container分离`的目的，在删除container时不删除安装的软件的目的，我设置如下source次序
 - root目录下的`.bashrc`（集成在镜像里) : `source /juoyter/.jupyterc`(自己建立)
-- 在 `/jupyter/.jupyterc中`（注意这个没集成) :  `source /jupyter/.bioinforc`
+
 
 贴出我的配置
-
 **/jupyter/.jupyterc**
 ```
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -142,7 +137,7 @@ export PATH=/jupyter/biotools/RSEM-1.3.0:$PATH
 export PATH=/jupyter/biotools/express-1.5.1-linux_x86_64:$PATH
 ```
 
-可以看到，`/opt/anaconda3/bin`在$PATH变量中优先级最高，而安装在`/jupyter/envs/bioinfo/bin`，`/jupyter/envs/entrez-direct/bin`等目录下的可执行文件不需要输入全路径也运行，这是搞哪一出？
+可以看到，`/opt/anaconda3/bin`在$PATH变量中优先级最高，而安装在`/jupyter/envs/bioinfo/bin`，`/jupyter/envs/entrez-direct/bin`等目录下的可执行文件不需要输入全路径也运行
 
 #### conda install -p 快速安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境。
