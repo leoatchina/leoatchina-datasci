@@ -14,7 +14,6 @@ RUN apt-get update  -y && apt-get upgrade -y &&  \
 RUN add-apt-repository ppa:jonathonf/vim && \
     apt update -y && apt install vim -y && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
 # PATH, if not set here, conda clean not works in the next RUN
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
@@ -31,12 +30,18 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ && \
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
     conda config --set show_channel_urls yes
+# texlive
+RUN cd /tmp && \
+    wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
+    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
+    apt-get update -y && \
+    apt-get install texlive-full -y && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## install R
 RUN add-apt-repository ppa:marutter/rrutter3.5  && \
     add-apt-repository ppa:ubuntugis/ppa -y && \
     add-apt-repository ppa:lazygit-team/release -y && \
     apt-get update -y && \
-    #apt-cache -q search r-cran-* | awk '$1 !~ /^r-cran-r2jags$/ { p = p" "$1 } END{ print p }' | xargs \
     apt-get install -y r-api-3.5 && \
     apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev \
                        libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev lazygit && \
@@ -56,13 +61,6 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     system('rm -rf /tmp/*') "
 # java8
 RUN conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda java-jdk && conda clean -a -y && R CMD javareconf
-# texlive
-RUN cd /tmp && \
-    wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
-    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
-    apt-get update -y && \
-    apt-get install texlive-full -y && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # pip install something
 ADD pip.conf /root/.pip/
 RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
