@@ -5,17 +5,17 @@
 本着**不折腾不舒服**的本人一惯风格，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`，可用于生信分析平台的快速布置，也可供linux初学者练习用。
 
 #### 我的dockerfile地址
-[https://github.com/leoatchina/dockerfile_jupyter](https://github.com/leoatchina/dockerfile_jupyter)
+[https://github.com/leoatchina/jupyterlab_rstudio](https://github.com/leoatchina/jupyterlab_rstudio)
 觉得好给个**star**吧!
 
 #### build docker镜像,要先装好`docker-ce`和`git`
 如何安装docker请自行搜索
 ```
-git clone https://github.com/leoatchina/dockerfile_jupyter.git
-cd docker_jupyter
-docker build -t jupyter .
+git clone https://github.com/leoatchina/jupyterlab_rstudio
+cd jupyterlab_rstudio
+docker build -t jupyterlab_rstudio .
 ```
-*说明,这个镜像的名字是`jupyter`，你们可以改成其他自己喜欢的任何名字*
+*说明,这个镜像的名字是`jupyterlab_rstudio`，你们可以改成其他自己喜欢的任何名字*
 
 #### 我在这个dockerfile里主要做的工作
 - 基于ubuntu16.04
@@ -27,7 +27,6 @@ docker build -t jupyter .
 #### 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
-  - 7777: for jupyter notebook
   - 8787: for rstudio server
 - 访问密码：
   - 见dockerfile里的`ENV PASSWD=jupyter`
@@ -45,7 +44,7 @@ docker build -t jupyter .
 version: "3"  # xml版本
 services:
   jupyter:
-    image: jupyter  # 使用前面做出来的jupyter镜像
+    image: jupyterlab_rstudio  # 使用前面做出来的jupyter镜像
     environment:
       - PASSWD=password   # PASSWD ， 在Docker-file里的 `ENV PASSWD=jupyter`
     ports:     # 端口映射，右边是container里的端口，左边是实际端口，比如我就喜欢实际端口在内部端口前加2或1。
@@ -61,13 +60,11 @@ services:
       - ./jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录
       - ./rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
 ```
-会运行一个名为`bioinfo_jupyter_1`的`container`，是由目录`bioinfo`+镜像`jupyter`+数字`1`组成
-记:最近发现最后的字会是一长串,原因不明.
 
 ##### 2. 使用docker run命令
 和docker-compose差不多的意义
 ```
-docker run --name jupyter  \
+docker run --name jupyterlab_rstudio  \
 -v /mnt/bioinfo:/mnt/bioinfo \
 -v /mnt/github:/mnt/github \
 -v /tmp:/tmp \
@@ -80,7 +77,7 @@ docker run --name jupyter  \
 -p 28787:8787 \
 -p 28888:8888 \
 -e PASSWD=password \
--d jupyter    #使用jupyter镜像， -d代表在后台工作
+-d jupyterlab_rstudio    #使用此镜像， -d代表在后台工作
 ```
 
 ##### 运行后的调整
