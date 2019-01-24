@@ -56,7 +56,14 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     system('rm -rf /tmp/*') "
 # java8
 RUN conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda java-jdk && conda clean -a -y && R CMD javareconf
-## install into /opt/anaconda3
+# texlive
+RUN cd /tmp && \
+    wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
+    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
+    apt-get update -y && \
+    apt-get install texlive-full -y && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+# pip install something
 ADD pip.conf /root/.pip/
 RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
     rm -rf /root/.cache/pip/* /tmp/* && \
