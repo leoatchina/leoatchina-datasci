@@ -146,11 +146,12 @@ devtools::install_github("GuangchuangYu/enrichplot")
 devtools::install_github("GuangchuangYu/clusterProfiler")
                        
 # bioconductor
+## legacy install
 # source('https://bioconductor.org/biocLite.R')
+# modern install 
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
 options(BioC_mirror="https://mirrors.ustc.edu.cn/bioc")
-## modern install 
 BiocManager::install("GDCRNATools", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
 BiocManager::install(c("DESeq2" , "edgeR"), suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##)
 BiocManager::install(c("fgsea","org.Mm.eg.db", "org.Hs.eg.db","GEOquery", "limma", "simpleaffy", "AnnotationDbi", "biomartr"),suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
@@ -160,11 +161,3 @@ BiocManager::install("RTCGA.clinical", suppressUpdates=TRUE, suppressAutoUpdate=
 BiocManager::install('RTCGA.rnaseq', suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (612.6 MB)
 BiocManager::install("RTCGA.mRNA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (85.0 MB)
 BiocManager::install('RTCGA.mutations', suppressUpdates=TRUE, suppressAutoUpdate=TRUE)  ## (103.8 MB)
-# legacy install
-# Install the main RTCGA package
-#BiocManager::biocLite("RTCGA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
-# Install the clinical and mRNA gene expression data packages
-#BiocManager::biocLite("RTCGA.clinical", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ## 14Mb
-#BiocManager::biocLite('RTCGA.rnaseq', suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (612.6 MB)
-#BiocManager::biocLite("RTCGA.mRNA", suppressUpdates=TRUE, suppressAutoUpdate=TRUE) ##  (85.0 MB)
-#BiocManager::biocLite('RTCGA.mutations', suppressUpdates=TRUE, suppressAutoUpdate=TRUE)  ## (103.8 MB)
