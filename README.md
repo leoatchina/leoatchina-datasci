@@ -1,14 +1,15 @@
-## 用集成了anaconda的docker快速布置生信分析平台
-#### 前言
+# 用集成了anaconda的docker快速布置生信分析平台
+
+## 前言
 众所周知，`conda`和`docker`是进行快速软件安装、平台布置的两大神器，通过它们，在终端前敲几个命令、点点鼠标，软件就装好了。出了问题也不会影响到系统配置，能够很轻松的还原和重建。
 不过，虽说类似`rstudio`或者`jupyter notebook/lab`这样的分析平台能够很快地找到别人已经做好的镜像，但是总归有功能缺失，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让经验的人犯晕。
 本着**不折腾不舒服**的本人一惯风格，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`，可用于生信分析平台的快速布置，也可供linux初学者练习用。
 
-#### 我的dockerfile地址
+## 我的dockerfile地址
 [https://github.com/leoatchina/jupyterlab_rstudio](https://github.com/leoatchina/jupyterlab_rstudio)
 觉得好给个**star**吧!
 
-#### build docker镜像,要先装好`docker-ce`和`git`
+## build from dockerfile
 如何安装docker请自行搜索
 ```
 git clone https://github.com/leoatchina/jupyterlab_rstudio
@@ -16,15 +17,22 @@ cd jupyterlab_rstudio
 docker build -t jupyterlab_rstudio .
 ```
 *说明,这个镜像的名字是`jupyterlab_rstudio`，你们可以改成其他自己喜欢的任何名字*
+## 直接pull
+我已经把这个镜像传到官方,直接
+```
+docker pull leoatchina/jupyterlab_rstudio
+```
+即可以下载这个镜像
 
-#### 我在这个dockerfile里主要做的工作
+
+## dockerfile里主要做的工作
 - 基于ubuntu16.04
 - 安装了一堆编译、编辑、下载、搜索等用到的工具和库
 - 安装了最新版`anaconda`,`Rstudo`
 - 安装了部分`bioconductor`工具
 - 用`supervisor`启动后台web服务
 
-#### 主要控制点
+## 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
   - 8787: for rstudio server
@@ -36,8 +44,8 @@ docker build -t jupyterlab_rstudio .
   - rstudio： `/home/rserver`
   - VOLUME ["/home/rserver","/jupyter","/mnt","/disks"]
 
-#### 运行
-##### 1. 使用docker-compose
+## 运行
+### 1. 使用docker-compose
 - `docker-compose -f /home/docker/compose/bioinfo/docker-compose.yml up -d`
 - `docker-compose.yml`的详细内容如下
 ```
@@ -61,7 +69,7 @@ services:
       - ./rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
 ```
 
-##### 2. 使用docker run命令
+### 2. 使用docker run命令
 和docker-compose差不多的意义
 ```
 docker run --name jupyterlab_rstudio  \
@@ -80,25 +88,26 @@ docker run --name jupyterlab_rstudio  \
 -d jupyterlab_rstudio    #使用此镜像， -d代表在后台工作
 ```
 
-##### 运行后的调整
+### 运行后如何使用
 - 如上，通过`IP:[28888|28787]`进行访问
 - 打开  `运行机器的IP:28787`，修改下R的源，bioClite源
+- 密码是`password`,在启动时通过调整参数可以修改
 - 进入`rstudio-server`的用户名是`rserver`
 - 请打开`pkgs.R`和`conda.sh`，我收集了一些R包和conda生信软件的安装脚本
 
-#### 网页端的shell
+## 网页端的shell
 本docker中集成的`jupyter lab`的功能不用太多介绍，我要介绍的是集成的bash环境，通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 
 有两个好处
 1. 只要你记得你的访问密码PASSWORD（仔细看我的启动脚本)，IP、端口，就可以通过网页端进行操作。
 2. 启动`perl`，`python`,`shell`的分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开该页面还是在继续运行你的脚本 。这个，请各位写个分析流程，自行体会下，也是我认为本次教程的最大亮点。
 
-#### `.jupyterc`我玩的小花招
+### `.jupyterc`我玩的小花招
 众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置，在我的做出来的`jupyter`镜像中，为了达到`安装的生信软件`和`container分离`的目的，在删除container时不删除安装的软件的目的，我设置如下source次序
 - root目录下的`.bashrc`（集成在镜像里) : `source /juoyter/.jupyterc`(自己建立)
 
 
-贴出我的配置
+### 我的配置
 **/jupyter/.jupyterc**
 ```
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -108,8 +117,6 @@ export PATH=/jupyter/usr/bin:$PATH
 if [ -f /jupyter/.bioinforc ]; then
     source /jupyter/.bioinforc  # 重要
 fi
-# PATH for conda
-export PATH=/opt/anaconda3/bin:$PATH   # /opt/anaconda3/是安装的anaconda目录，放最重要的位置上去
 ```
 
 **/jupyter/.bioinforc**
@@ -136,7 +143,7 @@ export PATH=/jupyter/biotools/express-1.5.1-linux_x86_64:$PATH
 
 可以看到，`/opt/anaconda3/bin`在$PATH变量中优先级最高，而安装在`/jupyter/envs/bioinfo/bin`，`/jupyter/envs/entrez-direct/bin`等目录下的可执行文件不需要输入全路径也运行
 
-#### conda install -p 快速安装生信软件
+## conda install -p 安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境。
 但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。
 举例如下，安装`conda install -p /jupyter/envs/bioinfo trimmomatc`
@@ -144,8 +151,8 @@ export PATH=/jupyter/biotools/express-1.5.1-linux_x86_64:$PATH
 如此，就安装到对应的位置，如samtools,bcftools,varscan等一众生信软件都可以如此安装。
 ![](http://oxa21co60.bkt.clouddn.com/67697b228ccd03b2d790ffa431f42f56.png)
 
-关键的，在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
+在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
 
-有用的时刻？
+好处
 1. 启动分析流程后，发现代码写错了要强行结束时，只要删除`container`，不需要一个个去kill进程
 2. 在另一个机器上快速搭建分析环境，把`docker-file`在新机器上`bulid`下，各个`.xxxrc`文件放到正确的位置，然后把已经装上的软件复制过去就能搭建好分析环境。
