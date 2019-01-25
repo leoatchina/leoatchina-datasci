@@ -72,7 +72,6 @@ RUN pip install neovim mysql-connector-python python-language-server urllib3 && 
 ADD .inputrc /root/
 ADD .bashrc /root/
 ADD .configrc /root/
-ADD .vimrc.local /root/
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
