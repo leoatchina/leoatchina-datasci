@@ -93,7 +93,7 @@ docker run --name jupyterlab_rstudio  \
 - 打开  `运行机器的IP:28787`，修改下R的源，bioClite源
 - 密码是`password`,在启动时通过调整参数可以修改
 - 进入`rstudio-server`的用户名是`rserver`
-- 请打开`pkgs.R`和`conda.sh`，我收集了一些R包和conda生信软件的安装脚本
+- 请打开`pkgs.R`和`bioinfo.sh`，我收集了一些R包和conda生信软件的安装脚本
 
 ## 网页端的shell
 本docker中集成的`jupyter lab`的功能不用太多介绍，我要介绍的是集成的bash环境，通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
