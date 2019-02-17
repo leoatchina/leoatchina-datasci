@@ -100,13 +100,20 @@ docker run --name jupyterlab_rstudio  \
 
 ### `.jupyterc`我玩的小花招
 众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置，在我的做出来的`jupyter`镜像中，为了达到`安装的生信软件`和`container分离`的目的，在删除container时不删除安装的软件的目的，我设置root目录下的`.bashrc`会 `source /juoyter/.jupyterc`(自己建立).
+
 我的`.jupyterc`里就一句话`export PATH=$PATH:/jupyter/bioinfo/bin`,那么用`conda`安装到`/jupyter/bioinfo/`目录下的软件,就会把`可执行文件`放到`bin`子目录下.
 
-### conda install -p 安装生信软件()
+### conda install -p 安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境。
-但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。
-举例如下，安装`conda install -p /jupyter/envs/bioinfo trimmomatc`
-如此，就安装到对应的位置，如samtools,bcftools,varscan等一众生信软件都可以如此安装。
+
+但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`映射过来的目录`。
+
+举例如下，安装`conda install -p /jupyter/bioinfo trimmomatc`
+
+如此，就安装到对应的位置，
+
+如samtools,bcftools,varscan等一众生信软件都可以如此安装。
+
 在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
 
 好处
