@@ -40,7 +40,6 @@ docker pull leoatchina/jupyterlab_rstudio
 - 主目录:
   - jupyter： `/jupyter`
   - rstudio： `/home/rserver`
-  - VOLUME ["/home/rserver","/jupyter","/mnt","/disks"]
 
 ## 运行
 ### 1. 使用docker-compose
