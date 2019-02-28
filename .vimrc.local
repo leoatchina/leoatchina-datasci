@@ -1,3 +1,0 @@
-let g:plug_groups=['YCM', 'php', 'javascript', 'html', 'snippet', 'syntax', 'fzf']
-
-let g:python3_host_prog = "/opt/anaconda3/bin/python3"
