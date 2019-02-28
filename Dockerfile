@@ -2,16 +2,16 @@ FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
 ADD sources.list /etc/apt/sources.list
 # installation
-RUN apt-get update  -y && apt-get upgrade -y &&  \
+RUN apt-get update -y && apt-get upgrade -y &&  \
     apt-get install -y apt-utils gdebi-core net-tools iputils-ping && \
     apt-get install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag cmake sudo ctags \
     libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https  libncurses5-dev \
     build-essential gfortran libcairo2-dev libxt-dev automake bash-completion \
     libapparmor1 libedit2 libc6 psmisc rrdtool libzmq3-dev libtool software-properties-common \
     locales && locale-gen en_US.UTF-8 && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-## vim8
-RUN add-apt-repository ppa:jonathonf/vim && \
+    apt-get install bioperl libdbi-perl -y && \
+    add-apt-repository ppa:jonathonf/vim && \
+    cpan -i Try::Tiny && \
     apt update -y && apt install vim -y && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # PATH, if not set here, conda clean not works in the next RUN
@@ -22,6 +22,7 @@ RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
     conda clean  -a -y
+
 ## 使用清华的源
 RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
