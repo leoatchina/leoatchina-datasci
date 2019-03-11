@@ -12,7 +12,6 @@ RUN apt-get update -y && apt-get upgrade -y &&  \
     locales && locale-gen en_US.UTF-8 && \
     apt-get install bioperl libdbi-perl -y && \
     add-apt-repository ppa:jonathonf/vim && \
-    tree \
     cpan -i Try::Tiny && \
     apt update -y && apt install vim -y && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
