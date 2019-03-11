@@ -8,9 +8,11 @@ RUN apt-get update -y && apt-get upgrade -y &&  \
     libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https  libncurses5-dev \
     build-essential gfortran libcairo2-dev libxt-dev automake bash-completion \
     libapparmor1 libedit2 libc6 psmisc rrdtool libzmq3-dev libtool software-properties-common \
+    tree \ 
     locales && locale-gen en_US.UTF-8 && \
     apt-get install bioperl libdbi-perl -y && \
     add-apt-repository ppa:jonathonf/vim && \
+    tree \
     cpan -i Try::Tiny && \
     apt update -y && apt install vim -y && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
@@ -22,7 +24,6 @@ RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
     conda clean  -a -y
-
 ## 使用清华的源
 RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
@@ -31,21 +32,13 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ && \
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
     conda config --set show_channel_urls yes
-# texlive
-RUN cd /tmp && \
-    wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
-    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
-    apt-get update -y && \
-    apt-get install texlive-full -y && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## install R
 RUN add-apt-repository ppa:marutter/rrutter3.5  && \
     add-apt-repository ppa:ubuntugis/ppa -y && \
-    add-apt-repository ppa:lazygit-team/release -y && \
     apt-get update -y && \
     apt-get install -y r-api-3.5 && \
     apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev \
-                       libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev lazygit && \
+                       libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## install rstudio
 RUN cd /tmp && \ 
@@ -67,7 +60,6 @@ ADD pip.conf /root/.pip/
 RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
     rm -rf /root/.cache/pip/* /tmp/* && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
 # configuration
 ## .oh-my-zsh
 ADD .inputrc /root/
