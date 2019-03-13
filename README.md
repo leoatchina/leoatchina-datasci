@@ -5,7 +5,7 @@
 本着**不折腾不舒服**的本人一惯风格，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`、`shiny server`，可用于生信分析平台的快速布置，也可供linux初学者练习用。
 
 #### 我的dockerfile地址
-[https://github.com/leoatchina/dockerfile_jupyter](https://github.com/leoatchina/dockerfile_jupyter)
+[https://github.com/leoatchina/jupyterlab_rstudio](https://github.com/leoatchina/jupyterlab_rstudio)
 觉得好给个**star**吧!
 
 #### build docker镜像,要先装好`docker-ce`和`git`
