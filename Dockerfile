@@ -69,9 +69,8 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' 
 RUN useradd rserver -d /home/rserver && mkdir /jupyter
 WORKDIR /jupyter
 ## config dir
-RUN mkdir -p /etc/rstudio /etc/shiny-server /opt/config /opt/log /opt/shiny-server && chmod -R 777 /opt/config /opt/log
+RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
 ADD rserver.conf /etc/rstudio/
-ADD shiny-server.conf /etc/shiny-server/
 ADD jupyter_lab_config.py /opt/config/
 ADD supervisord.conf /opt/config/
 ## set up passwd in entrypoin.sh
