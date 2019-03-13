@@ -22,7 +22,8 @@ docker build -t jupyter .
 - 安装了最新版`anaconda`,`Rstudo`
 - 安装了部分`bioconductor`工具
 - 用`supervisor`启动后台web服务
-- 集成`zsh`以及`oh-my-zsh`,`vim8`
+- 一点点美化工作
+- 在衍生版本中，集成texlive
 
 #### 主要控制点
 - 开放端口：
