@@ -2,7 +2,7 @@
 ### 前言
 众所周知，`conda`和`docker`是进行快速软件安装、平台布置的两大神器，通过它们，在终端前敲几个命令、点点鼠标，软件就装好了。出了问题也不会影响到系统配置，能够很轻松的还原和重建。
 不过，虽说类似`rstudio`或者`jupyter notebook/lab`这样的分析平台能够很快地找到别人已经做好的镜像，但是总归有功能缺失，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让经验的人犯晕。
-本着**不折腾不舒服**的本人一惯风格，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`、`shiny server`，可用于生信分析平台的快速布置，也可供linux初学者练习用。
+本着**不折腾不舒服**的本人一惯风格，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`，可用于生信分析平台的快速布置，也可供linux初学者练习用。
 
 ### 我的dockerfile地址
 [https://github.com/leoatchina/jupyterlab_rstudio](https://github.com/leoatchina/jupyterlab_rstudio)
@@ -132,6 +132,6 @@ conda install -p /mnt/bioinfo -c bioconda roary
 
 关键的，在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
 
-##  快速布置生信软件 
+##  快速布置生信软件
 1. 启动分析流程后，发现代码写错了要强行结束时，只要删除`container`，不需要一个个去kill进程
 2. 在另一个机器上快速搭建分析环境，把`docker-file`在新机器上`bulid`下，各个`.xxxrc`文件放到正确的位置，然后把已经装上的软件复制过去就能搭建好分析环境。
