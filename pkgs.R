@@ -158,7 +158,7 @@ bioPackages =
     "pheatmap", ## heatmap
     "ggplot2", ## Volcano plot
     "limma", "DESeq2", "edgeR", ## DEG
-    "clusterProfiler", "org.Hs.eg.db", "org.Mm.eg.db" ## annotation
+    "clusterProfiler", "org.Hs.eg.db", "org.Mm.eg.db", ## annotation
     "pathview", ## kegg
     "RTCGA", "RTCGA.clinical", "RTCGA.rnaseq", "RTCGA.mRNA", "RTCGA.mutations" ## TCGA
   )
