@@ -14,9 +14,9 @@ git clone https://github.com/leoatchina/jupyterlab_rstudio.git
 cd jupyterlab_rstudio
 docker build -t leoatchina/jupyterlab_rstudio .
 ```
+
 ###　直接pull
 docker pull leoatchina/jupyterlab_rstudio
-
 
 #### 我在这个dockerfile里主要做的工作
 - 基于ubuntu16.04
