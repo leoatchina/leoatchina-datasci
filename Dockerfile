@@ -42,12 +42,10 @@ RUN cd /tmp && \
     curl https://download2.rstudio.org/rstudio-server-1.1.463-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-## R kernel for anaconda3, and shiny
+## R kernel for anaconda3
 RUN Rscript -e "options(encoding = 'UTF-8');\
     options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
-    install.packages(c('devtools', 'RCurl', 'crayon', 'repr', 'IRdisplay', 'pbdZMQ'));\
-    library(devtools); \
-    install_github('takluyver/IRkernel');\
+    install.packages(c('devtools', 'RCurl', 'crayon', 'repr', 'IRdisplay', 'pbdZMQ', 'IRkernel'));\
     IRkernel::installspec();\
     system('rm -rf /tmp/*') "
 # java8
