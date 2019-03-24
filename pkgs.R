@@ -158,7 +158,8 @@ bioPackages =
     "limma", "DESeq2", "edgeR", ## DEG
     "clusterProfiler", "org.Hs.eg.db", "org.Mm.eg.db", ## annotation
     "pathview", ## kegg
-    "RTCGA", "RTCGA.clinical", "RTCGA.rnaseq", "RTCGA.mRNA", "RTCGA.mutations" ## TCGA
+    "RTCGA.rnaseq.20160128","RTCGA.clinical.20160128","RTCGA.mutations.20160128",
+    "RTCGA.mRNA.20160128","RTCGA.miRNASeq.20160128","RTCGA.RPPA.20160128","RTCGA.CNV.2016012","RTCGA.methylation.2016012"
   )
 lapply( bioPackages, 
   function(bioPackage) {
