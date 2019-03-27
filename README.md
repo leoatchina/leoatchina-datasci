@@ -8,6 +8,11 @@
 [https://github.com/leoatchina/jupyterlab_rstudio](https://github.com/leoatchina/jupyterlab_rstudio)
 觉得好给个**star**吧!
 
+### 安装方法
+####　直接pull
+docker pull leoatchina/jupyterlab_rstudio
+
+
 #### build docker镜像,要先装好`docker-ce`和`git`
 ```
 git clone https://github.com/leoatchina/jupyterlab_rstudio.git
@@ -15,8 +20,7 @@ cd jupyterlab_rstudio
 docker build -t leoatchina/jupyterlab_rstudio .
 ```
 
-###　直接pull
-docker pull leoatchina/jupyterlab_rstudio
+
 
 #### 我在这个dockerfile里主要做的工作
 - 基于ubuntu16.04
