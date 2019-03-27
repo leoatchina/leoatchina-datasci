@@ -13,19 +13,18 @@
 docker pull leoatchina/jupyterlab_rstudio
 
 
-#### build docker镜像,要先装好`docker-ce`和`git`
+#### build docker镜像
+要先装好`docker-ce`和`git`
 ```
 git clone https://github.com/leoatchina/jupyterlab_rstudio.git
 cd jupyterlab_rstudio
 docker build -t leoatchina/jupyterlab_rstudio .
 ```
 
-
-
-#### 我在这个dockerfile里主要做的工作
+#### dockerfile里主要做的工作
 - 基于ubuntu16.04
 - 安装了一堆编译、编辑、下载、搜索等用到的工具和库
-- 安装了最新版`anaconda`,`Rstudo`
+- 安装了最新版`anaconda`,`Rstudio`
 - 安装了部分`bioconductor`工具
 - 用`supervisor`启动后台web服务
 - 一点点美化工作
@@ -34,7 +33,6 @@ docker build -t leoatchina/jupyterlab_rstudio .
 #### 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
-  - 7777: for jupyter notebook
   - 8787: for rstudio server
 - 访问密码：
   - 见dockerfile里的`ENV PASSWD=jupyter`
