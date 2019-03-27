@@ -9,7 +9,7 @@
 觉得好给个**star**吧!
 
 ### 安装方法
-####　直接pull
+#### 直接pull
 docker pull leoatchina/jupyterlab_rstudio
 
 
