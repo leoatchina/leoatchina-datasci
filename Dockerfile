@@ -8,10 +8,12 @@ RUN apt-get update -y && apt-get upgrade -y &&  \
     libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https  libncurses5-dev \
     build-essential gfortran libcairo2-dev libxt-dev automake bash-completion \
     libapparmor1 libedit2 libc6 psmisc rrdtool libzmq3-dev libtool software-properties-common \
-    bioperl libdbi-perl \
-    tree vim \ 
+    bioperl libdbi-perl tree \ 
     locales && locale-gen en_US.UTF-8 && \
     cpan -i Try::Tiny && \
+    add-apt-repository ppa:jonathonf/vim && \
+    apt update -y &&  \
+    apt install vim -y && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # PATH, if not set here, conda clean not works in the next RUN
 ENV PATH=/opt/anaconda3/bin:$PATH
