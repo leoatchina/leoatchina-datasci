@@ -158,7 +158,7 @@ bioPackages =
     "limma", "DESeq2", "edgeR", ## DEG
     "clusterProfiler", "org.Hs.eg.db", "org.Mm.eg.db", ## annotation
     "pathview", ## kegg
-    "RTCGA.rnaseq","RTCGA.clinical","RTCGA.mutations",
+    "RTCGA","RTCGA.rnaseq","RTCGA.clinical","RTCGA.mutations",
     "RTCGA.mRNA","RTCGA.miRNASeq","RTCGA.RPPA","RTCGA.CNV","RTCGA.methylation"
   )
 lapply( bioPackages, 
