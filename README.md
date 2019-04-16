@@ -122,7 +122,7 @@ export PATH=$PATH:/mnt/bioinfo/firehose
 export PATH=$PATH:/mnt/bioinfo/gatk4
 ```
 
-#### conda install -p 快速安装生信软件
+#### 用conda快速安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境。
 但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。
 ```
