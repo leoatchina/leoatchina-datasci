@@ -8,20 +8,23 @@
 [https://github.com/leoatchina/jupyterlab_rstudio](https://github.com/leoatchina/jupyterlab_rstudio)
 觉得好给个**star**吧!
 
-#### build docker镜像,要先装好`docker-ce`和`git`
+### 安装方法
+#### 直接pull
+docker pull leoatchina/jupyterlab_rstudio
+
+
+#### build docker镜像
+要先装好`docker-ce`和`git`
 ```
 git clone https://github.com/leoatchina/jupyterlab_rstudio.git
 cd jupyterlab_rstudio
 docker build -t leoatchina/jupyterlab_rstudio .
 ```
 
-###　直接pull
-docker pull leoatchina/jupyterlab_rstudio
-
-#### 我在这个dockerfile里主要做的工作
+#### dockerfile里主要做的工作
 - 基于ubuntu16.04
 - 安装了一堆编译、编辑、下载、搜索等用到的工具和库
-- 安装了最新版`anaconda`,`Rstudo`
+- 安装了最新版`anaconda`,`Rstudio`
 - 安装了部分`bioconductor`工具
 - 用`supervisor`启动后台web服务
 - 一点点美化工作
@@ -30,7 +33,6 @@ docker pull leoatchina/jupyterlab_rstudio
 #### 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
-  - 7777: for jupyter notebook
   - 8787: for rstudio server
 - 访问密码：
   - 见dockerfile里的`ENV PASSWD=jupyter`
@@ -97,9 +99,9 @@ docker run --name jupyter  \
 #### 网页端的shell
 本docker中集成的`jupyter lab`，`rstudio`的功能不用太多介绍，我要介绍的是集成的bash环境，通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 - jupyterlab
-![enter description here](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925588870.png)
+![jupyterlab](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925588870.png)
 - rstudio
-![enter description here](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925709976.png)
+![rstudio](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925709976.png)
 
 
 有两个好处
@@ -120,7 +122,7 @@ export PATH=$PATH:/mnt/bioinfo/firehose
 export PATH=$PATH:/mnt/bioinfo/gatk4
 ```
 
-#### conda install -p 快速安装生信软件
+#### 用conda快速安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境。
 但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。
 ```
