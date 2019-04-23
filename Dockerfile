@@ -19,17 +19,17 @@ RUN apt-get update -y && apt-get upgrade -y &&  \
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
 RUN cd /tmp && \
-    version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
-    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
+    version=$(curl -s https://mirrors.ustc.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
+    curl https://mirrors.ustc.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
     conda clean  -a -y
 ## 使用清华的源
-RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/mro/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
+RUN conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/ && \
+    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/r/ && \
+    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/mro/ && \
+    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main/ && \
+    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/bioconda/ && \
+    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge/ && \
     conda config --set show_channel_urls yes
 ## install R
 RUN add-apt-repository ppa:marutter/rrutter3.5  && \
@@ -37,11 +37,11 @@ RUN add-apt-repository ppa:marutter/rrutter3.5  && \
     apt-get update -y && \
     apt-get install -y r-api-3.5 && \
     apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev \
-                       libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev && \
+                       libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## install rstudio
 RUN cd /tmp && \ 
-    curl https://download2.rstudio.org/rstudio-server-1.1.463-amd64.deb -o rstudio.deb && \
+    curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## R kernel for anaconda3
