@@ -2,9 +2,9 @@ FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
 ADD sources.list /etc/apt/sources.list
 # installation
-RUN apt-get update -y && apt-get upgrade -y &&  \
-    apt-get install -y apt-utils gdebi-core net-tools iputils-ping && \
-    apt-get install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag cmake sudo ctags \
+RUN apt update -y && apt upgrade -y &&  \
+    apt install -y apt-utils gdebi-core net-tools iputils-ping && \
+    apt install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag cmake sudo ctags \
     libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https  libncurses5-dev \
     build-essential gfortran libcairo2-dev libxt-dev automake bash-completion \
     libapparmor1 libedit2 libc6 psmisc rrdtool libzmq3-dev libtool software-properties-common \
@@ -12,37 +12,39 @@ RUN apt-get update -y && apt-get upgrade -y &&  \
     locales && locale-gen en_US.UTF-8 && \
     cpan -i Try::Tiny && \
     add-apt-repository ppa:jonathonf/vim && \
+    add-apt-repository ppa:marutter/rrutter3.5  && \
+    add-apt-repository ppa:ubuntugis/ppa -y && \
     apt update -y &&  \
-    apt install vim -y && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+    apt install -y vim && \
+    apt install -y r-api-3.5 && \
+    apt install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
+    cd /tmp && \ 
+    curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
+    gdebi -n rstudio.deb && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # PATH, if not set here, conda clean not works in the next RUN
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
 RUN cd /tmp && \
-    version=$(curl -s https://mirrors.ustc.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
-    curl https://mirrors.ustc.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
+    version=$(curl -s https://mirrors.cloud.tencent.com/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
+    curl https://mirrors.cloud.tencent.com/anaconda/archive/$version -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
-    conda clean  -a -y
-## 使用清华的源
-RUN conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/ && \
-    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/r/ && \
-    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/mro/ && \
-    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main/ && \
-    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/bioconda/ && \
-    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge/ && \
+    conda clean -a -y
+RUN conda config --add channels https://mirrors.cloud.tencent.com/anaconda/pkgs/free/ && \
+    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/pkgs/main/ && \
+    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/bioconda/ && \
+    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/msys2/ && \
+    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/menpo/ && \
+    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/peterjc123/ && \
+    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/conda-forge/ && \
+    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/pytorch/ && \
     conda config --set show_channel_urls yes
-## install R
-RUN add-apt-repository ppa:marutter/rrutter3.5  && \
-    add-apt-repository ppa:ubuntugis/ppa -y && \
+# texlive
+RUN cd /tmp && \
+    wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
+    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
     apt-get update -y && \
-    apt-get install -y r-api-3.5 && \
-    apt-get install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev \
-                       libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-## install rstudio
-RUN cd /tmp && \ 
-    curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
-    gdebi -n rstudio.deb && \
+    apt-get install texlive-full -y && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## R kernel for anaconda3
 RUN Rscript -e "options(encoding = 'UTF-8');\
