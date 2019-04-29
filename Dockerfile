@@ -1,24 +1,35 @@
 FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
 ADD sources.list /etc/apt/sources.list
-# installation
 RUN apt update -y && apt upgrade -y &&  \
-    apt install -y apt-utils gdebi-core net-tools iputils-ping && \
-    apt install -y wget curl unzip bzip2 git htop supervisor xclip silversearcher-ag cmake sudo ctags \
-    libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev apt-transport-https  libncurses5-dev \
+    apt install -y wget curl apt-utils gdebi-core net-tools iputils-ping apt-transport-https unzip bzip2 \
+    git htop supervisor xclip cmake sudo \
+    libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev libncurses5-dev libncursesw5-dev libjansson-dev \
     build-essential gfortran libcairo2-dev libxt-dev automake bash-completion \
     libapparmor1 libedit2 libc6 psmisc rrdtool libzmq3-dev libtool software-properties-common \
     bioperl libdbi-perl tree \ 
     locales && locale-gen en_US.UTF-8 && \
-    cpan -i Try::Tiny && \
-    add-apt-repository ppa:jonathonf/vim && \
-    add-apt-repository ppa:marutter/rrutter3.5  && \
+    add-apt-repository ppa:jonathonf/vim -y && \
+    add-apt-repository ppa:marutter/rrutter3.5 -y && \
     add-apt-repository ppa:ubuntugis/ppa -y && \
     apt update -y &&  \
     apt install -y vim && \
     apt install -y r-api-3.5 && \
     apt install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
-    cd /tmp && \ 
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+RUN cd /tmp && \
+    curl https://ftp.gnu.org/gnu/global/global-6.6.3.tar.gz -o global.tar.gz && \
+    tar xvzf global.tar.gz && cd global-6.6.3 && \
+    ./configure --with-sqlite3 && make && make install && \
+    cd /tmp && \
+    git clone https://github.com/universal-ctags/ctags.git && cd ctags && \
+    ./autogen.sh && ./configure && make && make install && \
+    cd /tmp && \
+    curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb && \
+    dpkg -i ripgrep_11.0.1_amd64.deb && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+RUN cd /tmp && \ 
+    cpan -i Try::Tiny && \
     curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
@@ -49,13 +60,13 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
 RUN conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda java-jdk && conda clean -a -y && R CMD javareconf
 # coder server
 RUN cd /tmp && \
-    wget https://github.com/cdr/code-server/releases/download/1.939-vsc1.33.1/code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
+    curl -LO https://github.com/cdr/code-server/releases/download/1.939-vsc1.33.1/code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
     tar xvzf code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
     mv code-server1.939-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
 # texlive
 RUN cd /tmp && \
-    wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
+    curl -LO https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
     dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
     apt-get update -y && \
     apt-get install texlive-full -y && \
@@ -66,7 +77,6 @@ RUN pip install neovim mysql-connector-python python-language-server urllib3 && 
     rm -rf /root/.cache/pip/* /tmp/* && \
     apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # configuration
-## .oh-my-zsh
 ADD .inputrc /root/
 ADD .bashrc /root/
 ADD .configrc /root/
