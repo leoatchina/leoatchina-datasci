@@ -64,13 +64,6 @@ RUN cd /tmp && \
     tar xvzf code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
     mv code-server1.939-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
-# texlive
-RUN cd /tmp && \
-    curl -LO https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
-    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
-    apt-get update -y && \
-    apt-get install texlive-full -y && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # pip install something
 ADD pip.conf /root/.pip/
 RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
@@ -99,3 +92,10 @@ ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share
 EXPOSE 8888 8787 8443 
 VOLUME ["/home/rserver","/jupyter"]
+# texlive
+#RUN cd /tmp && \
+    #curl -LO https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
+    #dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
+    #apt-get update -y && \
+    #apt-get install texlive-full -y && \
+    #apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
