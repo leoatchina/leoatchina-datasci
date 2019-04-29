@@ -39,13 +39,6 @@ RUN conda config --add channels https://mirrors.cloud.tencent.com/anaconda/pkgs/
     conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/conda-forge/ && \
     conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/pytorch/ && \
     conda config --set show_channel_urls yes
-# texlive
-RUN cd /tmp && \
-    wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
-    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
-    apt-get update -y && \
-    apt-get install texlive-full -y && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 ## R kernel for anaconda3
 RUN Rscript -e "options(encoding = 'UTF-8');\
     options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
@@ -54,6 +47,19 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     system('rm -rf /tmp/*') "
 # java8
 RUN conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda java-jdk && conda clean -a -y && R CMD javareconf
+# coder server
+RUN cd /tmp && \
+    wget https://github.com/cdr/code-server/releases/download/1.939-vsc1.33.1/code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
+    tar xvzf code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
+    mv code-server1.939-vsc1.33.1-linux-x64 /opt/code-server && \
+    rm -rf /tmp/*.*
+# texlive
+RUN cd /tmp && \
+    wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
+    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
+    apt-get update -y && \
+    apt-get install texlive-full -y && \
+    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 # pip install something
 ADD pip.conf /root/.pip/
 RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
@@ -81,5 +87,5 @@ ENV PASSWD=jupyter
 ADD entrypoint.sh /opt/config/
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share
-EXPOSE 8888 8787 7777 3838
-VOLUME ["/home/rserver","/jupyter","/mnt"]
+EXPOSE 8888 8787 8443 
+VOLUME ["/home/rserver","/jupyter"]
