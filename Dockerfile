@@ -10,26 +10,30 @@ RUN apt update -y && apt upgrade -y &&  \
     bioperl libdbi-perl tree \ 
     locales && locale-gen en_US.UTF-8 && \
     add-apt-repository ppa:jonathonf/vim -y && \
-    add-apt-repository ppa:marutter/rrutter3.5 -y && \
-    add-apt-repository ppa:ubuntugis/ppa -y && \
     apt update -y &&  \
     apt install -y vim && \
-    apt install -y r-api-3.5 && \
-    apt install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-RUN cd /tmp && \
-    curl https://ftp.gnu.org/gnu/global/global-6.6.3.tar.gz -o global.tar.gz && \
-    tar xvzf global.tar.gz && cd global-6.6.3 && \
-    ./configure --with-sqlite3 && make && make install && \
-    cd /tmp && \
-    git clone https://github.com/universal-ctags/ctags.git && cd ctags && \
-    ./autogen.sh && ./configure && make && make install && \
+# ctags
+RUN cpan -i Try::Tiny && \
     cd /tmp && \
     curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb && \
     dpkg -i ripgrep_11.0.1_amd64.deb && \
+    cd /tmp && \
+    git clone --depth 1 https://github.com/universal-ctags/ctags.git && cd ctags && \
+    ./autogen.sh && ./configure && make && make install && \
+    cd /tmp && \
+    curl https://ftp.gnu.org/gnu/global/global-6.6.3.tar.gz -o global.tar.gz && \
+    tar xvzf global.tar.gz && cd global-6.6.3 && \
+    ./configure --with-sqlite3 && make && make install && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+# R
+RUN add-apt-repository ppa:ubuntugis/ppa -y && \
+    add-apt-repository ppa:marutter/rrutter3.5 -y && \
+    apt update -y &&  \
+    apt install -y r-api-3.5 && \
+    apt install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 RUN cd /tmp && \ 
-    cpan -i Try::Tiny && \
     curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
