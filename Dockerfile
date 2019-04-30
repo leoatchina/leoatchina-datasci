@@ -64,6 +64,7 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
 RUN conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda java-jdk && conda clean -a -y && R CMD javareconf
 # coder server
 RUN cd /tmp && \
+    # curl -L https://github.com/cdr/code-server/releases/download/1.939-vsc1.33.1/code-server1.939-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
     curl -LO https://github.com/cdr/code-server/releases/download/1.939-vsc1.33.1/code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
     tar xvzf code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
     mv code-server1.939-vsc1.33.1-linux-x64 /opt/code-server && \
