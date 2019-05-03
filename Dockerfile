@@ -2,7 +2,8 @@ FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
 ADD sources.list /etc/apt/sources.list
 RUN apt update -y && apt upgrade -y &&  \
-    apt install -y wget curl apt-utils gdebi-core net-tools iputils-ping apt-transport-https unzip bzip2 \
+    apt install -y wget curl net-tools iputils-ping apt-transport-https openssh-server \
+    unzip bzip2 apt-utils gdebi-core \
     git htop supervisor xclip cmake sudo \
     libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev libncurses5-dev libncursesw5-dev libjansson-dev \
     build-essential gfortran libcairo2-dev libxt-dev automake bash-completion \
@@ -12,7 +13,7 @@ RUN apt update -y && apt upgrade -y &&  \
     add-apt-repository ppa:jonathonf/vim -y && \
     apt update -y &&  \
     apt install -y vim && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 # ctags
 RUN cpan -i Try::Tiny && \
     cd /tmp && \
@@ -25,18 +26,20 @@ RUN cpan -i Try::Tiny && \
     curl https://ftp.gnu.org/gnu/global/global-6.6.3.tar.gz -o global.tar.gz && \
     tar xvzf global.tar.gz && cd global-6.6.3 && \
     ./configure --with-sqlite3 && make && make install && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 # R
-RUN add-apt-repository ppa:ubuntugis/ppa -y && \
-    add-apt-repository ppa:marutter/rrutter3.5 -y && \
-    apt update -y &&  \
-    apt install -y r-api-3.5 && \
+Run add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/' && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9 && \
+    add-apt-repository ppa:ubuntugis/ppa -y && \
+    apt update -y && \
+    #apt install libc6 libcurl4-openssl-dev libcurl4-nss-dev libcurl4-gnutls-dev libicu60-dev libreadline7-dev -y  && \
+    apt install r-base-dev r-base r-base-core r-recommended -y && \
     apt install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 RUN cd /tmp && \ 
     curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 # PATH, if not set here, conda clean not works in the next RUN
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
@@ -64,16 +67,15 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
 RUN conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda java-jdk && conda clean -a -y && R CMD javareconf
 # coder server
 RUN cd /tmp && \
-    # curl -L https://github.com/cdr/code-server/releases/download/1.939-vsc1.33.1/code-server1.939-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
     curl -LO https://github.com/cdr/code-server/releases/download/1.939-vsc1.33.1/code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
     tar xvzf code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
     mv code-server1.939-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
 # pip install something
 ADD pip.conf /root/.pip/
-RUN pip install neovim mysql-connector-python python-language-server urllib3 && \
+RUN pip install neovim mysql-connector-python python-language-server urllib3 pygments && \
     rm -rf /root/.cache/pip/* /tmp/* && \
-    apt-get autoremove && apt-get clean && apt-get purge && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 # configuration
 ADD .inputrc /root/
 ADD .bashrc /root/
@@ -82,7 +84,7 @@ ADD .configrc /root/
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
 ## users
-RUN useradd rserver -d /home/rserver && mkdir /jupyter
+RUN useradd rserver -d /home/rserver && mkdir /jupyter && mkdir /var/run/sshd
 WORKDIR /jupyter
 ## config dir
 RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
@@ -95,7 +97,7 @@ ENV PASSWD=jupyter
 ADD entrypoint.sh /opt/config/
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share
-EXPOSE 8888 8787 8443 
+EXPOSE 8888 8787 8443 22
 VOLUME ["/home/rserver","/jupyter"]
 # texlive
 #RUN cd /tmp && \
