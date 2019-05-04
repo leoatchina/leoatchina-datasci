@@ -74,12 +74,12 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     IRkernel::installspec();\
     system('rm -rf /tmp/*') "
 # texlive
-#RUN cd /tmp && \
-    #curl -LO https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
-    #dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
-    #apt update -y && \
-    #apt install texlive-full -y && \
-    #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
+RUN cd /tmp && \
+    curl -LO https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
+    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
+    apt update -y && \
+    apt install texlive-full -y && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 # coder server
 RUN cd /tmp && \
     curl -LO https://github.com/cdr/code-server/releases/download/1.939-vsc1.33.1/code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
@@ -88,8 +88,12 @@ RUN cd /tmp && \
     rm -rf /tmp/*.*
 # pip install something
 ADD pip.conf /root/.pip/
-RUN pip install neovim mysql-connector-python python-language-server urllib3 pygments && \
+RUN pip install PyHamcrest && \
+    pip install --upgrade pip && \
+    pip install neovim mysql-connector-python python-language-server urllib3 pygments flake8 --ignore-installed && \
+    apt install python-dev python3-dev -y && \
     rm -rf /root/.cache/pip/* /tmp/* && \
+		conda clean -a -y && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 # configuration
 ADD .inputrc /root/
