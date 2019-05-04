@@ -112,5 +112,5 @@ ENV PASSWD=jupyter
 ADD entrypoint.sh /opt/config/
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share
-EXPOSE 8888 8787 8443 22
+EXPOSE 8888 8787 8443 8822
 VOLUME ["/home/rserver","/jupyter"]
