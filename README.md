@@ -22,7 +22,7 @@ cd jupyterlab_rstudio
 docker build -t leoatchina/jupyterlab_rstudio .
 ```
 
-### dockerfile里主要做的工作
+### dockerfile里主要集成软件
 - 基于ubuntu16.04
 - 安装了一堆编译、编辑、下载、搜索等用到的工具和库
 - 安装了最新版`anaconda`,`Rstudio`
@@ -95,14 +95,8 @@ docker run --name jupyter  \
 -d leoatchina/jupyterlab_rstudio     #使用jupyter镜像， -d代表在后台工作
 ```
 
-### 运行后的调整
-- 如上，通过`IP:[28787|28888|28443]`进行访问
-- 可以直接`ssh -p 28822 root@xxx.xxx`进行ssh登陆，密码和`rstudio`，`jupyterlab`一致
-- 打开  `运行机器的IP:28787`，修改下R的源，bioClite源
-- 进入`rstudio-server`的用户名是`rserver`
-- 请打开`pkgs.R`和`conda.sh`，我收集了一些R包和conda生信软件的安装脚本
-
-### 网页端的shell
+### 运行后的操作
+- 再强调一次，默认密码各个服务都一样为`jupyter`，在启动时可以修改
 - jupyterlab, 通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 ![jupyterlab](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925588870.png)
 - rstudio, 登陆用户名是`rserver`
@@ -110,6 +104,7 @@ docker run --name jupyter  \
 - code-sever, 密码和前面的一样
 ![code-server](https://www.github.com/leoatchina/leoatchina-notes/raw/master/Notes/2019/5/4/1556964572166.png)
 - ssh-server, 注意映射端口，对应`8822`，用户名是`root`
+- 请打开`pkgs.R`和`conda.sh`，我收集了一些R包和conda生信软件的安装脚本
 
 有两个好处
 1. 只要你记得你的访问密码PASSWORD（仔细看我的启动脚本)，IP、端口，就可以通过网页端进行操作。
