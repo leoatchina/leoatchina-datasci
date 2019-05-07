@@ -110,28 +110,29 @@ docker run --name jupyter  \
 1. 只要你记得你的访问密码PASSWORD（仔细看我的启动脚本)，IP、端口，就可以通过网页端进行操作。
 2. 启动`perl`，`python`,`shell`的分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开该页面还是在继续运行你的脚本 。这个，请各位写个分析流程，自行体会下，也是我认为本次教程的最大亮点。
 
-### `.jupyterc`和`.bioinforc`,我玩的小花招
-众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置，在我的做出来的`jupyter`镜像中，为了达到`安装的生信软件`和`container分离`的目的，在删除container时不删除安装的软件的目的, root目录下的`.bashrc`（集成在镜像里) : `source /juoyter/.jupyterc`
+### `.jupyterc`
+众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。为了达到`安装的软件`和`container分离`的目的，在删除container时不删除安装的软件的目的, root目录下的`.bashrc`（集成在镜像里) : `source /juoyter/.jupyterc`,这样灵活地对系统路径进行配置, 而这个`.jupyterc`文件要自行建立。
 我的`/jupyter/.jupyterc`
 ```
-export PATH=$PATH:/mnt/bioinfo/bin
-export PATH=$PATH:/mnt/bioinfo/annovar
-export PATH=$PATH:/mnt/bioinfo/firehose
-export PATH=$PATH:/mnt/bioinfo/gatk4
+export PATH=/opt/anaconda3/bin:$PATH   # 这一条如果不加，在ssh进入的环境中 /opt/anaconda3/bin 不会放入$PATH中， 也就不能调用 conda等命令
+export PATH=$PATH:/jupyter/bioinfo/bin
+export PATH=$PATH:/jupyter/bioinfo/annovar
+export PATH=$PATH:/jupyter/bioinfo/firehose
+export PATH=$PATH:/jupyter/bioinfo/gatk4
 ```
 
 ### 用conda快速安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境。
 但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。
 ```
-conda install -p /mnt/bioinfo -c bioconda roary
+conda install -p /jupyter/bioinfo -c bioconda roary
 ```
 ![enter description here](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551926299681.png)
 
 如此，就安装到对应的位置，如`samtools`,`bcftools`,`varscan`等一众生信软件都可以如此安装。
 在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
 
-###  快速布置生信软件
+以些，就可快速布置软件并有以下好处
 1. 启动分析流程后，发现代码写错了要强行结束时，只要删除`container`，不需要一个个去kill进程
 2. 在另一个机器上快速搭建分析环境，把`docker-file`在新机器上`bulid`下，各个`.xxxrc`文件放到正确的位置，然后把已经装上的软件复制过去就能搭建好分析环境。
 3. 可以用`code-server`, `ssh`登陆container直接进行代码编写
