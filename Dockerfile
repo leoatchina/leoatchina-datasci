@@ -50,20 +50,19 @@ RUN cd /tmp && \
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
 RUN cd /tmp && \
-    version=$(curl -s https://mirrors.cloud.tencent.com/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
-    curl https://mirrors.cloud.tencent.com/anaconda/archive/$version -o Anaconda3.sh && \
+    curl https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
     conda clean -a -y
-# conda config
-RUN conda config --add channels https://mirrors.cloud.tencent.com/anaconda/pkgs/free/ && \
-    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/pkgs/main/ && \
-    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/bioconda/ && \
-    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/msys2/ && \
-    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/menpo/ && \
-    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/peterjc123/ && \
-    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/conda-forge/ && \
-    conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/pytorch/ && \
-    conda config --set show_channel_urls yes
+# conda config, just moveit
+#RUN conda config --add channels https://mirrors.cloud.tencent.com/anaconda/pkgs/free/ && \
+    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/pkgs/main/ && \
+    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/bioconda/ && \
+    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/msys2/ && \
+    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/menpo/ && \
+    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/peterjc123/ && \
+    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/conda-forge/ && \
+    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/pytorch/ && \
+    #conda config --set show_channel_urls yes
 # java8
 RUN conda install -c bioconda java-jdk && \
 		conda clean -a -y && R CMD javareconf
