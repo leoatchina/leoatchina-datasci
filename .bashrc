@@ -56,7 +56,7 @@ export TERM=xterm-256color
 
 if [ -d /jupyter ];then
     export PATH=$PATH:/jupyter/local/bin
-    [ -f /jupyter/.jupyterc ] && source /jupyter/.jupyterc 
+    [ -f /jupyter/local/.jupyterc ] && source /jupyter/local/.jupyterc 
 fi
 function git_branch {
     branch="`git branch 2>/dev/null | grep "^\*" | sed -e "s/^\*\ //"`"
