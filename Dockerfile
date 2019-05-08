@@ -52,10 +52,9 @@ ENV PATH=/opt/anaconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
-    conda clean -a -y
-# java8
-RUN conda install -c bioconda java-jdk && \
-		conda clean -a -y && R CMD javareconf
+    conda install -c bioconda java-jdk && \
+		conda clean -a -y && R CMD javareconf && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 ## R kernel for anaconda3
 RUN Rscript -e "options(encoding = 'UTF-8');\
     options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
