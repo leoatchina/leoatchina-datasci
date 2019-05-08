@@ -13,7 +13,7 @@ RUN apt update -y && apt upgrade -y &&  \
     cpan -i Try::Tiny && \
     add-apt-repository ppa:jonathonf/vim -y && \
     apt update -y &&  \
-    apt install -y vim && \
+    apt install -y vim python-dev python3-dev && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 # ctags
 RUN cd /tmp && \
@@ -46,23 +46,13 @@ RUN cd /tmp && \
     curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
-# PATH, if not set here, conda clean not works in the next RUN
+# PATH, if not set here, conda cmd not work 
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
 RUN cd /tmp && \
     curl https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
     conda clean -a -y
-# conda config, just moveit
-#RUN conda config --add channels https://mirrors.cloud.tencent.com/anaconda/pkgs/free/ && \
-    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/pkgs/main/ && \
-    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/bioconda/ && \
-    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/msys2/ && \
-    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/menpo/ && \
-    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/peterjc123/ && \
-    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/conda-forge/ && \
-    #conda config --add channels https://mirrors.cloud.tencent.com/anaconda/cloud/pytorch/ && \
-    #conda config --set show_channel_urls yes
 # java8
 RUN conda install -c bioconda java-jdk && \
 		conda clean -a -y && R CMD javareconf
@@ -89,10 +79,8 @@ RUN cd /tmp && \
 ADD pip.conf /root/.pip/
 RUN pip install PyHamcrest && \
     pip install --upgrade pip && \
-    pip install neovim mysql-connector-python python-language-server urllib3 pygments flake8 --ignore-installed && \
-    apt install python-dev python3-dev -y && \
+    pip install radian neovim mysql-connector-python python-language-server urllib3 pygments flake8 --ignore-installed && \
     rm -rf /root/.cache/pip/* /tmp/* && \
-		conda clean -a -y && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 # configuration
 ADD .inputrc /root/
