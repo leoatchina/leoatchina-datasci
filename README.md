@@ -24,22 +24,23 @@ docker build -t leoatchina/jupyterlab_rstudio .
 
 ### dockerfile里主要集成软件
 - 基于ubuntu16.04
-- 安装了一堆编译、编辑、下载、搜索等用到的工具和库
+- 安装了大量编译、编辑、下载、搜索等用到的工具和库
 - 安装了最新版`anaconda`,`Rstudio`
 - 安装了`ssh-server`,`code-server`
 - 用`supervisor`启动后台web服务
-- 一点点美化工作
-- 在衍生版本中，集成texlive
+- 美化bash界面
+- 集成texlive
+- `pkgs.R`和`conda.sh`，收集的一些R包和conda生信软件的安装脚本
 
 ### 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
+  - 8822: for ssh-server
   - 8787: for rstudio server
   - 8443: for code-server
-  - 8822: for ssh-server
 - 访问密码：
   - 见dockerfile里的`ENV PASSWD=jupyter`
-  - **运行时可以修改成你自己喜欢的密码**
+  - **运行时可以修改密码**
 - 主目录:
   - jupyter： `/jupyter`
   - rstudio： `/home/rserver`
@@ -70,6 +71,7 @@ services:
       - /home/root/.vim:/root/.vim   # 为了不同的container能重复利用一套已经下载的vim插件
       - /home/jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录
       - /home/rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
+    container_name: jupyter
 ```
 会运行一个名为`bioinfo_jupyter_1`的`container`，是由目录`bioinfo`+镜像`jupyter`+数字`1`组成
 
@@ -78,21 +80,21 @@ services:
 和docker-compose差不多的意义
 ```
 docker run --name jupyter  \
--v /data/bioinfo:/mnt/bioinfo \
--v /home/github:/mnt/github \
--v /tmp:/tmp \
--v /data/disks:/disks \
--v /data/work:/work \
--v /home/root/.ssh:/root/.ssh \
--v /home/root/.vim:/root/.vim \
--v /home/jupyter:/jupyter \
--v /home/rserver:/home/rserver \
--p 48888:8888 \
--p 48787:8787 \
--p 8443:8443 \
--p 8822:8822 \
--e PASSWD=password \
--d leoatchina/jupyterlab_rstudio     #使用jupyter镜像， -d代表在后台工作
+  -v /data/bioinfo:/mnt/bioinfo \
+  -v /home/github:/mnt/github \
+  -v /tmp:/tmp \
+  -v /data/disks:/disks \
+  -v /data/work:/work \
+  -v /home/root/.ssh:/root/.ssh \
+  -v /home/root/.vim:/root/.vim \
+  -v /home/jupyter:/jupyter \
+  -v /home/rserver:/home/rserver \
+  -p 48888:8888 \
+  -p 48787:8787 \
+  -p 8443:8443 \
+  -p 8822:8822 \
+  -e PASSWD=password \
+  -d leoatchina/jupyterlab_rstudio     #使用jupyter镜像， -d代表在后台工作
 ```
 
 ### 运行后的操作
@@ -104,15 +106,14 @@ docker run --name jupyter  \
 - code-sever, 密码和前面的一样
 ![code-server](https://www.github.com/leoatchina/leoatchina-notes/raw/master/Notes/2019/5/4/1556964572166.png)
 - ssh-server, 注意映射端口，对应`8822`，用户名是`root`
-- 请打开`pkgs.R`和`conda.sh`，我收集了一些R包和conda生信软件的安装脚本
 
 有两个好处
 1. 只要你记得你的访问密码PASSWORD（仔细看我的启动脚本)，IP、端口，就可以通过网页端进行操作。
 2. 启动`perl`，`python`,`shell`的分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开该页面还是在继续运行你的脚本 。这个，请各位写个分析流程，自行体会下，也是我认为本次教程的最大亮点。
 
 ### `.jupyterc`
-众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。为了达到`安装的软件`和`container分离`的目的，在删除container时不删除安装的软件的目的, root目录下的`.bashrc`（集成在镜像里) : `source /juoyter/.jupyterc`,这样灵活地对系统路径进行配置, 而这个`.jupyterc`文件要自行建立。
-我的`/jupyter/.jupyterc`
+众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。为了达到`安装的软件`和`container分离`的目的，在删除container时不删除安装的软件的目的, root目录下的`.bashrc`（集成在镜像里) : `source /juoyter/local/.jupyterc`,这样灵活地对系统路径进行配置, 而这个`.jupyterc`文件要自行建立。
+我的`.jupyterc`
 ```
 export PATH=/opt/anaconda3/bin:$PATH   # 这一条如果不加，在ssh进入的环境中 /opt/anaconda3/bin 不会放入$PATH中， 也就不能调用 conda等命令
 export PATH=$PATH:/jupyter/bioinfo/bin
