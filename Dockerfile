@@ -78,7 +78,7 @@ RUN cd /tmp && \
 ADD pip.conf /root/.pip/
 RUN pip install PyHamcrest && \
     pip install --upgrade pip && \
-    pip install radian neovim mysql-connector-python python-language-server urllib3 pygments flake8 --ignore-installed && \
+    pip install radian neovim mysql-connector-python python-language-server urllib3 pygments flake8 requests --ignore-installed && \
     rm -rf /root/.cache/pip/* /tmp/* && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/*
 # configuration
