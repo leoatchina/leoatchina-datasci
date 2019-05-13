@@ -76,7 +76,6 @@ RUN cd /tmp && \
     rm -rf /tmp/*.*
 # pip install something
 ADD pip.conf /root/.pip/
-RUN which pip
 RUN pip install PyHamcrest && \
     pip install --upgrade pip && \
     pip install neovim mysql-connector-python python-language-server mock  && \
