@@ -1,25 +1,20 @@
-## 用集成anaconda的docker快速布置生信分析平台
+## 用集成anaconda的docker快速布置数据分析平台
 ### 前言
 众所周知，`conda`和`docker`是进行快速软件安装、平台布置的两大神器，通过这个软件，在终端前敲几个命令即能安装软件就，出了问题也不会影响到系统配置，能够很轻松的还原和重建。
-不过，虽说类似`rstudio`或者`jupyterlab`这样的分析平台能够很快地找到别人已经做好的镜像，但是总有功能缺失，部分R包不能安装，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让没有经验的人犯晕。
-本着**不折腾不舒服**的本人一惯风格，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`，可用于生信分析平台的快速布置，也可供linux初学者练习用。又集成了`code-sever`和`ssh-server`， 并且内置`vim8`、`node`、`ctags`、`gtags`、`ripgrep`等软件，功能进一步完善，配合本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用，能够快速地布置分析环境，并ssh进去编写代码。
-
-### 我的dockerfile地址
-[https://github.com/leoatchina/jupyterlab_rstudio](https://github.com/leoatchina/jupyterlab_rstudio)
-觉得好给个**star**吧!
+不过，虽说类似`rstudio`或者`jupyterlab`这样的分析平台能够很快地找到别人已经做好的镜像，但是总有功能缺失，部分R包不能安装，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让没有经验的人犯晕。为了工作需要，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`、`ssh server`、`code server`,，可用于数据分析或生信分析平台的快速布置，也可供linux初学者练习用。 并且内置`vim8`、`node`、`ctags`、`gtags`、`ripgrep`等软件，功能进一步完善，配合本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用，能在ssh bash环境下进行用`vim`进行代码编写。
 
 ### 安装方法
 - 直接pull(建议使用这种方法)
 ```
-docker pull leoatchina/jupyterlab_rstudio
+docker pull leoatchina/datasci
 ```
 
 - build docker镜像
 要先装好`docker-ce`和`git`
 ```
-git clone https://github.com/leoatchina/jupyterlab_rstudio.git
-cd jupyterlab_rstudio
-docker build -t leoatchina/jupyterlab_rstudio .
+git clone https://github.com/leoatchina/leoatchina-datasci.git
+cd leoatchina-datasci
+docker build -t leoatchina/datasci .
 ```
 
 ### dockerfile里主要集成软件
@@ -53,7 +48,7 @@ docker build -t leoatchina/jupyterlab_rstudio .
 version: "3"  # xml版本
 services:
   jupyter:
-    image: leoatchina/jupyterlab_rstudio  # 使用前面做出来的jupyter镜像
+    image: leoatchina/datasci  # 使用前面做出来的镜像
     environment:
       - PASSWD=password   # PASSWD ， 在Docker-file里的 `ENV PASSWD=jupyter`
     ports:     # 端口映射，右边是container里的端口，左边是实际端口，比如我就喜欢实际端口在内部端口前加2或1。
@@ -71,15 +66,15 @@ services:
       - /home/root/.vim:/root/.vim   # 为了不同的container能重复利用一套已经下载的vim插件
       - /home/jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录
       - /home/rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
-    container_name: jupyter
+    container_name: datasci
 ```
-会运行一个名为`bioinfo_jupyter_1`的`container`，是由目录`bioinfo`+镜像`jupyter`+数字`1`组成
+会运行一个名为`datasci`的`container`
 
 
 #### 2. 使用docker run命令
 和docker-compose差不多的意义
 ```
-docker run --name jupyter  \
+docker run --name datasci  \
   -v /data/bioinfo:/mnt/bioinfo \
   -v /home/github:/mnt/github \
   -v /tmp:/tmp \
@@ -94,25 +89,25 @@ docker run --name jupyter  \
   -p 8443:8443 \
   -p 8822:8822 \
   -e PASSWD=password \
-  -d leoatchina/jupyterlab_rstudio     #使用jupyter镜像， -d代表在后台工作
+  -d leoatchina/datasci     # -d代表在后台工作
 ```
 
 ### 运行后的操作
-- 再强调一次，默认密码各个服务都一样为`jupyter`，在启动时可以修改
+- 默认密码各个服务都一样为`jupyter`，在启动时可以修改
 - jupyterlab, 通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 ![jupyterlab](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925588870.png)
 - rstudio, 登陆用户名是`rserver`
 ![rstudio](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925709976.png)
 - code-sever, 密码和前面的一样
 ![code-server](https://www.github.com/leoatchina/leoatchina-notes/raw/master/Notes/2019/5/4/1556964572166.png)
-- ssh-server, 注意映射端口，对应`8822`，用户名是`root`
+- **ssh-server**, 注意映射端口，对应`8822`，用户名是`root`
 
-有两个好处
-1. 只要你记得你的访问密码PASSWORD（仔细看我的启动脚本)，IP、端口，就可以通过网页端进行操作。
-2. 启动`perl`，`python`,`shell`的分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开该页面还是在继续运行你的脚本 。这个，请各位写个分析流程，自行体会下，也是我认为本次教程的最大亮点。
+两大优点
+1. 只要你记得你的访问密码PASSWORD、IP、端口，就可以通过网页端进行操作。
+2. 启动`perl`，`python`,`shell`的分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开该页面还是在**继续运行你的脚本** 。
 
 ### `.jupyterc`
-众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。为了达到`安装的软件`和`container分离`的目的，在删除container时不删除安装的软件的目的, root目录下的`.bashrc`（集成在镜像里) : `source /juoyter/local/.jupyterc`,这样灵活地对系统路径进行配置, 而这个`.jupyterc`文件要自行建立。
+众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。为了达到`安装的软件`和`container分离`的目的，在删除container时不删除安装的软件的目的, root目录下的`.bashrc`（集成在镜像里) : `source /juoyter/local/.jupyterc`,这样灵活地对系统路径进行配置,。这个`.jupyterc`文件要自行建立。
 我的`.jupyterc`
 ```
 export PATH=/opt/anaconda3/bin:$PATH   # 这一条如果不加，在ssh进入的环境中 /opt/anaconda3/bin 不会放入$PATH中， 也就不能调用 conda等命令
@@ -122,7 +117,7 @@ export PATH=$PATH:/jupyter/bioinfo/firehose
 export PATH=$PATH:/jupyter/bioinfo/gatk4
 ```
 
-### 用conda快速安装生信软件
+### 一个应用：用conda快速安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境。
 但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。
 ```
