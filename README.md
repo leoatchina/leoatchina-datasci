@@ -1,7 +1,8 @@
 ## 用集成anaconda的docker快速布置数据分析平台
 ### 前言
 众所周知，`conda`和`docker`是进行快速软件安装、平台布置的两大神器，通过这个软件，在终端前敲几个命令即能安装软件就，出了问题也不会影响到系统配置，能够很轻松的还原和重建。
-不过，虽说类似`rstudio`或者`jupyterlab`这样的分析平台能够很快地找到别人已经做好的镜像，但是总有功能缺失，部分R包不能安装，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让没有经验的人犯晕。为了工作需要，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`、`ssh server`、`code server`,，可用于数据分析或生信分析平台的快速布置，也可供linux初学者练习用。 并且内置`vim8`、`node`、`ctags`、`gtags`、`ripgrep`等软件，功能进一步完善，配合本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用，能在ssh bash环境下进行用`vim`进行代码编写。
+不过，虽说类似`rstudio`或者`jupyterlab`这样的分析平台能够很快地找到别人已经做好的镜像，但是总有功能缺失，会导致部分R包不能安装，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让没有经验的人犯晕。
+为了工作需要，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`、`ssh server`、`code server`,，可用于数据分析或生信分析平台的快速布置，也可供linux初学者练习用。 并内置`vim8`、`node`、`yarn`，`ctags`、`gtags`、`ripgrep`等软件，配合本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用，能在ssh bash环境下进行用`vim`进行代码编写。
 
 ### 安装方法
 - 直接pull(建议使用这种方法)
@@ -17,7 +18,7 @@ cd leoatchina-datasci
 docker build -t leoatchina/datasci .
 ```
 
-### dockerfile里主要集成软件
+### 主要集成软件
 - 基于ubuntu16.04
 - 安装了大量编译、编辑、下载、搜索等用到的工具和库
 - 安装了最新版`anaconda`,`Rstudio`
@@ -35,13 +36,12 @@ docker build -t leoatchina/datasci .
   - 8443: for code-server
 - 访问密码：
   - 见dockerfile里的`ENV PASSWD=jupyter`
-  - **运行时可以修改密码**
+  - **运行时可以修改密码**， 而且4种服务的密码一致
 - 主目录:
   - jupyter： `/jupyter`
   - rstudio： `/home/rserver`
 
-### 运行
-#### 1. 使用docker-compose
+### 使用docker-compose命令
 - `docker-compose -f /home/docker/compose/bioinfo/docker-compose.yml up -d`
 - `docker-compose.yml`的详细内容如下
 ```
@@ -60,47 +60,35 @@ services:
       - /data/bioinfo:/mnt/bioinfo   # 个人习惯，里面会放一些参考基因组等
       - /home/github:/mnt/github     # 个人习惯2，比如我的vim配置会放里面
       - /tmp:/tmp
-      - /data/disks:/disks
-      - /data/work:/work
-      - /home/root/.ssh:/root/.ssh   # 这个是为了一次通过ssh-keygen生成密钥后，能多次使用
-      - /home/root/.vim:/root/.vim   # 为了不同的container能重复利用一套已经下载的vim插件
-      - /home/jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录
-      - /home/rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
+      - ./root/.ssh:/root/.ssh   # 这个是为了一次通过ssh-keygen生成密钥后，能多次使用
+      - ./root/.vim:/root/.vim   # 为了不同的container能重复利用一套已经下载的vim插件
+      - ./root/.fzf:/root/.fzf   # 为了不同的container能重复利用一套已经下载的vim插件
+      - ./jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录
+      - ./rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
+    # build: ./build
     container_name: datasci
 ```
 会运行一个名为`datasci`的`container`
-
-
-#### 2. 使用docker run命令
-和docker-compose差不多的意义
+如在启动里想安装相应软件，可以在运行时用`build`指定一个放有`Dockerfile`的目录，如上面的`./build`,安装`tensorflow`, `opencv`
 ```
-docker run --name datasci  \
-  -v /data/bioinfo:/mnt/bioinfo \
-  -v /home/github:/mnt/github \
-  -v /tmp:/tmp \
-  -v /data/disks:/disks \
-  -v /data/work:/work \
-  -v /home/root/.ssh:/root/.ssh \
-  -v /home/root/.vim:/root/.vim \
-  -v /home/jupyter:/jupyter \
-  -v /home/rserver:/home/rserver \
-  -p 48888:8888 \
-  -p 48787:8787 \
-  -p 8443:8443 \
-  -p 8822:8822 \
-  -e PASSWD=password \
-  -d leoatchina/datasci     # -d代表在后台工作
+FROM leaotchina/datasci
+RUN pip install -q tensorflow_hub
+RUN conda install tensorflow && conda install -c menpo opencv
+
 ```
+
+### 使用docker run命令启动镜像
+不推荐这种方法，请自行研究如何
 
 ### 运行后的操作
 - 默认密码各个服务都一样为`jupyter`，在启动时可以修改
+- **ssh-server**, 注意映射端口，对应`8822`，用户名是`root`,可以安装`YCM`, `vista.vim`, `gtags`，`leader`等功能强大的vim插件，配置成轻型IDE
 - jupyterlab, 通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 ![jupyterlab](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925588870.png)
 - rstudio, 登陆用户名是`rserver`
 ![rstudio](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925709976.png)
 - code-sever, 密码和前面的一样
 ![code-server](https://www.github.com/leoatchina/leoatchina-notes/raw/master/Notes/2019/5/4/1556964572166.png)
-- **ssh-server**, 注意映射端口，对应`8822`，用户名是`root`
 
 两大优点
 1. 只要你记得你的访问密码PASSWORD、IP、端口，就可以通过网页端进行操作。
