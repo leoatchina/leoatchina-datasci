@@ -15,6 +15,9 @@ RUN apt update -y && apt upgrade -y &&  \
     apt update -y &&  \
     apt install -y vim && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+# configuration
+COPY .bashrc .inputrc .configrc /root/
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
 # ctags
 RUN cd /tmp && \
     curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb && \
@@ -85,8 +88,6 @@ RUN pip install PyHamcrest && \
     pip install flake8 --ignore-installed && \
     rm -rf /root/.cache/pip/* /tmp/* && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# configuration
-COPY .bashrc .inputrc .configrc /root/
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
