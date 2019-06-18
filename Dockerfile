@@ -86,9 +86,7 @@ RUN pip install PyHamcrest && \
     rm -rf /root/.cache/pip/* /tmp/* && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # configuration
-ADD .inputrc /root/
-ADD .bashrc /root/
-ADD .configrc /root/
+COPY .bashrc .inputrc .configrc /root/
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
@@ -97,13 +95,10 @@ RUN useradd rserver -d /home/rserver && mkdir /jupyter && mkdir /var/run/sshd
 WORKDIR /jupyter
 ## config dir
 RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
-ADD rserver.conf /etc/rstudio/
-ADD jupyter_lab_config.py /opt/config/
-ADD supervisord.conf /opt/config/
 ## set up passwd in entrypoin.sh
-ADD passwd.py /opt/config/
 ENV PASSWD=jupyter
-ADD entrypoint.sh /opt/config/
+COPY rserver.conf /etc/rstudio/
+COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share
 EXPOSE 8888 8787 8443 8822
