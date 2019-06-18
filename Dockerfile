@@ -50,10 +50,18 @@ RUN cd /tmp && \
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
 RUN cd /tmp && \
-    curl https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh -o Anaconda3.sh && \
+    version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
+    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
-    conda clean -a -y && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+    conda clean  -a -y
+## 使用清华的源
+RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/mro/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
+    conda config --set show_channel_urls yes
 RUN conda install -c bioconda java-jdk && \
 		conda clean -a -y && R CMD javareconf && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
@@ -63,25 +71,18 @@ RUN Rscript -e "options(encoding = 'UTF-8');\
     install.packages(c('devtools', 'RCurl', 'crayon', 'repr', 'IRdisplay', 'pbdZMQ', 'IRkernel'));\
     IRkernel::installspec();\
     system('rm -rf /tmp/*') "
-# texlive
-RUN cd /tmp && \
-    curl -LO https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
-    dpkg -i pandoc-2.2.3.2-1-amd64.deb && \
-    apt update -y && \
-    apt install texlive-full -y && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # coder server
 RUN cd /tmp && \
-    curl -LO https://github.com/cdr/code-server/releases/download/1.939-vsc1.33.1/code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
-    tar xvzf code-server1.939-vsc1.33.1-linux-x64.tar.gz && \
-    mv code-server1.939-vsc1.33.1-linux-x64 /opt/code-server && \
+    curl -L https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
+    tar xvzf code-server.tar.gz && \
+    mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
 # pip install something
 ADD pip.conf /root/.pip/
 RUN pip install PyHamcrest && \
     pip install --upgrade pip && \
-    pip install neovim mysql-connector-python python-language-server mock  && \
-    pip install radian requests pygments flake8 && \
+    pip install neovim mysql-connector-python python-language-server mock radian requests pygments && \
+    pip install flake8 --ignore-installed && \
     rm -rf /root/.cache/pip/* /tmp/* && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # configuration
