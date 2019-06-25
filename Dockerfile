@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
-ADD sources.list /etc/apt/sources.list
-RUN apt update -y && apt upgrade -y &&  \
+COPY sources.list /etc/apt/sources.list
+RUN apt update -y && apt upgrade -y && \
     apt install -y wget curl net-tools iputils-ping apt-transport-https openssh-server \
     unzip bzip2 apt-utils gdebi-core tmux \
     git htop supervisor xclip cmake sudo \
@@ -18,8 +18,16 @@ RUN apt update -y && apt upgrade -y &&  \
 # configuration
 COPY .bashrc .inputrc .configrc /root/
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
-# ctags
-RUN cd /tmp && \
+RUN mkdir -p /opt/rc && cp /root/.bashrc /root/.inputrc /root/.configrc /opt/rc
+# bash && ctags
+RUN cd /tmp && \ 
+    wget https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz && \
+    tar xvzf bash-5.0.tar.gz && \
+    cd bash-5.0 && \
+    ./configure && \
+    make && \
+    make install && \
+    cd /tmp && \
     curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb && \
     dpkg -i ripgrep_11.0.1_amd64.deb && \
     cd /tmp && \
@@ -53,7 +61,7 @@ RUN cd /tmp && \
 ENV PATH=/opt/anaconda3/bin:$PATH
 # anaconda3
 RUN cd /tmp && \
-    version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 |cut -d"\"" -f2) && \
+    version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 | awk -F'"' '/^<a href/ {print $2}') && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
     bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
     conda clean  -a -y
@@ -81,7 +89,7 @@ RUN cd /tmp && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
 # pip install something
-ADD pip.conf /root/.pip/
+COPY pip.conf /root/.pip/
 RUN pip install PyHamcrest && \
     pip install --upgrade pip && \
     pip install neovim mysql-connector-python python-language-server mock radian requests pygments && \
