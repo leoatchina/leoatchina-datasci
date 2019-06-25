@@ -1,6 +1,8 @@
 #!/bin/sh
-SHA1=$(python /opt/config/passwd.py $PASSWD)
+# cp config files
+cp /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.configrc /root/
 # passwd for jupyter
+SHA1=$(python /opt/config/passwd.py $PASSWD)
 echo "c.NotebookApp.password = '$SHA1'">>/opt/config/jupyter_lab_config.py
 # passwd for rserver
 echo rserver:$PASSWD | chpasswd
