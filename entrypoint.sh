@@ -1,6 +1,6 @@
 #!/bin/sh
 # cp config files
-cp /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.configrc /root/
+cp -R /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.configrc /opt/rc/.fzf.bash /opt/rc/.fzf /root/
 # passwd for jupyter
 SHA1=$(python /opt/config/passwd.py $PASSWD)
 echo "c.NotebookApp.password = '$SHA1'">>/opt/config/jupyter_lab_config.py

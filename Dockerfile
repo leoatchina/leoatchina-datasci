@@ -15,10 +15,6 @@ RUN apt update -y && apt upgrade -y && \
     apt update -y &&  \
     apt install -y vim && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# configuration
-COPY .bashrc .inputrc .configrc /root/
-RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
-RUN mkdir -p /opt/rc && cp /root/.bashrc /root/.inputrc /root/.configrc /opt/rc
 # bash && ctags
 RUN cd /tmp && \ 
     wget https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz && \
@@ -101,14 +97,17 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' 
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
 ## users
 RUN useradd rserver -d /home/rserver && mkdir /jupyter && mkdir /var/run/sshd
-WORKDIR /jupyter
-## config dir
+# configuration
+COPY .bashrc .inputrc .configrc /root/
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
+RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.configrc /root/.fzf.bash /root/.fzf /opt/rc/
+## set up passwd in entrypoint.sh
 RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
-## set up passwd in entrypoin.sh
 ENV PASSWD=jupyter
 COPY rserver.conf /etc/rstudio/
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share
 EXPOSE 8888 8787 8443 8822
+WORKDIR /jupyter
 VOLUME ["/home/rserver","/jupyter"]
