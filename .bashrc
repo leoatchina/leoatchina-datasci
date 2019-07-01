@@ -54,11 +54,6 @@ fi
 unset color_prompt force_color_prompt
 export TERM=xterm-256color
 
-if [ -d /jupyter ];then
-    export PATH=$PATH:/jupyter/local/bin
-    [ -f /jupyter/local/.jupyterc ] && source /jupyter/local/.jupyterc 
-    export JUPYTERLAB_DIR=$HOME/.jupyter/lab/plugins
-fi
 function git_branch {
     branch="`git branch 2>/dev/null | grep "^\*" | sed -e "s/^\*\ //"`"
     if [ "${branch}" != "" ];then
@@ -76,6 +71,8 @@ function git_branch {
 export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\[\e[30;1m\]\$(git_branch)\[\e[0m\]\n\$ "
 [ -f ~/.configrc ] && source ~/.configrc
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export PATH=$PATH:/root/local/bin
+[ -f ~/local/.jupyterc ] && source ~/local/.jupyterc 
 
 if [ -f /usr/local/etc/bash_completion ]; then 
     . /usr/local/etc/bash_completion

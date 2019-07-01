@@ -1,6 +1,7 @@
 #!/bin/sh
 # cp config files
 cp -R /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.configrc /opt/rc/.fzf.bash /opt/rc/.fzf /root/
+rsync -rvh --update /opt/rc/jupyter/ /opt/miniconda3/share/jupyter/   # the custom files position
 # passwd for jupyter
 SHA1=$(python /opt/config/passwd.py $PASSWD)
 echo "c.NotebookApp.password = '$SHA1'">>/opt/config/jupyter_lab_config.py

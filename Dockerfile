@@ -33,12 +33,10 @@ RUN cd /tmp && \
     curl http://ftp.vim.org/ftp/gnu/global/global-6.6.3.tar.gz -o global.tar.gz && \
     tar xvzf global.tar.gz && cd global-6.6.3 && \
     ./configure --with-sqlite3 && make && make install && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# node and yarn 
-RUN apt install -y nodejs nodejs-legacy npm && \
-    npm config set registry https://registry.npm.taobao.org && \
-    npm install -g n && n stable && \
-    npm install -g yarn && \
+    cd /tmp && \
+    curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
+    tar xvzf libiconv.tar.gz && cd libiconv-1.16 && \
+    ./configure && make && make install && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # R
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/' && \
@@ -54,53 +52,47 @@ RUN cd /tmp && \
     gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # PATH, if not set here, conda cmd not work 
-ENV PATH=/opt/anaconda3/bin:$PATH
-# anaconda3
+ENV PATH=/opt/miniconda3/bin:$PATH
+# miniconda3  
 RUN cd /tmp && \
-    version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/ | grep Linux | grep _64 | tail -1 | awk -F'"' '/^<a href/ {print $2}') && \
-    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/$version -o Anaconda3.sh && \
-    bash Anaconda3.sh -b -p /opt/anaconda3 && rm Anaconda3.sh && \
+    version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/ | grep Linux | grep Miniconda3 | grep latest | grep _64 | tail -1 | awk -F'"' '/^<a href/ {print $2}') && \
+    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/$version -o miniconda3.sh && \
+    bash miniconda3.sh -b -p /opt/miniconda3 && rm miniconda3.sh && \
     conda clean  -a -y
-## 使用清华的源
-RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/mro/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
-    conda config --set show_channel_urls yes
+# core packages
+RUN conda update --all && \
+    conda clean -a -y 
+RUN conda install numpy pandas scipy matplotlib && \
+    conda clean -a -y 
 RUN conda install -c bioconda java-jdk && \
-		conda clean -a -y && R CMD javareconf && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-## R kernel for anaconda3
-RUN Rscript -e "options(encoding = 'UTF-8');\
-    options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
-    install.packages(c('devtools', 'RCurl', 'crayon', 'repr', 'IRdisplay', 'pbdZMQ', 'IRkernel'));\
-    IRkernel::installspec();\
-    system('rm -rf /tmp/*') "
+		R CMD javareconf && \
+    conda clean -a -y 
+RUN conda install -c conda-forge neovim mysql-connector-python python-language-server mock pygments flake8 nodejs yarn && \
+    conda clean -a -y 
+# jupyterlab
+RUN conda install -c conda-forge jupyterlab && \
+    conda clean -a -y 
+## R kernel for miniconda3  
+#RUN Rscript -e "options(encoding = 'UTF-8');\
+    #options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
+    #install.packages(c('devtools', 'RCurl', 'crayon', 'repr', 'IRdisplay', 'pbdZMQ', 'IRkernel'));\
+    #IRkernel::installspec();\
+    #system('rm -rf /tmp/*') "
 # coder server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
     tar xvzf code-server.tar.gz && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
-# pip install something
-COPY pip.conf /root/.pip/
-RUN pip install PyHamcrest && \
-    pip install --upgrade pip && \
-    pip install neovim mysql-connector-python python-language-server mock radian requests pygments && \
-    pip install flake8 --ignore-installed && \
-    rm -rf /root/.cache/pip/* /tmp/* && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
 ## users
-RUN useradd rserver -d /home/rserver && mkdir /jupyter && mkdir /var/run/sshd
+RUN useradd rserver -d /home/rserver && mkdir /var/run/sshd
 # configuration
 COPY .bashrc .inputrc .configrc /root/
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
-RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.configrc /root/.fzf.bash /root/.fzf /opt/rc/
+RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.configrc /root/.fzf.bash /root/.fzf /opt/miniconda3/share/jupyter /opt/rc/
 ## set up passwd in entrypoint.sh
 RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
 ENV PASSWD=jupyter
@@ -109,5 +101,5 @@ COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share
 EXPOSE 8888 8787 8443 8822
-WORKDIR /jupyter
-VOLUME ["/home/rserver","/jupyter"]
+WORKDIR /root
+VOLUME ["/home/rserver","/root"]
