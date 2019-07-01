@@ -87,13 +87,13 @@ RUN cd /tmp && \
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
+RUN npm config set registry https://registry.npm.taobao.org
 ## users
 RUN useradd rserver -d /home/rserver && mkdir /var/run/sshd
 # configuration
 COPY .bashrc .inputrc .configrc /root/
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
 RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.configrc /root/.fzf.bash /root/.fzf /opt/miniconda3/share/jupyter /opt/rc/
-## set up passwd in entrypoint.sh
 RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
 ENV PASSWD=jupyter
 COPY rserver.conf /etc/rstudio/
