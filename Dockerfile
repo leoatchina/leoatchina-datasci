@@ -52,27 +52,28 @@ RUN cd /tmp && \
     gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # PATH, if not set here, conda cmd not work 
-ENV PATH=/opt/miniconda3/bin:$PATH
-# miniconda3  
+ENV PATH=/opt/anaconda3/bin:$PATH
+# anaconda3  
 RUN cd /tmp && \
-    version=$(curl -s https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/ | grep Linux | grep Miniconda3 | grep latest | grep _64 | tail -1 | awk -F'"' '/^<a href/ {print $2}') && \
-    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/$version -o miniconda3.sh && \
-    bash miniconda3.sh -b -p /opt/miniconda3 && rm miniconda3.sh && \
+    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.03-Linux-x86_64.sh -o anaconda3.sh && \
+    bash anaconda3.sh -b -p /opt/anaconda3 && rm -r /tmp/* && \
     conda clean  -a -y
 # core packages
+RUN conda update conda-build && \
+    conda clean -a -y
 RUN conda update --all && \
-    conda clean -a -y 
-RUN conda install numpy pandas scipy matplotlib && \
     conda clean -a -y 
 RUN conda install -c bioconda java-jdk && \
 		R CMD javareconf && \
     conda clean -a -y 
 RUN conda install -c conda-forge neovim mysql-connector-python python-language-server mock pygments flake8 nodejs yarn && \
     conda clean -a -y 
+#RUN conda install numpy pandas scipy matplotlib && \
+    #conda clean -a -y 
 # jupyterlab
-RUN conda install -c conda-forge jupyterlab && \
+RUN conda update -c conda-forge jupyterlab && \
     conda clean -a -y 
-## R kernel for miniconda3  
+## R kernel for anaconda3  
 #RUN Rscript -e "options(encoding = 'UTF-8');\
     #options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
     #install.packages(c('devtools', 'RCurl', 'crayon', 'repr', 'IRdisplay', 'pbdZMQ', 'IRkernel'));\
@@ -93,7 +94,7 @@ RUN useradd rserver -d /home/rserver && mkdir /var/run/sshd
 # configuration
 COPY .bashrc .inputrc .configrc /root/
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
-RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.configrc /root/.fzf.bash /root/.fzf /opt/miniconda3/share/jupyter /opt/rc/
+RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.configrc /root/.fzf.bash /root/.fzf /opt/anaconda3/share/jupyter /opt/rc/
 RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
 ENV PASSWD=jupyter
 COPY rserver.conf /etc/rstudio/
