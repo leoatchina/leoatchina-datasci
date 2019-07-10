@@ -95,7 +95,7 @@ RUN useradd rserver -d /home/rserver && mkdir /var/run/sshd
 COPY .bashrc .inputrc .configrc /root/
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
 RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.configrc /root/.fzf.bash /root/.fzf /opt/anaconda3/share/jupyter /opt/rc/
-RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
+RUN mkdir -p /etc/rstudio /work /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
 ENV PASSWD=jupyter
 COPY rserver.conf /etc/rstudio/
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
