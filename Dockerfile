@@ -103,4 +103,4 @@ ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share
 EXPOSE 8888 8787 8443 8822
 WORKDIR /root
-VOLUME ["/home/rserver","/root"]
+VOLUME ["/home/rserver","/work"]
