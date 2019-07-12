@@ -63,15 +63,14 @@ RUN conda update conda-build && \
     conda clean -a -y
 RUN conda update --all && \
     conda clean -a -y 
-RUN conda install -c bioconda java-jdk && \
-		R CMD javareconf && \
-    conda clean -a -y 
 RUN conda install -c conda-forge neovim mysql-connector-python python-language-server mock pygments flake8 nodejs yarn && \
     conda clean -a -y 
-#RUN conda install numpy pandas scipy matplotlib && \
-    #conda clean -a -y 
 # jupyterlab
 RUN conda update -c conda-forge jupyterlab && \
+    conda clean -a -y 
+# java
+RUN conda install -c bioconda/label/cf201901 java-jdk && \
+		R CMD javareconf && \
     conda clean -a -y 
 ## R kernel for anaconda3  
 #RUN Rscript -e "options(encoding = 'UTF-8');\
