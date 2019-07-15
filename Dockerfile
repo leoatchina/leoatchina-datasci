@@ -84,12 +84,14 @@ RUN cd /tmp && \
     tar xvzf code-server.tar.gz && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
+RUN apt install -y xvfb libswt-gtk-4-java && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
 RUN npm config set registry https://registry.npm.taobao.org
 ## users
-RUN useradd rserver -d /home/rserver && mkdir /var/run/sshd
+RUN useradd rserver -d /home/rserver
 # configuration
 COPY .bashrc .inputrc .configrc /root/
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all

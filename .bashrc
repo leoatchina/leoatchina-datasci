@@ -69,11 +69,13 @@ function git_branch {
     fi
 }
 export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\[\e[30;1m\]\$(git_branch)\[\e[0m\]\n\$ "
+
+export PATH=$PATH:~/.local/bin
+if [[ ! "$PATH" == /opt/anaconda3/bin:* ]]; then # @todo, add function for add route before/after
+  export PATH="/opt/anaconda3/bin:$PATH"
+fi
+
 [ -f ~/.configrc ] && source ~/.configrc
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-export PATH=$PATH:/root/local/bin
-[ -f ~/local/.jupyterc ] && source ~/local/.jupyterc 
-
-if [ -f /usr/local/etc/bash_completion ]; then 
-    . /usr/local/etc/bash_completion
-fi
+[ -f ~/.local/.jupyterc ] && source ~/.local/.jupyterc 
+[ -f /usr/local/etc/bash_completion ] && bash /usr/local/etc/bash_completion
