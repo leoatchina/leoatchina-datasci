@@ -1,4 +1,5 @@
 #!/bin/sh
+mkdir -p /var/run/sshd
 # cp config files
 cp -R /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.configrc /opt/rc/.fzf.bash /opt/rc/.fzf /root/
 rsync -rvh --update /opt/rc/jupyter/ /opt/anaconda3/share/jupyter/   # the custom files position
