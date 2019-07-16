@@ -38,8 +38,9 @@ docker build -t leoatchina/datasci .
   - 见dockerfile里的`ENV PASSWD=jupyter`
   - **运行时可以修改密码**， 而且4种服务的密码一致
 - 主目录:
-  - jupyter： `/jupyter`
-  - rstudio： `/home/rserver`
+  - jupyterlab： `/work`
+  - coderserver：`/work`
+  - rstudio：    `/home/rserver`
 
 ### 使用docker-compose命令
 - `docker-compose -f /home/docker/compose/bioinfo/docker-compose.yml up -d`
@@ -47,7 +48,7 @@ docker build -t leoatchina/datasci .
 ```
 version: "3"  # xml版本
 services:
-  jupyter:
+  datasci:
     image: leoatchina/datasci  # 使用前面做出来的镜像
     environment:
       - PASSWD=password   # PASSWD ， 在Docker-file里的 `ENV PASSWD=jupyter`
@@ -57,14 +58,12 @@ services:
       - 8443:8443
       - 8822:8822
     volumes:   # 位置映射，右docker内部，左实际
-      - /data/bioinfo:/mnt/bioinfo   # 个人习惯，里面会放一些参考基因组等
-      - /home/github:/mnt/github     # 个人习惯2，比如我的vim配置会放里面
-      - /tmp:/tmp
-      - ./root/.ssh:/root/.ssh   # 这个是为了一次通过ssh-keygen生成密钥后，能多次使用
-      - ./root/.vim:/root/.vim   # 为了不同的container能重复利用一套已经下载的vim插件
-      - ./root/.fzf:/root/.fzf   # 为了不同的container能重复利用一套已经下载的vim插件
-      - ./jupyter:/jupyter       # 关键目录之1，jupyter的主运行目录
+      - ./pkgs:/opt/anaconda3/pkgs
+      - ./jupyter:/opt/anaconda3/share/jupyter   # 这个是为了安装jupyterlab 插件
+      - ./work:/work
+      - ./root:/root   # 这个是为了一次通过ssh-keygen生成密钥后，能多次使用
       - ./rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
+      - /home/github:/mnt/github     # 个人习惯2，比如我的vim配置会放里面
     # build: ./build
     container_name: datasci
 ```
@@ -95,23 +94,23 @@ RUN conda install tensorflow && conda install -c menpo opencv
 2. 启动`perl`，`python`,`shell`的分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开该页面还是在**继续运行你的脚本** 。
 
 ### `.jupyterc`
-众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。为了达到`安装的软件`和`container分离`的目的，在删除container时不删除安装的软件的目的, root目录下的`.bashrc`（集成在镜像里) : `source /juoyter/local/.jupyterc`,这样灵活地对系统路径进行配置,。这个`.jupyterc`文件要自行建立。
+众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。为了达到`安装的软件`和`container分离`的目的，在删除container时不删除安装的软件的目的, root目录下的`.bashrc`（集成在镜像里) : `source /root/.local/.jupyterc`,这样灵活地对系统路径进行配置,。这个`.jupyterc`文件要自行建立。
 我的`.jupyterc`
 ```
-export PATH=/opt/anaconda3/bin:$PATH   # 这一条如果不加，在ssh进入的环境中 /opt/anaconda3/bin 不会放入$PATH中， 也就不能调用 conda等命令
-export PATH=$PATH:/jupyter/bioinfo/bin
-export PATH=$PATH:/jupyter/bioinfo/annovar
-export PATH=$PATH:/jupyter/bioinfo/firehose
-export PATH=$PATH:/jupyter/bioinfo/gatk4
+export PATH=/opt/anaconda3/bin:$PATH   # 这一条如果不加，在ssh进入的环境中 /opt/anaconda3/bin 不会放入$PATH中， 也就不能调用 conda等命令. 以后会调整
+export PATH=$PATH:/work/bioinfo/bin
+export PATH=$PATH:/work/bioinfo/annovar
+export PATH=$PATH:/work/bioinfo/firehose
+export PATH=$PATH:/work/bioinfo/gatk4
 ```
 
 ### 一个应用：用conda快速安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境。
 但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。
 ```
-conda install -p /jupyter/bioinfo -c bioconda roary
+conda install -p /work/bioinfo -c bioconda roary
 ```
-![enter description here](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551926299681.png)
+![enter descriptiowork(https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551926299681.png)
 
 如此，就安装到对应的位置，如`samtools`,`bcftools`,`varscan`等一众生信软件都可以如此安装。
 在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
