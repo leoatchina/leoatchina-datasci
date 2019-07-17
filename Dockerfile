@@ -69,6 +69,7 @@ RUN conda update -c conda-forge jupyterlab && \
     conda clean -a -y 
 # java
 RUN conda install -c bioconda/label/cf201901 java-jdk && \
+    ln -s /opt/anaconda3/bin/java /usr/bin/java && \
 		R CMD javareconf && \
     conda clean -a -y 
 ## R kernel for anaconda3  
@@ -90,7 +91,6 @@ RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
-RUN npm config set registry https://registry.npm.taobao.org
 ## users
 RUN useradd rserver -d /home/rserver
 # configuration
@@ -102,7 +102,8 @@ ENV PASSWD=jupyter
 COPY rserver.conf /etc/rstudio/
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
-## share
+## share ports and dirs 
+RUN rm /usr/bin/java /usr/bin/conda
 EXPOSE 8888 8787 8443 8822
 WORKDIR /work
 VOLUME ["/home/rserver","/work"]

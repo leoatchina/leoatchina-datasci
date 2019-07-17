@@ -1,5 +1,7 @@
 #!/bin/sh
+export PATH=/opt/anaconda3/bin:$PATH
 mkdir -p /var/run/sshd
+npm config set registry https://registry.npm.taobao.org
 # cp config files
 cp -R /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /opt/rc/.fzf /root/
 rsync -rvh --update /opt/rc/jupyter/ /opt/anaconda3/share/jupyter/   # the custom files position
