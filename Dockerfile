@@ -103,7 +103,6 @@ COPY rserver.conf /etc/rstudio/
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share ports and dirs 
-RUN rm /usr/bin/java /usr/bin/conda
 EXPOSE 8888 8787 8443 8822
 WORKDIR /work
 VOLUME ["/home/rserver","/work"]
