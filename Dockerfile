@@ -93,9 +93,9 @@ RUN npm config set registry https://registry.npm.taobao.org
 ## users
 RUN useradd rserver -d /home/rserver
 # configuration
-COPY .bashrc .inputrc .configrc /root/
+COPY .bashrc .inputrc /root/
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
-RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.configrc /root/.fzf.bash /root/.fzf /opt/anaconda3/share/jupyter /opt/rc/
+RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/anaconda3/share/jupyter /opt/rc/
 RUN mkdir -p /etc/rstudio /work /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
 ENV PASSWD=jupyter
 COPY rserver.conf /etc/rstudio/
@@ -103,5 +103,5 @@ COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share
 EXPOSE 8888 8787 8443 8822
-WORKDIR /root
+WORKDIR /work
 VOLUME ["/home/rserver","/work"]

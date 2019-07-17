@@ -68,14 +68,32 @@ function git_branch {
         echo " $branch"
     fi
 }
+
+alias ls='/usr/bin/ls --color=auto'
+alias ll='/usr/bin/ls -lh --color=auto'
+alias lsa='/usr/bin/ls -alh --color=auto'
+alias llt='/usr/bin/ls -lthr --color=auto'
+alias llT='/usr/bin/ls -lth --color=auto'
+alias lls='/usr/bin/ls -lShr --color=auto'
+alias llS='/usr/bin/ls -lSh --color=auto'
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
 export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\[\e[30;1m\]\$(git_branch)\[\e[0m\]\n\$ "
 
-export PATH=$PATH:~/.local/bin
-if [[ ! "$PATH" == /opt/anaconda3/bin:* ]]; then # @todo, add function for add route before/after
-  export PATH="/opt/anaconda3/bin:$PATH"
+if [[ ! $PATH == /opt/anaconda3/bin* ]]; then # @fixme, add function for add route before/after
+    export PATH=/opt/anaconda3/bin:$PATH
 fi
 
-[ -f ~/.configrc ] && source ~/.configrc
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-[ -f ~/.local/.jupyterc ] && source ~/.local/.jupyterc 
+if [[ ! $PATH == *$HOME/.local/bin* ]]; then # @fixme, add function for add route before/after
+    export PATH=$PATH:$HOME/.local/bin
+fi
+
 [ -f /usr/local/etc/bash_completion ] && bash /usr/local/etc/bash_completion
+[ -f ~/.configrc ] && source ~/.configrc
