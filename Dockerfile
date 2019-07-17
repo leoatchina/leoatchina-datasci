@@ -52,7 +52,7 @@ RUN cd /tmp && \
     gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # PATH, if not set here, conda cmd not work 
-ENV PATH=/opt/anaconda3/bin:$PATH
+ENV PATH=/opt/anaconda3/bin:$PATH  # @toda, alias conda = /opt/anaconda3/bin/conda
 # anaconda3  
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.03-Linux-x86_64.sh -o anaconda3.sh && \
@@ -86,6 +86,8 @@ RUN cd /tmp && \
     rm -rf /tmp/*.*
 RUN apt install -y xvfb libswt-gtk-4-java && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+## fzf rdy
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
@@ -94,7 +96,7 @@ RUN npm config set registry https://registry.npm.taobao.org
 RUN useradd rserver -d /home/rserver
 # configuration
 COPY .bashrc .inputrc /root/
-RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
+RUN /root/.fzf/install --all
 RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/anaconda3/share/jupyter /opt/rc/
 RUN mkdir -p /etc/rstudio /work /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
 ENV PASSWD=jupyter
