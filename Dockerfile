@@ -51,12 +51,11 @@ RUN cd /tmp && \
     curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# PATH, if not set here, conda cmd not work 
-ENV PATH=/opt/anaconda3/bin:$PATH  # @toda, alias conda = /opt/anaconda3/bin/conda
 # anaconda3  
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.03-Linux-x86_64.sh -o anaconda3.sh && \
     bash anaconda3.sh -b -p /opt/anaconda3 && rm -r /tmp/* && \
+    ln -s /opt/anaconda3/bin/conda /usr/bin/conda && \
     conda clean  -a -y
 # core packages
 RUN conda update conda-build && \
