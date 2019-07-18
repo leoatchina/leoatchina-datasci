@@ -69,13 +69,13 @@ function git_branch {
     fi
 }
 
-alias ls='/usr/bin/ls --color=auto'
-alias ll='/usr/bin/ls -lh --color=auto'
-alias lsa='/usr/bin/ls -alh --color=auto'
-alias llt='/usr/bin/ls -lthr --color=auto'
-alias llT='/usr/bin/ls -lth --color=auto'
-alias lls='/usr/bin/ls -lShr --color=auto'
-alias llS='/usr/bin/ls -lSh --color=auto'
+alias ls='/bin/ls --color=auto'
+alias ll='/bin/ls -lh --color=auto'
+alias lsa='/bin/ls -alh --color=auto'
+alias llt='/bin/ls -lthr --color=auto'
+alias llT='/bin/ls -lth --color=auto'
+alias lls='/bin/ls -lShr --color=auto'
+alias llS='/bin/ls -lSh --color=auto'
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
