@@ -100,6 +100,7 @@ RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.fzf.bash /root
 RUN mkdir -p /etc/rstudio /work /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
 ENV PASSWD=jupyter
 COPY rserver.conf /etc/rstudio/
+# @TODO, use entrypoint/supervisor to create user of current, and run jupyterlab, codeserver as current user
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share ports and dirs 
