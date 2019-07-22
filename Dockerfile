@@ -72,12 +72,6 @@ RUN conda install -c bioconda/label/cf201901 java-jdk && \
     ln -s /opt/anaconda3/bin/java /usr/bin/java && \
 		R CMD javareconf && \
     conda clean -a -y 
-## R kernel for anaconda3  
-#RUN Rscript -e "options(encoding = 'UTF-8');\
-    #options('repos' = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));\
-    #install.packages(c('devtools', 'RCurl', 'crayon', 'repr', 'IRdisplay', 'pbdZMQ', 'IRkernel'));\
-    #IRkernel::installspec();\
-    #system('rm -rf /tmp/*') "
 # coder server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
@@ -88,22 +82,22 @@ RUN apt install -y xvfb libswt-gtk-4-java && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ## fzf rdy
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf
+# r kernel
+RUN conda install -c r r-irkernel && \
+    conda clean -a -y 
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
-## users
-RUN useradd rserver -d /home/rserver
 # configuration
 COPY .bashrc .inputrc /root/
 RUN /root/.fzf/install --all
 RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/anaconda3/share/jupyter /opt/rc/
 RUN mkdir -p /etc/rstudio /work /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
-ENV PASSWD=jupyter
 COPY rserver.conf /etc/rstudio/
 # @TODO, use entrypoint/supervisor to create user of current, and run jupyterlab, codeserver as current user
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
-ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 ## share ports and dirs 
+ENV PASSWD=jupyter
+ENV USER=rserver 
+ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8443 8822
-WORKDIR /work
-VOLUME ["/home/rserver","/work"]
