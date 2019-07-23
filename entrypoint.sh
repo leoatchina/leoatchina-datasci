@@ -5,13 +5,7 @@ cp -R /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /opt/rc/.fzf /home/$USE
 rsync -rvh --update /opt/rc/jupyter/ /opt/anaconda3/share/jupyter/   # the custom files position
 
 # config 777
-mkdir -p /root/.local/share/jupyter/runtime
-chmod -R 777 /root/.local/share/jupyter/runtime
-mkdir -p /root/.cache/code-server
-chmod -R 777 /root/.cache/code-server
-mkdir -p /root/.config
-chmod -R 777 /root/.config
-
+chmod -R 777 /root
 mkdir -p /home/$USER/.local/share/jupyter/runtime
 chown -R $USER:$USER /home/$USER/.local
 mkdir -p /home/$USER/.cache/code-server
