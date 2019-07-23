@@ -91,9 +91,9 @@ if [[ ! -v $JUPYTER_SERVER_ROOT ]] && [[ ! $PATH == /opt/anaconda3/bin* ]]; then
     export PATH=/opt/anaconda3/bin:$PATH
 fi
 
-if [[ ! $PATH == *$HOME/.local/bin* ]]; then
-    export PATH=$PATH:$HOME/.local/bin
+if [[ ! $PATH == */root/bin* ]]; then
+    export PATH=$PATH:/root/bin
 fi
 
 [ -f /usr/local/etc/bash_completion ] && bash /usr/local/etc/bash_completion
-[ -f $HOME/.configrc ] && source $HOME/.configrc
+[ -f /root/.configrc ] && source /root/.configrc

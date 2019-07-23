@@ -78,13 +78,10 @@ RUN cd /tmp && \
     tar xvzf code-server.tar.gz && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
-RUN apt install -y xvfb libswt-gtk-4-java && \
+RUN apt install -y xvfb libswt-gtk-4-java jq && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ## fzf rdy
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf
-# r kernel
-RUN conda install -c r r-irkernel && \
-    conda clean -a -y 
 ## system local config
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
@@ -92,7 +89,7 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' 
 COPY .bashrc .inputrc /root/
 RUN /root/.fzf/install --all
 RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/anaconda3/share/jupyter /opt/rc/
-RUN mkdir -p /etc/rstudio /work /opt/config /opt/log  && chmod -R 777 /opt/config /opt/log
+RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 755 /opt/config /opt/log
 COPY rserver.conf /etc/rstudio/
 # @TODO, use entrypoint/supervisor to create user of current, and run jupyterlab, codeserver as current user
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/

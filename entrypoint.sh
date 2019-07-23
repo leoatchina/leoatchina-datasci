@@ -1,33 +1,35 @@
 #!/bin/sh
 # cp config files
+if [[ $USER == root ]]; then
+    echo "USER must not be root"
+    exit 1
+fi
 cp -R /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /opt/rc/.fzf /root/
 cp -R /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /opt/rc/.fzf /home/$USER/
 rsync -rvh --update /opt/rc/jupyter/ /opt/anaconda3/share/jupyter/   # the custom files position
 
-# config 777
+# add USER
+adduser $USER
+echo $USER:$PASSWD | chpasswd
+echo root:$PASSWD | chpasswd
+
+# config privilege 
 chmod -R 777 /root
-mkdir -p /home/$USER/.local/share/jupyter/runtime
-chown -R $USER:$USER /home/$USER/.local
-mkdir -p /home/$USER/.cache/code-server
-chown -R $USER:$USER /home/$USER/.cache
-mkdir -p /home/$USER/.config
-chown -R $USER:$USER /home/$USER/.config
+chmod -R 777 /opt/anaconda3/share/jupyter/*
+chown -R $USER:$USER /home/$USER/
 
 # sshd server 
 mkdir -p /var/run/sshd
 sed -i 's/Port 22/Port 8822/g' /etc/ssh/sshd_config
 sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
 
-# add USER
-useradd $USER -d /home/$USER 
-echo $USER:$PASSWD | chpasswd
-echo root:$PASSWD | chpasswd
-
 # jupyter
 SHA1=$(/opt/anaconda3/bin/python /opt/config/passwd.py $PASSWD)
-echo "c.NotebookApp.notebook_dir = u'/home/$USER'" >> /opt/config/jupyter_lab_config.py  # Notebook启动目录
-echo "c.NotebookApp.password = '$SHA1'">>/opt/config/jupyter_lab_config.py
+echo "c.ContentsManager.root_dir = '/home/$USER'" >> /opt/config/jupyter_lab_config.py
+echo "c.NotebookApp.notebook_dir = '/home/$USER'" >> /opt/config/jupyter_lab_config.py  # Notebook启动目录
+echo "c.NotebookApp.password = '$SHA1'" >> /opt/config/jupyter_lab_config.py
 echo "user=$USER" >>/opt/config/supervisord.conf
+echo -e "\n" >>/opt/config/supervisord.conf
 
 # code-server
 echo "[program:code-server]" >>/opt/config/supervisord.conf
