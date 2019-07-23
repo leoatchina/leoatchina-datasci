@@ -14,8 +14,8 @@ echo $USER:$PASSWD | chpasswd
 echo root:$PASSWD | chpasswd
 
 # config privilege 
-chmod -R 777 /root
-chmod -R 777 /opt/anaconda3/share/jupyter/*
+chmod  777 /root
+find /opt/anaconda3/share/jupyter/ -type d | xargs chmod 777
 chown -R $USER:$USER /home/$USER/
 
 # sshd server 

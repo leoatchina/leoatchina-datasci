@@ -5,6 +5,8 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+for d in $(find $HOME -maxdepth 1 -name ".*" -type d); do find $d -type d | xargs chmod 777 ; done
+
 export CLICOLOR=1
 export LSCOLORS=GxFxBxDxCxegedabagaced
 
