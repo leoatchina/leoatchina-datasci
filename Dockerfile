@@ -95,6 +95,6 @@ COPY rserver.conf /etc/rstudio/
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
 ## share ports and dirs 
 ENV PASSWD=jupyter
-ENV USER=rserver 
+ENV WKUESR=datasci
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8443 8822
