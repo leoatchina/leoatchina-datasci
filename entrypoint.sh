@@ -15,10 +15,10 @@ echo root:$PASSWD | chpasswd
 # config privilege 
 chmod 777 /root /opt/anaconda3/pkgs
 find /opt/anaconda3/share/jupyter/ -type d | xargs chmod 777
-chmod 755 /home/$WKUSER
 chown -R $WKUSER:$WKUSER /home/$WKUSER/
+chmod 755 /home/$WKUSER
 for d in $(find /root -maxdepth 1 -name ".*" -type d); do find $d -type d | xargs chmod 777 ; done
-for d in $(find /home/$WKUSER -maxdepth 1 -name ".*" -type d); do find $d -type d | xargs chmod 777 ; done
+for d in $(find /home/$WKUSER -maxdepth 1 -name ".*" -type d); do chown -R $WKUSER $d ; done
 
 # sshd server 
 mkdir -p /var/run/sshd
