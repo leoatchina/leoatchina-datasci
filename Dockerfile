@@ -8,12 +8,9 @@ RUN apt update -y && apt upgrade -y && \
     libapparmor1 libcurl4-openssl-dev libxml2 libxml2-dev libssl-dev libncurses5-dev libncursesw5-dev libjansson-dev \
     build-essential gfortran libcairo2-dev libxt-dev automake bash-completion \
     libapparmor1 libedit2 libc6 psmisc rrdtool libzmq3-dev libtool software-properties-common \
-    bioperl libdbi-perl tree python-dev python3-dev \ 
+    bioperl libdbi-perl tree jq \ 
     locales && locale-gen en_US.UTF-8 && \
     cpan -i Try::Tiny && \
-    add-apt-repository ppa:jonathonf/vim -y && \
-    apt update -y &&  \
-    apt install -y vim && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # bash && ctags
 RUN cd /tmp && \ 
@@ -72,13 +69,14 @@ RUN conda install -c bioconda/label/cf201901 java-jdk && \
     ln -s /opt/anaconda3/bin/java /usr/bin/java && \
 		R CMD javareconf && \
     conda clean -a -y 
+# vim8 here
 # coder server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
     tar xvzf code-server.tar.gz && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
-RUN apt install -y xvfb libswt-gtk-4-java jq && \
+RUN apt install -y xvfb libswt-gtk-4-java && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ## fzf rdy
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf
