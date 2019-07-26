@@ -55,6 +55,7 @@ RUN cd /tmp && \
     ln -s /opt/anaconda3/bin/conda /usr/bin/conda && \
     conda clean  -a -y
 # core packages
+#RUN conda update conda -c conda-canary && \
 RUN conda update conda-build && \
     conda clean -a -y
 RUN conda update --all && \
@@ -65,27 +66,31 @@ RUN conda install -c conda-forge neovim mysql-connector-python python-language-s
 RUN conda update -c conda-forge jupyterlab && \
     conda clean -a -y 
 # java
-RUN conda install -c bioconda/label/cf201901 java-jdk && \
-    ln -s /opt/anaconda3/bin/java /usr/bin/java && \
-		R CMD javareconf && \
-    conda clean -a -y 
-# vim8 here
+RUN apt install openjdk-8-jdk -y && \
+    apt install xvfb libswt-gtk-4-java -y && \
+    R CMD javareconf && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+# neovim here
+RUN cd /usr/local && \
+    wget https://github.com/neovim/neovim/releases/download/v0.3.8/nvim-linux64.tar.gz && \
+    tar xvzf nvim-linux64.tar.gz && \
+    rm nvim-linux64.tar.gz && \
+    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/vim && \
+    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim
 # coder server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
     tar xvzf code-server.tar.gz && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
-RUN apt install -y xvfb libswt-gtk-4-java && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ## fzf rdy
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf
-## system local config
-RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
-    echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
 # configuration
 COPY .bashrc .inputrc /root/
 RUN /root/.fzf/install --all
+## system local config
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
+    echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
 RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/anaconda3/share/jupyter /opt/rc/
 RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 755 /opt/config /opt/log
 COPY rserver.conf /etc/rstudio/
