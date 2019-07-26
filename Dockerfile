@@ -75,6 +75,7 @@ RUN cd /usr/local && \
     wget https://github.com/neovim/neovim/releases/download/v0.3.8/nvim-linux64.tar.gz && \
     tar xvzf nvim-linux64.tar.gz && \
     rm nvim-linux64.tar.gz && \
+    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/vi && \
     ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/vim && \
     ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim
 # coder server
