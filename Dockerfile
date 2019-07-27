@@ -50,23 +50,14 @@ RUN cd /tmp && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # anaconda3  
 RUN cd /tmp && \
-    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.03-Linux-x86_64.sh -o anaconda3.sh && \
+    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda3.sh && \
     bash anaconda3.sh -b -p /opt/anaconda3 && rm -r /tmp/* && \
     ln -s /opt/anaconda3/bin/conda /usr/bin/conda && \
-    conda clean  -a -y
-# core packages
-#RUN conda update conda -c conda-canary && \
-RUN conda update conda-build && \
-    conda clean -a -y
-RUN conda update --all && \
-    conda clean -a -y 
-RUN conda install -c conda-forge neovim mysql-connector-python python-language-server mock pygments flake8 nodejs yarn && \
-    conda clean -a -y 
-# jupyterlab
-RUN conda update -c conda-forge jupyterlab && \
+    conda install -c conda-forge neovim mysql-connector-python python-language-server mock pygments flake8 nodejs yarn && \
     conda clean -a -y 
 # java
-RUN apt install openjdk-8-jdk -y && \
+RUN apt update -y && \
+    apt install openjdk-8-jdk -y && \
     apt install xvfb libswt-gtk-4-java -y && \
     R CMD javareconf && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*

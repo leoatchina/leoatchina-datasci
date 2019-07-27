@@ -53,8 +53,8 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 unset color_prompt force_color_prompt
-export TERM=xterm-256color
-
+export TERM=xterm-256color 
+export EDITOR=nvim
 function git_branch {
     branch="`git branch 2>/dev/null | grep "^\*" | sed -e "s/^\*\ //"`"
     if [ "${branch}" != "" ];then
