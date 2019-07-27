@@ -49,11 +49,11 @@ RUN cd /tmp && \
     gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # anaconda3  
+ENV PATH=/opt/anaconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda3.sh && \
     bash anaconda3.sh -b -p /opt/anaconda3 && rm -r /tmp/* && \
-    ln -s /opt/anaconda3/bin/conda /usr/bin/conda && \
-    conda install -c conda-forge neovim mysql-connector-python python-language-server mock pygments flake8 nodejs yarn && \
+    conda install -c conda-forge neovim python-language-server yarn mysql-connector-python mock pygments flake8 nodejs && \
     conda clean -a -y 
 # java
 RUN apt update -y && \
