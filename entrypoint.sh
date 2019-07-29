@@ -4,19 +4,20 @@ if [[ $WKUSER == root ]]; then
     echo "WKUSER must not be root"
     exit 1
 fi
-cp -R /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /opt/rc/.fzf /root/
-cp -R /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /opt/rc/.fzf /home/$WKUSER/
+cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /root/
+cp -R /opt/rc/.fzf /root/
+cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /home/$WKUSER/
+cp -R /opt/rc/.fzf /home/$WKUSER
 rsync -rvh --update /opt/rc/jupyter/ /opt/anaconda3/share/jupyter/   # the custom files position
 
-adduser $WKUSER
+useradd $WKUSER -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
+chown -R $WKUSER /home/$WKUSER/
 echo $WKUSER:$PASSWD | chpasswd
 echo root:$PASSWD | chpasswd
 
 # config privilege 
 chmod 777 /root /opt/anaconda3/pkgs
 find /opt/anaconda3/share/jupyter/ -type d | xargs chmod 777
-chown -R $WKUSER:$WKUSER /home/$WKUSER/
-chmod 755 /home/$WKUSER
 for d in $(find /root -maxdepth 1 -name ".*" -type d); do find $d -type d | xargs chmod 777 ; done
 for d in $(find /home/$WKUSER -maxdepth 1 -name ".*" -type d); do chown -R $WKUSER $d ; done
 

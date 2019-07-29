@@ -81,6 +81,8 @@ RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf
 COPY .bashrc .inputrc /root/
 RUN /root/.fzf/install --all
 ## system local config
+RUN pip install intervaltree && \
+    rm -rf /root/.cache/pip/* /tmp/*
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
 RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/anaconda3/share/jupyter /opt/rc/
