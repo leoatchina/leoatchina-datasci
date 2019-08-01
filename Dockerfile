@@ -55,6 +55,7 @@ RUN cd /tmp && \
     bash anaconda3.sh -b -p /opt/anaconda3 && rm -rf /tmp/* && \
     conda install -c conda-forge neovim python-language-server yarn mysql-connector-python mock pygments flake8 nodejs && \
     conda clean -a -y 
+# @todo, mv  /opt/anaconda3/share/jupyter to /opt/rc, and rsync it back when start 
 RUN jupyter labextension install jupyterlab-drawio && \   
     jupyter labextension install jupyterlab_vim && \
     jupyter labextension install jupyterlab-kernelspy && \
@@ -63,6 +64,7 @@ RUN jupyter labextension install jupyterlab-drawio && \
     jupyter labextension install @lckr/jupyterlab_variableinspector && \
     jupyter labextension install @mflevine/jupyterlab_html && \   
     jupyter lab build && \
+    mkdir -p /opt/rc  && mv /opt/anaconda3/share/jupyter /opt/rc && \
     conda clean -a -y 
 # java
 RUN apt update -y && \
@@ -93,7 +95,7 @@ RUN pip install intervaltree joblib && \
     rm -rf /root/.cache/pip/* /tmp/*
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
-RUN mkdir -p /opt/rc && cp -R /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/rc/
+RUN cp -R /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/rc/
 RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 755 /opt/config /opt/log
 COPY rserver.conf /etc/rstudio/
 # @TODO, use entrypoint/supervisor to create user of current, and run jupyterlab, codeserver as current user

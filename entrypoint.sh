@@ -8,6 +8,7 @@ cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /root/
 cp -R /opt/rc/.fzf /root/
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /home/$WKUSER/
 cp -R /opt/rc/.fzf /home/$WKUSER
+rsync -rvh --update /opt/rc/jupyter /opt/anaconda3/share 
 
 useradd $WKUSER -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
 chown -R $WKUSER /home/$WKUSER/
