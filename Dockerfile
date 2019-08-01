@@ -53,8 +53,15 @@ RUN cd /tmp && \
 ENV PATH=/opt/anaconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda3.sh && \
-    bash anaconda3.sh -b -p /opt/anaconda3 && rm -r /tmp/* && \
+    bash anaconda3.sh -b -p /opt/anaconda3 && rm -rf /tmp/* && \
     conda install -c conda-forge neovim python-language-server yarn mysql-connector-python mock pygments flake8 nodejs && \
+    jupyter labextension install @jupyterlab/toc && \
+    jupyter labextension install jupyterlab_vim && \
+    jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
+    jupyter labextension install @lckr/jupyterlab_variableinspector && \
+    jupyter labextension install jupyterlab-kernelspy && \
+    jupyter labextension install @mflevine/jupyterlab_html && \   # @todo: add juperlab drawio
+    jupyter lab build && \
     conda clean -a -y 
 # java
 RUN apt update -y && \
@@ -68,8 +75,7 @@ RUN cd /usr/local && \
     tar xvzf nvim-linux64.tar.gz && \
     rm nvim-linux64.tar.gz && \
     ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/vi && \
-    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/vim && \
-    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim
+    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/vim
 # coder server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
