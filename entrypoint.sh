@@ -23,8 +23,10 @@ for d in $(find /home/$WKUSER -maxdepth 1 -name ".*" -type d); do chown -R $WKUS
 
 # sshd server 
 mkdir -p /var/run/sshd
+rm -r /etc/ssh/ssh*key
 sed -i 's/Port 22/Port 8822/g' /etc/ssh/sshd_config
 sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
+dpkg-reconfigure openssh-server 
 
 # jupyter
 SHA1=$(/opt/anaconda3/bin/python /opt/config/passwd.py $PASSWD)
