@@ -54,7 +54,7 @@ if [ -n "$force_color_prompt" ]; then
 fi
 unset color_prompt force_color_prompt
 export TERM=xterm-256color 
-export EDITOR=nvim
+export EDITOR=vim
 function git_branch {
     branch="`git branch 2>/dev/null | grep "^\*" | sed -e "s/^\*\ //"`"
     if [ "${branch}" != "" ];then
@@ -70,16 +70,15 @@ function git_branch {
     fi
 }
 
-alias ls='/bin/ls --color=auto'
-alias ll='/bin/ls -lh --color=auto'
-alias lsa='/bin/ls -alh --color=auto'
-alias llt='/bin/ls -lthr --color=auto'
-alias llT='/bin/ls -lth --color=auto'
-alias lls='/bin/ls -lShr --color=auto'
-alias llS='/bin/ls -lSh --color=auto'
-
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
+    alias ls='/bin/ls --color=auto'
+    alias ll='/bin/ls -lh --color=auto'
+    alias lsa='/bin/ls -alh --color=auto'
+    alias llt='/bin/ls -lthr --color=auto'
+    alias llT='/bin/ls -lth --color=auto'
+    alias lls='/bin/ls -lShr --color=auto'
+    alias llS='/bin/ls -lSh --color=auto'
     alias dir='dir --color=auto'
     alias vdir='vdir --color=auto'
     alias grep='grep --color=auto'
