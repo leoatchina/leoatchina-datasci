@@ -1,6 +1,7 @@
 FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
-COPY sources.list /etc/apt/sources.list # @todo: add 16.04 and 18.04 sources.list
+# @todo: add 16.04 and 18.04 sources.list
+COPY sources.list /etc/apt/sources.list 
 # @todo: install the software neeeded by nvida/cuda 
 RUN apt update -y && apt upgrade -y && \
     apt install -y wget curl net-tools iputils-ping apt-transport-https openssh-server \
