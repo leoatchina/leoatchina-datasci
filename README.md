@@ -4,13 +4,22 @@
 
 不过，虽说类似`rstudio`或者`jupyter lab`这样的分析平台，已经有别人已经做好的镜像，但是通常是最小化安装，常有系统软件动态库缺失，直接后果是导致部分R包不能安装，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让没有经验的人犯晕。比如`jupyterlab`通常是以`root`权限运行，生成的文件用`rstudio`打开就不能保存。
 
-为了工作需要，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`、`ssh server`、`code server`,可用于数据分析或生信分析平台的快速布置，也可供linux初学者练习用。 
+为了工作需要，本人设计了一个docker image，集成了`rstudio server`、`jupyter lab`、`ssh server`、`code server`,可用于数据分析或生信分析平台的快速布置，也可供linux初学者练习用。 
 
-### 2019年8月8日，最近增加的几个特性
-- 运行时可以指定用户名， 用 `WKUSER`变量指定
-- `jupyerlab` 里集成了`toc`, `variableinspect`, `drawio`, `jupyter_vim`等插件， 使用体验已接近`rstudio`
-- 内置`neovim`、`node`、`yarn`，`ctags`、`gtags`、`ripgrep`等软件，能在ssh bash环境下进行用`vim`进行代码编写。此处推荐下本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用。
-- 
+### 2019年8月8日，增加了好多个特性
+- 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`jupyter`
+- `jupyterlab`和`rstudio`都是以上述用户权限运行，这样就解决了原来**jupyterlab 和 rstudio产生的文件权限不一样的问题**。 连同`code-server`和`ssh-server`， 默认密码是`datasci`
+- `ssh`可以用`root`和你自定义的用户登陆， 密码相同。
+- 由于`jupyterlab`非root权限，所以如果不开放ssh端口不以`root`连进来的话，不能装软件 ，一定程度上提高了安全性。
+  - TODO: 计划以后把root的密码可以和自定义用户分开
+- `jupyterlab` 里集成了`table of content`, `variableinspect`, `drawio`, `jupyter_vim`等插件， 使用体验已接近`rstudio`
+- 内置`neovim`、`node`、`yarn`，`ctags`、`gtags`、`ripgrep`等软件，能在ssh bash环境下进行用`vim`进行代码编写。
+  - 此处推荐下本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用，接近一个轻型IDE，有按键提示，高亮、补全、运行、检查一应具全。
+- 内置`tmux`。 这里又强推下本人的配置 [tmux config](https://github.com/leoatchina/leoatchina-tmux.git)
+  - ln -s leoatchina-tmux/.tmux.conf ~/.tmux.conf
+  - `Alt+I`插入新tab, `Alt+P`往前翻,`Alt+N`往后翻
+  - `Alt+Shift+I`关闭当前tab, `Alt+Shift+P`往前移，`Alt+Shift+N`往后移
+  
 
 ### 安装方法
 - 直接pull(建议使用这种方法)
