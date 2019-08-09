@@ -58,8 +58,8 @@ services:
       - 8443:8443
       - 8822:8822
     volumes:   # 位置映射，右docker内部，左实际
-      - ./pkgs:/opt/anaconda3/pkgs
-      - ./jupyter:/opt/anaconda3/share/jupyter   # 这个是为了安装jupyterlab 插件
+      - ./pkgs:/opt/anaconda/pkgs
+      - ./jupyter:/opt/anaconda/share/jupyter   # 这个是为了安装jupyterlab 插件
       - ./work:/work
       - ./root:/root   # 这个是为了一次通过ssh-keygen生成密钥后，能多次使用
       - ./rserver:/home/rserver  # 关键目录之2，rtudio的工作目录
@@ -97,7 +97,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
 众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。为了达到`安装的软件`和`container分离`的目的，在删除container时不删除安装的软件的目的, root目录下的`.bashrc`（集成在镜像里) : `source /root/.local/.jupyterc`,这样灵活地对系统路径进行配置,。这个`.jupyterc`文件要自行建立。
 我的`.jupyterc`
 ```
-export PATH=/opt/anaconda3/bin:$PATH   # 这一条如果不加，在ssh进入的环境中 /opt/anaconda3/bin 不会放入$PATH中， 也就不能调用 conda等命令. 以后会调整
+export PATH=/opt/anaconda/bin:$PATH   # 这一条如果不加，在ssh进入的环境中 /opt/anaconda/bin 不会放入$PATH中， 也就不能调用 conda等命令. 以后会调整
 export PATH=$PATH:/work/bioinfo/bin
 export PATH=$PATH:/work/bioinfo/annovar
 export PATH=$PATH:/work/bioinfo/firehose

@@ -50,14 +50,14 @@ RUN cd /tmp && \
     curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# anaconda3  
-ENV PATH=/opt/anaconda3/bin:$PATH
+# anaconda  
+ENV PATH=/opt/anaconda/bin:$PATH
 RUN cd /tmp && \
-    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda3.sh && \
-    bash anaconda3.sh -b -p /opt/anaconda3 && rm -rf /tmp/* && \
+    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda.sh && \
+    bash anaconda.sh -b -p /opt/anaconda && rm -rf /tmp/* && \
     conda install -c conda-forge neovim python-language-server yarn mysql-connector-python mock pygments flake8 nodejs && \
     conda clean -a -y 
-# @todo, mv  /opt/anaconda3/share/jupyter to /opt/rc, and rsync it back when start 
+# @todo, mv  /opt/anaconda/share/jupyter to /opt/rc, and rsync it back when start 
 RUN jupyter labextension install jupyterlab-drawio && \   
     jupyter labextension install jupyterlab_vim && \
     jupyter labextension install jupyterlab-kernelspy && \
@@ -66,7 +66,7 @@ RUN jupyter labextension install jupyterlab-drawio && \
     jupyter labextension install @lckr/jupyterlab_variableinspector && \
     jupyter labextension install @mflevine/jupyterlab_html && \   
     jupyter lab build && \
-    mkdir -p /opt/rc  && mv /opt/anaconda3/share/jupyter /opt/rc && \
+    mkdir -p /opt/rc  && mv /opt/anaconda/share/jupyter /opt/rc && \
     conda clean -a -y 
 # java
 RUN apt update -y && \
