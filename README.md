@@ -1,8 +1,16 @@
 ## 用集成anaconda的docker快速布置数据分析平台
 ### 前言
 众所周知，`conda`和`docker`是进行快速软件安装、平台布置的两大神器，通过这个软件，在终端前敲几个命令即能安装软件就，出了问题也不会影响到系统配置，能够很轻松的还原和重建。
-不过，虽说类似`rstudio`或者`jupyterlab`这样的分析平台能够很快地找到别人已经做好的镜像，但是总有功能缺失，会导致部分R包不能安装，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让没有经验的人犯晕。
-为了工作需要，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`、`ssh server`、`code server`,，可用于数据分析或生信分析平台的快速布置，也可供linux初学者练习用。 并内置`vim8`、`node`、`yarn`，`ctags`、`gtags`、`ripgrep`等软件，配合本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用，能在ssh bash环境下进行用`vim`进行代码编写。
+
+不过，虽说类似`rstudio`或者`jupyter lab`这样的分析平台，已经有别人已经做好的镜像，但是通常是最小化安装，常有系统软件动态库缺失，直接后果是导致部分R包不能安装，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让没有经验的人犯晕。比如`jupyterlab`通常是以`root`权限运行，生成的文件用`rstudio`打开就不能保存。
+
+为了工作需要，我自己写了一个dockerfile，集成了`rstudio server`、`jupyter lab`、`ssh server`、`code server`,可用于数据分析或生信分析平台的快速布置，也可供linux初学者练习用。 
+
+### 2019年8月8日，最近增加的几个特性
+- 运行时可以指定用户名， 用 `WKUSER`变量指定
+- `jupyerlab` 里集成了`toc`, `variableinspect`, `drawio`, `jupyter_vim`等插件， 使用体验已接近`rstudio`
+- 内置`neovim`、`node`、`yarn`，`ctags`、`gtags`、`ripgrep`等软件，能在ssh bash环境下进行用`vim`进行代码编写。此处推荐下本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用。
+- 
 
 ### 安装方法
 - 直接pull(建议使用这种方法)
