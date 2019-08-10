@@ -69,7 +69,7 @@ services:
     image: leoatchina/datasci  
     environment:
       - PASSWD=yourpasswd  # PASSWD 
-      - ROOTPASSWD=rootpasswd # 区分
+      - ROOTPASSWD=rootpasswd # 区分普通用户的root密码，如没有，和普通用户相同
       - WKUSER=yourname   # 指定用户名
     ports:     # 端口映射，右边是container里的端口，左边是实际端口
       - 8787:8787
