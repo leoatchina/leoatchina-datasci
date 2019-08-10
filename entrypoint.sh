@@ -5,11 +5,11 @@ if [[ $WKUSER == root ]]; then
     exit 1
 fi
 # set config files
-cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /root/
+cp /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /root/
 cp -R /opt/rc/.fzf /root/
-cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /home/$WKUSER/
+cp /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /home/$WKUSER/
 cp -R /opt/rc/.fzf /home/$WKUSER
-rsync -rvh --update /opt/rc/jupyter /opt/anaconda/share 
+rsync -rvh --update /opt/rc/jupyter/ /opt/anaconda/share/jupyter/
 
 # user set
 useradd $WKUSER -u 8888 -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
