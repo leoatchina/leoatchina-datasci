@@ -1,19 +1,21 @@
 #!/bin/sh
-# cp config files
+# check name 
 if [[ $WKUSER == root ]]; then
     echo "WKUSER must not be root"
     exit 1
 fi
+# set config files
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /root/
 cp -R /opt/rc/.fzf /root/
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /home/$WKUSER/
 cp -R /opt/rc/.fzf /home/$WKUSER
 rsync -rvh --update /opt/rc/jupyter /opt/anaconda/share 
 
+# user set
 useradd $WKUSER -u 8888 -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
 chown -R $WKUSER /home/$WKUSER/
 echo $WKUSER:$PASSWD | chpasswd
-echo root:$PASSWD | chpasswd
+[[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
 
 # config privilege 
 chmod 777 /root /opt/anaconda/pkgs
@@ -43,13 +45,8 @@ echo "user=$WKUSER" >>/opt/config/supervisord.conf
 echo "stdout_logfile = /opt/log/code-server.log" >>/opt/config/supervisord.conf
 
 echo "=========================starting services================================"
-
-
-
-
 # rstudio
 systemctl enable rstudio-server
 service rstudio-server restart
-
 # start with supervisor
 /usr/bin/supervisord -c /opt/config/supervisord.conf
