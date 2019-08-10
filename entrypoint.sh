@@ -5,7 +5,7 @@ if [[ $WKUSER == root ]]; then
     exit 1
 fi
 if [ $WKUID -lt 1000 ]; then
-    echo "WKUID must not be greate than 999"
+    echo "WKUID must not be greater than 999"
     exit 1
 fi
 # set config files
