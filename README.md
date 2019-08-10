@@ -22,7 +22,7 @@ docker build -t leoatchina/datasci .
 ```
 
 ### 主要集成软件
-- 基于ubuntu16.04
+- 基于ubuntu16.04,后期可能会使用ubuntu18.04
 - 安装了大量编译、编辑、下载、搜索等用到的工具和库
 - 安装了最新版`anaconda`,`Rstudio-server`
 - 安装了`ssh-server`,`code-server`
@@ -36,8 +36,8 @@ docker build -t leoatchina/datasci .
 - `jupyterlab`和`rstudio`和`code-server`都是以上述用户权限运行，这样就解决了原来**文件权限不一样的问题**，默认密码是`jupyter`， 可用`PASSWD`变量指定。
 - `ssh-server`可用`root`或者自定义用户登陆 ，`root`密码默认和自定义用户密码一致，可用`ROOTPASSWD`变量另外指定。
 - 由于`jupyterlab`非root权限，因此，如不开放ssh端口不以`root`连入，不能装插件，也不能用`apt`等装系统软件，只能往自己的用户目录下用`conda`命令装软件 ，一定程度上提高了安全性。
-- `jupyterlab` 里集成了`table of content`, `variableinspect`, `drawio`,等插件， 使用体验已接近`rstudio`。
-- 内置`neovim`、`node`、`yarn`，`ctags`、`gtags`、`ripgrep`等软件，能在ssh bash环境下进行用`vim`进行代码编写。
+- `jupyterlab` 里集成了`table of content`, `variableinspect`, `drawio`等插件， 使用体验已接近`rstudio`。
+- 内置`neovim`、`node`、`yarn`，`uctags`、`gtags`、`ripgrep`等软件，能在ssh bash环境下进行用`vim`进行代码编写。
   - 此处推荐下本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用，接近一个轻型IDE，有按键提示，高亮、补全、运行、检查一应具全。
 - 内置`tmux`。 这里又强推下本人的配置 [tmux config](https://github.com/leoatchina/leoatchina-tmux.git)
   - ln -s leoatchina-tmux/.tmux.conf ~/.tmux.conf
@@ -54,7 +54,9 @@ docker build -t leoatchina/datasci .
 - 访问密码：
   - 见dockerfile里的`ENV PASSWD=jupyter`
   - **运行时可以修改密码**
-- 主目录: `/home/datasci`或者`/home/你指定的用户名`
+- 目录:
+  - `/home/datasci`或者`/home/你指定的用户名`
+  - `/root`目录
 
 ### 使用docker-compose命令
 - `docker-compose -f /home/docker/compose/bioinfo/docker-compose.yml up -d`
@@ -63,10 +65,12 @@ docker build -t leoatchina/datasci .
 version: "3"  # xml版本
 services:
   datasci:
-    image: leoatchina/datasci  # 使用前面做出来的镜像
+    image: leoatchina/datasci
     environment:
       - PASSWD=yourpasswd  # PASSWD
+      - ROOTPASSWD=rootpasswd # 区分普通用户的root密码，如没有，和普通用户相同
       - WKUSER=yourname   # 指定用户名
+      - WKUID=23333   # 指定用户ID, 注这个对权限控制很有用
     ports:     # 端口映射，右边是container里的端口，左边是实际端口
       - 8787:8787
       - 8888:8888
@@ -74,14 +78,15 @@ services:
       - 8822:8822
     volumes:   # 位置映射，右docker内部，左实际
       - ./pkgs:/opt/anaconda/pkgs   # 这个不映射在某些低级内核linux上会有问题
-      - ./jupyter:/opt/anaconda/share/jupyter   # 为了安装jupyterlab 插件
+      - ./jupyter:/opt/anaconda/share/jupyter   # 此目录是jupyterlab 插件目录,在启动
       - ./yourname:/home/yourname  # 工作目录
-      - /home/github:/mnt/github     # 个人习惯2，比如我的vim配置会
+      - ./log:/opt/log  # 除rstudio外的log目录
+      - ~/github:/mnt/github     # 个人习惯，比如我的vim配置会放在这里面
       放里面
-      - ./root:/root # 关键
+      - ./root:/root # root目录，/root/bin会放入$PATH中
     container_name: datasci
 ```
-会运行一个名为`datasci`的`container`
+如上，会生成一个名为`datasci`的container
 如在启动里想安装相应软件，可以在运行时用`build`指定一个放有`Dockerfile`的目录
 如上面， 把`image`这一行换成`build: ./build`， 在`./build`目录下建立`Dockerfile` ,安装`tensorflow`, `opencv`
 ```
@@ -94,31 +99,37 @@ RUN conda install tensorflow && conda install -c menpo opencv
 不推荐这种方法，请自行研究如何
 
 ### 运行后的操作
-- 默认密码各个服务都一样为`jupyter`，在启动时可以修改
-- **ssh-server**, 注意映射端口，对应`8822`，用户名是`root`或`你指定的用户名`
+- 默认密码各个服务都一样为`jupyter`，可在yml文件里调整
+- **ssh-server**端口`8822`，用户名是`root`或`你指定的用户名`
 - jupyterlab, 通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 ![jupyterlab](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925588870.png)
 - rstudio
 ![rstudio](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925709976.png)
 - code-sever, 要忽略掉`warning`才能打开
 ![code-server](https://www.github.com/leoatchina/leoatchina-notes/raw/master/Notes/2019/5/4/1556964572166.png)
-
-两大优点
-1. 只要你记得你的访问密码PASSWORD、IP、端口，就可以通过网页端进行操作。
-2. 启动`perl`，`python`,`shell`的分析流程后，**可以直接关闭网页**，不需要用`nohup`启动，下次重新打开该页面还是在**继续运行你的脚本** 。
+- 以此，就可快速布置软件环境并有以下好处
+  1. 启动分析流程后，发现代码写错了要强行结束时，只要删除`container`，不需要一个个去kill进程
+  2. 在另一个机器上快速搭建分析环境，把已经装上的软件复制过去就能搭建好分析环境。
+  3. 可以用`code-server`, `ssh`登陆container直接进行代码编写
 
 ### 环境变量
 众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。
-然而，为了安全
+为了达到`安装的软件`和`container分离`, 在删除container时不删除安装的软件的目的, 本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置
 
-为了达到`安装的软件`和`container分离`的目的，在删除container时不删除安装的软件的目的, root目录下的`.bashrc`（集成在镜像里) : `source /root/.local/.jupyterc`,这样灵活地对系统路径进行配置,。这个`.jupyterc`文件要自行建立。
-我的`.jupyterc`
 ```
-export PATH=$PATH:/work/bioinfo/bin
-export PATH=$PATH:/work/bioinfo/annovar
-export PATH=$PATH:/work/bioinfo/firehose
-export PATH=$PATH:/work/bioinfo/gatk4
+export PATH=$PATH:/root/bioinfo/bin
+export PATH=$PATH:/root/bioinfo/annovar
+export PATH=$PATH:/root/bioinfo/firehose
+export PATH=$PATH:/root/bioinfo/gatk4
 ```
+### jupyterlab的特殊说明
+- `rstudio`和`code-server`的插件都会放到`/home/yourname`下
+- 由于`jupyterlab`是用`root`权限的`supervisor`用`非root`启动， 因此虽然侧边工作目录已经移到`/home/yourname`下，但启动bash后还是在`/`目录下，而且主目录是 `/root`(矛盾吧，主目录为root的非root账户，**但ssh进去就正常了**)， 要自行 `CD /home/yourname`目录。
+- `jupyterlab`已经内置多个插件，这些插件是在`container`启动里从另一目录`rsync`到 `/opt/anaconda/share`下
+  - 因此只要在yml文件中映射一目录到`/opt/anaconda/share/jupyter`，自行再安装的插件就能保存
+  - 但是还是因为权限问题，要用`root`账户进入后用用 `jupyter labextension install xxx`再`jupyter lab build`才能安装并激活相应插件
+  - 请在`settings`里`enable` extensions
+
 
 ### 一个应用：用conda快速安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境。
@@ -130,8 +141,3 @@ conda install -p /work/bioinfo -c bioconda roary
 
 如此，就安装到对应的位置，如`samtools`,`bcftools`,`varscan`等一众生信软件都可以如此安装。
 在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
-
-以些，就可快速布置软件并有以下好处
-1. 启动分析流程后，发现代码写错了要强行结束时，只要删除`container`，不需要一个个去kill进程
-2. 在另一个机器上快速搭建分析环境，把`docker-file`在新机器上`bulid`下，各个`.xxxrc`文件放到正确的位置，然后把已经装上的软件复制过去就能搭建好分析环境。
-3. 可以用`code-server`, `ssh`登陆container直接进行代码编写
