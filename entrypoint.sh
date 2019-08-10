@@ -4,6 +4,10 @@ if [[ $WKUSER == root ]]; then
     echo "WKUSER must not be root"
     exit 1
 fi
+if [ $WKUID -lt 1000 ]; then
+    echo "WKUID must not be greate than 999"
+    exit 1
+fi
 # set config files
 cp /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /root/
 cp -R /opt/rc/.fzf /root/
@@ -12,16 +16,18 @@ cp -R /opt/rc/.fzf /home/$WKUSER
 rsync -rvh --update /opt/rc/jupyter/ /opt/anaconda/share/jupyter/
 
 # user set
-useradd $WKUSER -u 8888 -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
+useradd $WKUSER -u $WKUID -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
 chown -R $WKUSER /home/$WKUSER/
 echo $WKUSER:$PASSWD | chpasswd
 [[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
+unset ROOTPASSWD
 
 # config privilege 
 chmod 777 /root /opt/anaconda/pkgs
 find /opt/anaconda/share/jupyter/ -type d | xargs chmod 777
 for d in $(find /root -maxdepth 1 -name ".*" -type d); do find $d -type d | xargs chmod 777 ; done
-for d in $(find /home/$WKUSER -maxdepth 1 -name ".*" -type d); do chown -R $WKUSER $d ; done
+for d in $(find /root -maxdepth 1 -name ".*" -type d); do find $d -type f | xargs chmod 666 ; done
+for d in $(find /home/$WKUSER -maxdepth 1 -name ".*"); do chown -R $WKUSER $d ; done
 
 # sshd server 
 mkdir -p /var/run/sshd
@@ -44,7 +50,7 @@ echo "command=/opt/code-server/code-server /home/$WKUSER -P '$PASSWD' -d /home/$
 echo "user=$WKUSER" >>/opt/config/supervisord.conf
 echo "stdout_logfile = /opt/log/code-server.log" >>/opt/config/supervisord.conf
 
-echo "=========================starting services================================"
+echo "=========================starting services with USER $WKUSER UID $WKUID ================================"
 # rstudio
 systemctl enable rstudio-server
 service rstudio-server restart

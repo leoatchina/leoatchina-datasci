@@ -4,7 +4,7 @@
 
 不过，虽说类似`rstudio`或者`jupyter lab`这样的分析平台，已经有别人已经做好的镜像，但是通常是最小化安装，常有系统软件动态库缺失，直接后果是导致部分R包不能安装，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让没有经验的人犯晕。比如`jupyterlab`通常是以`root`权限运行，生成的文件用`rstudio`打开就不能保存。
 
-为了克服上述问题，本人设计了一个docker image，集成了`rstudio server`、`jupyter lab`、`ssh server`、`code server`,可用于数据分析或生信分析平台的快速布置，也可供linux初学者练习用。 
+为了克服上述问题，本人设计了一个docker image，集成了`rstudio server`、`jupyter lab`、`ssh server`、`code server`,可用于数据分析或生信分析平台的快速布置，也可供linux初学者练习用。
 
 
 ### 安装方法
@@ -32,8 +32,8 @@ docker build -t leoatchina/datasci .
 
 ### 2019年8月8日，增加了好多个特性
 - 可选是Anaconda3还是Anaconda2， 默认是Anaconda3，编译时用`ANACONDAVERSION`指定
-- 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`datasci`，UID为`8888`。
-- `jupyterlab`和`rstudio`和`code-server`都是以上述用户权限运行，这样就解决了原来**文件权限不一样的问题**，默认密码是`jupyter`， 可用`PASSWD`变量指定。
+- 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`datasci`. 也可指定不小于1000的`UID`，默认为`6666`。
+- `jupyterlab`和`rstudio`和`code-server`都是以上述用户权限运行，这样就解决了原来**文件权限不一样的问题**，默认密码是`jupyter`， 可用`PASSWD`变量指定。
 - `ssh-server`可用`root`或者自定义用户登陆 ，`root`密码默认和自定义用户密码一致，可用`ROOTPASSWD`变量另外指定。
 - 由于`jupyterlab`非root权限，因此，如不开放ssh端口不以`root`连入，不能装插件，也不能用`apt`等装系统软件，只能往自己的用户目录下用`conda`命令装软件 ，一定程度上提高了安全性。
 - `jupyterlab` 里集成了`table of content`, `variableinspect`, `drawio`,等插件， 使用体验已接近`rstudio`。
@@ -44,7 +44,7 @@ docker build -t leoatchina/datasci .
   - `Alt+I`插入新tab, `Alt+P`往前翻,`Alt+N`往后翻
   - `Alt+Shift+I`关闭当前tab, `Alt+Shift+P`往前移，`Alt+Shift+N`往后移
 - 内置`fzf`，你进入bash环境后按`ctral+T`试试
-  
+
 ### 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
@@ -65,7 +65,7 @@ services:
   datasci:
     image: leoatchina/datasci  # 使用前面做出来的镜像
     environment:
-      - PASSWD=yourpasswd  # PASSWD 
+      - PASSWD=yourpasswd  # PASSWD
       - WKUSER=yourname   # 指定用户名
     ports:     # 端口映射，右边是container里的端口，左边是实际端口
       - 8787:8787
