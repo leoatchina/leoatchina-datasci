@@ -87,13 +87,13 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\[\e[30;1m\]\$(git_branch)\[\e[0m\]\n\$ "
 
-if [[ ! -v $JUPYTER_SERVER_ROOT ]] && [[ ! $PATH == /opt/anaconda3/bin* ]]; then
-    export PATH=/opt/anaconda3/bin:$PATH
+if [[ ! -v $JUPYTER_SERVER_ROOT ]] && [[ ! $PATH == /opt/anaconda/bin* ]]; then
+    export PATH=/opt/anaconda/bin:$PATH
 fi
 
 if [[ ! $PATH == */root/bin* ]]; then
     export PATH=$PATH:/root/bin
 fi
 
+[ -f $HOME/.configrc ] && source $HOME/.configrc
 [ -f /usr/local/etc/bash_completion ] && bash /usr/local/etc/bash_completion
-[ -f /root/.configrc ] && source /root/.configrc

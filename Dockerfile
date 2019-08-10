@@ -97,7 +97,7 @@ RUN pip install intervaltree joblib && \
     rm -rf /root/.cache/pip/* /tmp/*
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
-RUN cp -R /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/rc/
+RUN mv /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/rc/
 RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 755 /opt/config /opt/log
 COPY rserver.conf /etc/rstudio/
 # @TODO, use entrypoint/supervisor to create user of current, and run jupyterlab, codeserver as current user
