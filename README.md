@@ -70,25 +70,26 @@ services:
       - PASSWD=yourpasswd  # PASSWD
       - ROOTPASSWD=rootpasswd # 区分普通用户的root密码，如没有，和普通用户相同
       - WKUSER=yourname   # 指定用户名
-      - WKUID=23333   # 指定用户ID, 注这个对权限控制很有用
+      - WKUID=23333   # 指定用户ID, 默认是6666，为控制目录权限
     ports:     # 端口映射，右边是container里的端口，左边是实际端口
       - 8787:8787
       - 8888:8888
       - 8443:8443
       - 8822:8822
     volumes:   # 位置映射，右docker内部，左实际
-      - ./pkgs:/opt/anaconda/pkgs   # 这个不映射在某些低级内核linux上会有问题
+      - ./pkgs:/opt/anaconda/pkgs   # 这个不映射在某些低级内核linux上用conda安装软件时会有问题
       - ./jupyter:/opt/anaconda/share/jupyter   # 此目录是jupyterlab 插件目录,在启动
-      - ./yourname:/home/yourname  # 工作目录
+      - ./yourname:/home/yourname  # 工作目录， 要和上面的WKUSER一致
       - ./log:/opt/log  # 除rstudio外的log目录
-      - ~/github:/mnt/github     # 个人习惯，比如我的vim配置会放在这里面
-      放里面
+      - ~/github:/mnt/github     # 个人习惯，比如我的vim配置会放在这里面放里面
       - ./root:/root # root目录，/root/bin会放入$PATH中
     container_name: datasci
 ```
-如上，会生成一个名为`datasci`的container
+如上，会生成一个名为`datasci`的container。
+
 如在启动里想安装相应软件，可以在运行时用`build`指定一个放有`Dockerfile`的目录
-如上面， 把`image`这一行换成`build: ./build`， 在`./build`目录下建立`Dockerfile` ,安装`tensorflow`, `opencv`
+
+如上面的yml文件，把`image`这一行换成`build: ./build`， 在`./build`目录下建立`Dockerfile` ，运行时就会安装`tensorflow`, `opencv`
 ```
 FROM leaotchina/datasci
 RUN pip install -q tensorflow_hub
@@ -100,7 +101,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
 
 ### 运行后的操作
 - 默认密码各个服务都一样为`jupyter`，可在yml文件里调整
-- **ssh-server**端口`8822`，用户名是`root`或`你指定的用户名`
+- **ssh-server**端口`8822`，用户名是`root`和`你指定的用户名`， 注意`root`密码可以和普通用户不一致
 - jupyterlab, 通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 ![jupyterlab](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925588870.png)
 - rstudio
@@ -117,10 +118,10 @@ RUN conda install tensorflow && conda install -c menpo opencv
 为了达到`安装的软件`和`container分离`, 在删除container时不删除安装的软件的目的, 本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置
 
 ```
-export PATH=$PATH:/root/bioinfo/bin
-export PATH=$PATH:/root/bioinfo/annovar
-export PATH=$PATH:/root/bioinfo/firehose
-export PATH=$PATH:/root/bioinfo/gatk4
+export PATH=/:/$HOME/bioinfo/bin
+export PATH=$PATH:/$HOME/bioinfo/annovar
+export PATH=$PATH:/$HOME/bioinfo/firehose
+export PATH=$PATH:/$HOME/bioinfo/gatk4
 ```
 ### jupyterlab的特殊说明
 - `rstudio`和`code-server`的插件都会放到`/home/yourname`下
@@ -135,9 +136,14 @@ export PATH=$PATH:/root/bioinfo/gatk4
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境。
 但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。
 ```
-conda install -p /work/bioinfo -c bioconda roary
+conda install -p /home/datasci/bioinfo -c bioconda roary
 ```
-![enter descriptiowork(https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551926299681.png)
+![enter descriptiowork](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551926299681.png)
 
 如此，就安装到对应的位置，如`samtools`,`bcftools`,`varscan`等一众生信软件都可以如此安装。
+
+由于在`.configrc`里作了路径配置，这些软件即时能用！
+
 在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
+
+### TODO， 增加对UID的说明
