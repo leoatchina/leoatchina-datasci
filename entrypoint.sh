@@ -5,7 +5,7 @@ if [[ $WKUSER == root ]]; then
     exit 1
 fi
 if [ $WKUID -lt 1000 ]; then
-    echo "WKUID must not be greater than 999"
+    echo "WKUID must be greater than 999"
     exit 1
 fi
 # set config files
@@ -51,7 +51,8 @@ echo "command=/opt/code-server/code-server /home/$WKUSER -P '$PASSWD' -d /home/$
 echo "user=$WKUSER" >>/opt/config/supervisord.conf
 echo "stdout_logfile = /opt/log/code-server.log" >>/opt/config/supervisord.conf
 
-echo "=========================starting services with USER $WKUSER UID $WKUID ================================"
+echo ""
+echo "========================= starting services with USER $WKUSER whose UID is $WKUID ================================"
 # rstudio
 systemctl enable rstudio-server
 service rstudio-server restart
