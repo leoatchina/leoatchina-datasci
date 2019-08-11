@@ -113,16 +113,6 @@ RUN conda install tensorflow && conda install -c menpo opencv
   2. 在另一个机器上快速搭建分析环境，把已经装上的软件复制过去就能搭建好分析环境。
   3. 可以用`code-server`, `ssh`登陆container直接进行代码编写
 
-### 环境变量
-众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。
-为了达到`安装的软件`和`container分离`, 在删除container时不删除安装的软件的目的, 本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置
-
-```
-export PATH=/:/$HOME/bioinfo/bin
-export PATH=$PATH:/$HOME/bioinfo/annovar
-export PATH=$PATH:/$HOME/bioinfo/firehose
-export PATH=$PATH:/$HOME/bioinfo/gatk4
-```
 ### jupyterlab的特殊说明
 - `rstudio`和`code-server`的插件都会放到`/home/yourname`下
 - 由于`jupyterlab`是用`root`权限的`supervisor`用`非root`启动， 因此虽然侧边工作目录已经移到`/home/yourname`下，但启动bash后还是在`/`目录下，而且主目录是 `/root`(矛盾吧，主目录为root的非root账户，**但ssh进去就正常了**)， 要自行 `CD /home/yourname`目录。
@@ -131,16 +121,27 @@ export PATH=$PATH:/$HOME/bioinfo/gatk4
   - 但是还是因为权限问题，要用`root`账户进入后用用 `jupyter labextension install xxx`再`jupyter lab build`才能安装并激活相应插件
   - 请在`settings`里`enable` extensions
 
+### 环境变量
+众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。
+为了达到`安装的软件`和`container分离`, 在删除container时不删除安装的软件的目的, 本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置
 
-### 一个应用：用conda快速安装生信软件
-各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`source activate`激活这个环境。
-但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。
+```
+export PATH=$PATH:/home/datasci/bioinfo/bin
+export PATH=$PATH:/home/datasci/bioinfo/annovar
+export PATH=$PATH:/home/datasci/bioinfo/firehose
+export PATH=$PATH:/home/datasci/bioinfo/gatk4
+```
+
+### 应用：用conda快速安装生信软件
+各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`conda activate`激活这个环境。
+
+但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。如下
 ```
 conda install -p /home/datasci/bioinfo -c bioconda roary
 ```
 ![enter descriptiowork](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551926299681.png)
 
-如此，就安装到对应的位置，如`samtools`,`bcftools`,`varscan`等一众生信软件都可以如此安装。
+就安装到对应的位置，如`samtools`,`bcftools`,`varscan`等一众生信软件都可以如此安装。
 
 由于在`.configrc`里作了路径配置，这些软件即时能用！
 
