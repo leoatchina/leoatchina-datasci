@@ -27,7 +27,7 @@ unset ROOTPASSWD
 chmod 777 /root /opt/anaconda/pkgs
 find /opt/anaconda/share/jupyter/ -type d | xargs chmod 777
 for d in $(find /root -maxdepth 1 -name ".*" -type d); do find $d -type d | xargs chmod 777 ; done
-for d in $(find /root -maxdepth 1 -name ".*" -type d); do find $d -type f | xargs chmod 666 ; done
+for d in $(find /root -maxdepth 1 -name ".*" -type d | grep -v fzf); do find $d -type f | xargs chmod 666 ; done
 for d in $(find /home/$WKUSER -maxdepth 1 -name ".*"); do chown -R $WKUSER:$WKUSER $d ; done
 
 # sshd server 
