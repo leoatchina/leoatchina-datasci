@@ -6,13 +6,11 @@
 
 为了克服上述问题，本人设计了一个docker image，集成了`rstudio server`、`jupyter lab`、`ssh server`、`code server`,可用于数据分析或生信分析平台的快速布置，也可供linux初学者练习用。
 
-
 ### 安装方法
 - 直接pull(建议使用这种方法)
 ```
 docker pull leoatchina/datasci
 ```
-
 - build docker镜像
 要先装好`docker-ce`和`git`
 ```
@@ -32,10 +30,11 @@ docker build -t leoatchina/datasci .
 
 ### 2019年8月8日，增加了好多个特性
 - 可选是Anaconda3还是Anaconda2， 默认是Anaconda3，编译时用`ANACONDAVERSION`指定
-- 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`datasci`. 也可指定不小于1000的`UID`，默认为`6666`。
+- 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`datasci`。 可指定不小于1000的`UID`，默认为`6666`。
 - `jupyterlab`和`rstudio`和`code-server`都是以上述用户权限运行，这样就解决了原来**文件权限不一样的问题**，默认密码是`jupyter`， 可用`PASSWD`变量指定。
 - `ssh-server`可用`root`或者自定义用户登陆 ，`root`密码默认和自定义用户密码一致，可用`ROOTPASSWD`变量另外指定。
 - 由于`jupyterlab`非root权限，因此，如不开放ssh端口不以`root`连入，不能装插件，也不能用`apt`等装系统软件，只能往自己的用户目录下用`conda`命令装软件 ，一定程度上提高了安全性。
+- **我是如何解决权限问题的请打开entrypoint.sh**这个启动脚本学习。
 - `jupyterlab` 里集成了`table of content`, `variableinspect`, `drawio`等插件， 使用体验已接近`rstudio`。
 - 内置`neovim`、`node`、`yarn`，`uctags`、`gtags`、`ripgrep`等软件，能在ssh bash环境下进行用`vim`进行代码编写。
   - 此处推荐下本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用，接近一个轻型IDE，有按键提示，高亮、补全、运行、检查一应具全。
@@ -43,7 +42,8 @@ docker build -t leoatchina/datasci .
   - ln -s leoatchina-tmux/.tmux.conf ~/.tmux.conf
   - `Alt+I`插入新tab, `Alt+P`往前翻,`Alt+N`往后翻
   - `Alt+Shift+I`关闭当前tab, `Alt+Shift+P`往前移，`Alt+Shift+N`往后移
-- 内置`fzf`，你进入bash环境后按`ctral+T`试试
+  - 先导键是`ctrl+X`
+- 内置`fzf`，你进入bash环境后按`ctrl+T`试试
 
 ### 主要控制点
 - 开放端口：
@@ -78,10 +78,10 @@ services:
       - 8822:8822
     volumes:   # 位置映射，右docker内部，左实际
       - ./pkgs:/opt/anaconda/pkgs   # 这个不映射在某些低级内核linux上用conda安装软件时会有问题
-      - ./jupyter:/opt/anaconda/share/jupyter   # 此目录是jupyterlab 插件目录,在启动要rsync一部分插件过来
+      - ./jupyter:/opt/anaconda/share/jupyter   # 此目录是jupyterlab插件目录, 映射出来是为了装插件, 有权限问题
       - ./datasci:/home/datasci  # 工作目录， 要和上面的WKUSER一致
       - ./log:/opt/log  # 除rstudio外的log目录
-      - ~/github:/mnt/github     # 个人习惯，比如我的vim配置会放在这里面放里面
+      - ~/github:/mnt/github     # 个人习惯，比如我的vim配置会放在这里面
       - ./root:/root # root目录，/root/bin会放入$PATH中
     container_name: datasci
 ```
