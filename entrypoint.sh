@@ -8,6 +8,9 @@ if [ $WKUID -lt 1000 ]; then
     echo "WKUID must be greater than 999"
     exit 1
 fi
+if [ ! -n "${WKGID+1}" ]; then
+    WKGID=$WKUID
+fi
 # set config files
 cp /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /root/
 cp -R /opt/rc/.fzf /root/
@@ -17,8 +20,9 @@ cp -R /opt/rc/.fzf /home/$WKUSER
 rsync -rvh --update /opt/rc/jupyter/ /opt/anaconda/share/jupyter/
 
 # user set
-useradd $WKUSER -u $WKUID -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
-chown -R $WKUSER:$WKUSER /home/$WKUSER/
+groupadd $WKUSER -g $WKGID
+useradd $WKUSER -u $WKUID -g $WKGID -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
+chown -R $WKUSER:$WKGID /home/$WKUSER/
 echo $WKUSER:$PASSWD | chpasswd
 [[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
 unset ROOTPASSWD
@@ -28,7 +32,7 @@ chmod 777 /root /opt/anaconda/pkgs
 find /opt/anaconda/share/jupyter/ -type d | xargs chmod 777
 for d in $(find /root -maxdepth 1 -name ".*" -type d); do find $d -type d | xargs chmod 777 ; done
 for d in $(find /root -maxdepth 1 -name ".*" -type d | grep -v fzf); do find $d -type f | xargs chmod 666 ; done
-for d in $(find /home/$WKUSER -maxdepth 1 -name ".*"); do chown -R $WKUSER:$WKUSER $d ; done
+for d in $(find /home/$WKUSER -maxdepth 1 -name ".*"); do chown -R $WKUSER:$WKGID $d ; done
 
 # sshd server 
 mkdir -p /var/run/sshd
