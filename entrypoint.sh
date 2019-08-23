@@ -5,7 +5,7 @@ if [[ $WKUSER == root ]]; then
     exit 1
 fi
 if [ $WKUID -lt 1000 ]; then
-    echo "WKUID must be greater than 999"
+    echo "WKUID must not be less than 1000"
     exit 1
 fi
 if [ ! -n "${WKGID+1}" ]; then

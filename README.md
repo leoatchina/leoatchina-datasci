@@ -29,8 +29,8 @@ docker build -t leoatchina/datasci .
 - `pkgs.R`和`conda.sh`，收集的一些R包和conda生信软件的安装脚本
 
 ### 2019年8月8日，增加了好多个特性
-- 可选是Anaconda3还是Anaconda2， 默认是Anaconda3，编译时用`ANACONDAVERSION`指定
-- 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`datasci`。 可指定不小于1000的`UID`，默认为`6666`。
+- 可选是`Anaconda3`还是`Anaconda2`， 默认是Anaconda3，编译时用`ANACONDAVERSION`指定
+- 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`datasci`。 可指定不小于1000的`UID`，默认为`1000`。
 - `jupyterlab`和`rstudio`和`code-server`都是以上述用户权限运行，这样就解决了原来**文件权限不一样的问题**，默认密码是`jupyter`， 可用`PASSWD`变量指定。
 - `ssh-server`可用`root`或者自定义用户登陆 ，`root`密码默认和自定义用户密码一致，可用`ROOTPASSWD`变量另外指定。
 - 由于`jupyterlab`非root权限，因此，如不开放ssh端口不以`root`连入，不能装插件，也不能用`apt`等装系统软件，只能往自己的用户目录下用`conda`命令装软件 ，一定程度上提高了安全性。
