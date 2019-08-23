@@ -150,4 +150,16 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 
 在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
 
+### BUGS
+#### 不能在jupyter lab sidebar里删除文件和文件夹
+如下图，在sidebar里点右键不能删除文件和文件夹，报`500`错误
+![delete bug](images/delete_bug.png)
+观察日志`/opt/log/jupyterlab.log`，发现是一个内部设计的`cross-device link`错误，估计和jupyter lab放在docker里有关
+```
+ OSError: [Errno 18] Invalid cross-device link: b'/home/datasci/untitled.txt' -> b'/root/.local/share/Trash/files/untitled.txt'
+```
+**解决方法**
+进入shell环境后用 `rm`命令删除，这个`bug`反而起了保护文件的作用
+
+
 ### TODO， 增加对UID的说明
