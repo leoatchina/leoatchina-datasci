@@ -158,7 +158,13 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 > OSError: [Errno 18] Invalid cross-device link: b'/home/datasci/untitled.txt' -> b'/root/.local/share/Trash/files/untitled.txt'
 
 **解决方法**：进入shell环境后用 `rm`命令删除，这个`bug`反而起了保护文件的作用
-2. 权限问题
+
+2. 作了`conda init bash`等操作后，一重启container都失效了
+要观察上述操作是否往  `~/.bashrc`文件里写入东西，把写入的东西移到`~/.configrc`。
+`~/.bashrc`在重启时会被还原到初始状态。
+
+3. 用`conda`安装的并激活一个环境中，报和`libcurl.so`相关的错误
+把你 对应目录下的 `lib/libcurl.so.4`给删除掉，或者从 `/usr/lib/x86_64-linux-gnu`下链接过来
 
 
 ### TODO， 增加对UID的说明
