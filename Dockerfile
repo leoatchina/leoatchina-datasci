@@ -14,29 +14,6 @@ RUN apt update -y && apt upgrade -y && \
     locales && locale-gen en_US.UTF-8 && \
     cpan -i Try::Tiny && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# bash && ctags
-RUN cd /tmp && \ 
-    wget https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz && \
-    tar xvzf bash-5.0.tar.gz && \
-    cd bash-5.0 && \
-    ./configure && \
-    make && \
-    make install && \
-    cd /tmp && \
-    curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb && \
-    dpkg -i ripgrep_11.0.1_amd64.deb && \
-    cd /tmp && \
-    git clone --depth 1 https://github.com/universal-ctags/ctags.git && cd ctags && \
-    ./autogen.sh && ./configure && make && make install && \
-    cd /tmp && \
-    curl http://ftp.vim.org/ftp/gnu/global/global-6.6.3.tar.gz -o global.tar.gz && \
-    tar xvzf global.tar.gz && cd global-6.6.3 && \
-    ./configure --with-sqlite3 && make && make install && \
-    cd /tmp && \
-    curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
-    tar xvzf libiconv.tar.gz && cd libiconv-1.16 && \
-    ./configure && make && make install && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # R
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/' && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9 && \
@@ -74,7 +51,31 @@ RUN apt update -y && \
     apt install xvfb libswt-gtk-4-java -y && \
     R CMD javareconf && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+# bash && ctags
+RUN cd /tmp && \ 
+    wget https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz && \
+    tar xvzf bash-5.0.tar.gz && \
+    cd bash-5.0 && \
+    ./configure && \
+    make && \
+    make install && \
+    cd /tmp && \
+    curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb && \
+    dpkg -i ripgrep_11.0.1_amd64.deb && \
+    cd /tmp && \
+    git clone --depth 1 https://github.com/universal-ctags/ctags.git && cd ctags && \
+    ./autogen.sh && ./configure && make && make install && \
+    cd /tmp && \
+    curl http://ftp.vim.org/ftp/gnu/global/global-6.6.3.tar.gz -o global.tar.gz && \
+    tar xvzf global.tar.gz && cd global-6.6.3 && \
+    ./configure --with-sqlite3 && make && make install && \
+    cd /tmp && \
+    curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
+    tar xvzf libiconv.tar.gz && cd libiconv-1.16 && \
+    ./configure && make && make install && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # neovim here
+# @todo, compile vim
 RUN cd /usr/local && \
     wget https://github.com/neovim/neovim/releases/download/v0.3.8/nvim-linux64.tar.gz && \
     tar xvzf nvim-linux64.tar.gz && \
