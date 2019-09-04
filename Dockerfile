@@ -16,7 +16,7 @@ RUN apt update -y && apt upgrade -y && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # R
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/' && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9 && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
     add-apt-repository ppa:ubuntugis/ppa -y && \
     apt update -y && \
     apt install -y r-base-dev r-base r-base-core r-recommended && \
