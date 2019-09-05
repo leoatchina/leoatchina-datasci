@@ -9,18 +9,14 @@
 ### 安装方法
 - 直接pull(建议使用这种方法)
 ```
-docker pull leoatchina/datasci
+docker pull leoatchina/datasci:stable
 ```
 - build docker镜像
-要先装好`docker-ce`和`git`
-```
-git clone https://github.com/leoatchina/leoatchina-datasci.git
-cd leoatchina-datasci
-docker build -t leoatchina/datasci .
-```
+要先装好`docker-ce`和`git`, 注意：最近juypterlab升级，装插件后会显示异常，在我测试通过前不要自行build
+
 
 ### 主要集成软件
-- 基于ubuntu16.04,后期可能会使用ubuntu18.04
+- 基于ubuntu16.04
 - 安装了大量编译、编辑、下载、搜索等用到的工具和库
 - 安装了最新版`anaconda3`,`Rstudio-server`
 - 安装了`ssh-server`,`code-server`
@@ -64,12 +60,12 @@ docker build -t leoatchina/datasci .
 version: "3"  # xml版本
 services:
   datasci:
-    image: leoatchina/datasci
+    image: leoatchina/datasci:stable
     environment:
       - PASSWD=yourpasswd  # PASSWD
       - ROOTPASSWD=rootpasswd # 区分普通用户的root密码，如没有，和普通用户相同
       - WKUSER=datasci   # 指定用户名
-      - WKUID=23333   # 指定用户ID, 默认是6666
+      - WKUID=23333   # 指定用户ID, 默认是1000
     ports:     # 端口映射，右边是container里的端口，左边是实际端口
       - 8787:8787
       - 8888:8888
@@ -90,7 +86,7 @@ services:
 
 如上面的yml文件，把`image`这一行换成`build: ./build`， 在`./build`目录下建立`Dockerfile` ，运行时就会安装`tensorflow`, `opencv`
 ```
-FROM leaotchina/datasci
+FROM leaotchina/datasci:stable
 RUN pip install -q tensorflow_hub
 RUN conda install tensorflow && conda install -c menpo opencv
 ```
@@ -165,5 +161,6 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 3. 用`conda`安装的并激活一个环境中，报和`libcurl.so`相关的错误
 把你 对应目录下的 `lib/libcurl.so.4`给删除掉，或者从 `/usr/lib/x86_64-linux-gnu`下链接过来
 
+4. 最近发现jupyter lab升级后，装插件后会显示异常，还在排除问题
 
 ### TODO， 增加对UID的说明
