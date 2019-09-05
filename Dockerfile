@@ -27,30 +27,6 @@ RUN cd /tmp && \
     curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# anaconda3
-ENV PATH=/opt/anaconda3/bin:$PATH
-RUN cd /tmp && \
-    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda.sh && \
-    bash anaconda.sh -b -p /opt/anaconda3 && rm -rf /tmp/* && \
-    conda update --all -y && \
-    conda install -c conda-forge jupyterlab && \
-    conda install -c conda-forge neovim python-language-server yarn mysql-connector-python mock pygments flake8 nodejs && \
-    conda clean -a -y 
-RUN jupyter labextension install jupyterlab-drawio && \   
-    jupyter labextension install jupyterlab-kernelspy && \
-    jupyter labextension install @jupyterlab/toc && \
-    jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
-    jupyter labextension install @lckr/jupyterlab_variableinspector && \
-    jupyter labextension install @mflevine/jupyterlab_html && \   
-    jupyter lab build && \
-    mkdir -p /opt/rc  && mv /opt/anaconda3/share/jupyter /opt/rc && \
-    conda clean -a -y 
-# java
-RUN apt update -y && \
-    apt install openjdk-8-jdk -y && \
-    apt install xvfb libswt-gtk-4-java -y && \
-    R CMD javareconf && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # bash && ctags
 RUN cd /tmp && \ 
     wget https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz && \
@@ -73,6 +49,30 @@ RUN cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
     tar xvzf libiconv.tar.gz && cd libiconv-1.16 && \
     ./configure && make && make install && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+# anaconda3
+ENV PATH=/opt/anaconda3/bin:$PATH
+RUN cd /tmp && \
+    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda.sh && \
+    bash anaconda.sh -b -p /opt/anaconda3 && rm -rf /tmp/* && \
+    #conda update --all -y && \
+    conda install -c conda-forge jupyterlab && \
+    conda install -c conda-forge neovim python-language-server yarn mysql-connector-python mock pygments flake8 nodejs && \
+    conda clean -a -y 
+#RUN jupyter labextension install jupyterlab-drawio && \   
+    #jupyter labextension install jupyterlab-kernelspy && \
+    #jupyter labextension install @jupyterlab/toc && \
+    #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
+    #jupyter labextension install @lckr/jupyterlab_variableinspector && \
+    #jupyter labextension install @mflevine/jupyterlab_html && \   
+    #jupyter lab build && \
+    #mkdir -p /opt/rc  && mv /opt/anaconda3/share/jupyter /opt/rc && \
+    #conda clean -a -y 
+# java
+RUN apt update -y && \
+    apt install openjdk-8-jdk -y && \
+    apt install xvfb libswt-gtk-4-java -y && \
+    R CMD javareconf && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # neovim here
 # @todo, compile vim
