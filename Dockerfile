@@ -55,18 +55,17 @@ RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda.sh && \
     bash anaconda.sh -b -p /opt/anaconda3 && rm -rf /tmp/* && \
     conda clean -a -y 
-    #conda update --all -y && \
+    # @note, conda update --all -y && \
 RUN conda update -n base -c defaults conda -y && \ 
+    conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ yarn nodejs && \ 
     conda update -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ jupyterlab && \
-    conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ \ 
-                     neovim python-language-server yarn mysql-connector-python mock pygments flake8 nodejs dash && \
     conda clean -a -y 
-# java
 RUN apt update -y && \
     apt install openjdk-8-jdk -y && \
     apt install xvfb libswt-gtk-4-java -y && \
     R CMD javareconf && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server mysql-connector-python mock pygments flake8 dash && \
 # @todo compile vim
 RUN cd /usr/local && \
     wget https://github.com/neovim/neovim/releases/download/v0.3.8/nvim-linux64.tar.gz && \
@@ -79,14 +78,15 @@ RUN cd /tmp && \
     tar xvzf code-server.tar.gz && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
+# install jupyter lab extensions
+RUN mkdir -p /opt/rc
 RUN jupyter labextension install jupyterlab-drawio && \   
     jupyter labextension install jupyterlab-kernelspy && \
     jupyter labextension install @jupyterlab/toc && \
     jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
     jupyter labextension install @lckr/jupyterlab_variableinspector && \
     jupyter labextension install @mflevine/jupyterlab_html && \   
-    jupyter lab build && \
-    mkdir -p /opt/rc  && mv /opt/anaconda3/share/jupyter /opt/rc && \
+    jupyter lab build && mv /opt/anaconda3/share/jupyter /opt/rc && \
     conda clean -a -y 
 ## fzf rdy
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf
