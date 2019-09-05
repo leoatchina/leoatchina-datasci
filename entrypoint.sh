@@ -17,7 +17,7 @@ cp -R /opt/rc/.fzf /root/
 cp /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /home/$WKUSER/
 cp -R /opt/rc/.fzf /home/$WKUSER
 # rsync for jupyterlab
-rsync -rvh --update /opt/rc/jupyter/ /opt/anaconda/share/jupyter/
+rsync -rvh --update /opt/rc/jupyter/ /opt/anaconda3/share/jupyter/
 
 # user set
 groupadd $WKUSER -g $WKGID
@@ -28,8 +28,8 @@ echo $WKUSER:$PASSWD | chpasswd
 unset ROOTPASSWD
 
 # config privilege 
-chmod 777 /root /opt/anaconda/pkgs
-find /opt/anaconda/share/jupyter/ -type d | xargs chmod 777
+chmod 777 /root /opt/anaconda3/pkgs
+find /opt/anaconda3/share/jupyter/ -type d | xargs chmod 777
 for d in $(find /root -maxdepth 1 -name ".*" -type d); do find $d -type d | xargs chmod 777 ; done
 for d in $(find /root -maxdepth 1 -name ".*" -type d | grep -v fzf); do find $d -type f | xargs chmod 666 ; done
 for d in $(find /home/$WKUSER -maxdepth 1 -name ".*"); do chown -R $WKUSER:$WKGID $d ; done
@@ -42,7 +42,7 @@ sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd
 dpkg-reconfigure openssh-server 
 
 # jupyter
-SHA1=$(/opt/anaconda/bin/python /opt/config/passwd.py $PASSWD)
+SHA1=$(/opt/anaconda3/bin/python /opt/config/passwd.py $PASSWD)
 echo "c.ContentsManager.root_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_config.py
 echo "c.NotebookApp.notebook_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_config.py  # Notebook启动目录
 echo "c.NotebookApp.password = '$SHA1'" >> /opt/config/jupyter_lab_config.py

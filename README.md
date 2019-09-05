@@ -1,4 +1,4 @@
-## 用集成anaconda的docker快速布置数据分析平台
+## 用集成anaconda3的docker快速布置数据分析平台
 ### 前言
 众所周知，`conda`和`docker`是进行快速软件安装、平台布置的两大神器，通过这个软件，在终端前敲几个命令即能安装软件就，出了问题也不会影响到系统配置，能够很轻松的还原和重建。
 
@@ -22,14 +22,13 @@ docker build -t leoatchina/datasci .
 ### 主要集成软件
 - 基于ubuntu16.04,后期可能会使用ubuntu18.04
 - 安装了大量编译、编辑、下载、搜索等用到的工具和库
-- 安装了最新版`anaconda`,`Rstudio-server`
+- 安装了最新版`anaconda3`,`Rstudio-server`
 - 安装了`ssh-server`,`code-server`
 - 用`supervisor`启动后台web服务
 - 美化bash界面
 - `pkgs.R`和`conda.sh`，收集的一些R包和conda生信软件的安装脚本
 
 ### 2019年8月8日，增加了好多个特性
-- 可选是`Anaconda3`还是`Anaconda2`， 默认是Anaconda3，编译时用`ANACONDAVERSION`指定
 - 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`datasci`。 可指定不小于1000的`UID`，默认为`1000`。
 - `jupyterlab`和`rstudio`和`code-server`都是以上述用户权限运行，这样就解决了原来**文件权限不一样的问题**，默认密码是`jupyter`， 可用`PASSWD`变量指定。
 - `ssh-server`可用`root`或者自定义用户登陆 ，`root`密码默认和自定义用户密码一致，可用`ROOTPASSWD`变量另外指定。
@@ -77,8 +76,8 @@ services:
       - 8443:8443
       - 8822:8822
     volumes:   # 位置映射，右docker内部，左实际
-      - ./pkgs:/opt/anaconda/pkgs   # 这个不映射在某些低级内核linux上用conda安装软件时会有问题
-      - ./jupyter:/opt/anaconda/share/jupyter   # 此目录是jupyterlab插件目录, 映射出来是为了装插件, 有权限问题
+      - ./pkgs:/opt/anaconda3/pkgs   # 这个不映射在某些低级内核linux上用conda安装软件时会有问题
+      - ./jupyter:/opt/anaconda3/share/jupyter   # 此目录是jupyterlab插件目录, 映射出来是为了装插件, 有权限问题
       - ./datasci:/home/datasci  # 工作目录， 要和上面的WKUSER一致
       - ./log:/opt/log  # 除rstudio外的log目录
       - ~/github:/mnt/github     # 个人习惯，比如我的vim配置会放在这里面
@@ -116,9 +115,9 @@ RUN conda install tensorflow && conda install -c menpo opencv
 ### jupyterlab的特殊说明
 - `rstudio`和`code-server`的插件都会放到`/home/datasci`下
 - 由于`jupyterlab`是用`root`权限的`supervisor`用`datasci`账户权限启动， 因此虽然侧边工作目录已经移到`/home/datasci`下，但启动bash后还是在`/`目录下，而且主目录是 `/root`(矛盾吧，主目录为root的非root账户，**但ssh进去就正常了**)， 要自行 `CD /home/datasci`目录才能进行写操作。
-- `jupyterlab`已经内置多个插件，这些插件是在`container`启动里从另一目录`rsync`到 `/opt/anaconda/share`下
+- `jupyterlab`已经内置多个插件，这些插件是在`container`启动里从另一目录`rsync`到 `/opt/anaconda3/share`下
   - 请在`settings`里`enable` extensions
-  - 因此只要在yml文件中映射一目录到`/opt/anaconda/share/jupyter`，自行再安装的插件就能保存，如我最喜欢的jupyter_vim
+  - 因此只要在yml文件中映射一目录到`/opt/anaconda3/share/jupyter`，自行再安装的插件就能保存，如我最喜欢的jupyter_vim
   - 但还是因为权限问题，要用`root`账户`ssh`进入后再用 `jupyter labextension install xxx`再`jupyter lab build`才能安装并激活相应插件
 
 ### 环境变量
