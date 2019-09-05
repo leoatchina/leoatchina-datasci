@@ -65,7 +65,8 @@ RUN apt update -y && \
     apt install xvfb libswt-gtk-4-java -y && \
     R CMD javareconf && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server mysql-connector-python mock pygments flake8 dash && \
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server pygments flake8 && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # @todo compile vim
 RUN cd /usr/local && \
     wget https://github.com/neovim/neovim/releases/download/v0.3.8/nvim-linux64.tar.gz && \
