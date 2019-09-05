@@ -1,6 +1,5 @@
 FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
-# @todo: add 16.04 and 18.04 sources.list
 COPY sources.list /etc/apt/sources.list 
 # @todo: install the software neeeded by nvida/cuda 
 RUN apt update -y && apt upgrade -y && \
@@ -56,8 +55,9 @@ RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda.sh && \
     bash anaconda.sh -b -p /opt/anaconda3 && rm -rf /tmp/* && \
     #conda update --all -y && \
-    conda install -c conda-forge jupyterlab && \
-    conda install -c conda-forge neovim python-language-server yarn mysql-connector-python mock pygments flake8 nodejs && \
+    conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ jupyterlab && \
+    conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ \ 
+                     neovim python-language-server yarn mysql-connector-python mock pygments flake8 nodejs dash && \
     conda clean -a -y 
 #RUN jupyter labextension install jupyterlab-drawio && \   
     #jupyter labextension install jupyterlab-kernelspy && \
@@ -74,14 +74,12 @@ RUN apt update -y && \
     apt install xvfb libswt-gtk-4-java -y && \
     R CMD javareconf && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# neovim here
-# @todo, compile vim
+# @todo compile vim
 RUN cd /usr/local && \
     wget https://github.com/neovim/neovim/releases/download/v0.3.8/nvim-linux64.tar.gz && \
     tar xvzf nvim-linux64.tar.gz && \
     rm nvim-linux64.tar.gz && \
-    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/vi && \
-    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/vim
+    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim
 # coder server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
