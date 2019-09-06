@@ -28,8 +28,8 @@ RUN cd /tmp && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # bash && ctags
 RUN cd /tmp && \ 
-    wget https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz && \
-    tar xvzf bash-5.0.tar.gz && \
+    curl https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz -o bash-5.0.tar.gz && \
+    tar xzf bash-5.0.tar.gz && \
     cd bash-5.0 && \
     ./configure && \
     make && \
@@ -42,57 +42,59 @@ RUN cd /tmp && \
     ./autogen.sh && ./configure && make && make install && \
     cd /tmp && \
     curl http://ftp.vim.org/ftp/gnu/global/global-6.6.3.tar.gz -o global.tar.gz && \
-    tar xvzf global.tar.gz && cd global-6.6.3 && \
+    tar xzf global.tar.gz && cd global-6.6.3 && \
     ./configure --with-sqlite3 && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
-    tar xvzf libiconv.tar.gz && cd libiconv-1.16 && \
+    tar xzf libiconv.tar.gz && cd libiconv-1.16 && \
     ./configure && make && make install && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # anaconda3
 ENV PATH=/opt/anaconda3/bin:$PATH
+# @note, conda update --all -y && \
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda.sh && \
     bash anaconda.sh -b -p /opt/anaconda3 && rm -rf /tmp/* && \
-    conda clean -a -y 
-    # @note, conda update --all -y && \
-RUN conda update -n base -c defaults conda -y && \ 
     conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ yarn nodejs && \ 
-    conda clean -a -y 
-    #conda update -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ jupyterlab && \
-RUN apt update -y && \
+    conda update --all -y && \
+    jupyter lab build && \
+    apt update -y && \
     apt install openjdk-8-jdk -y && \
     apt install xvfb libswt-gtk-4-java -y && \
     R CMD javareconf && \
+    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
+    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server pygments flake8 && \
+    mkdir -p /opt/rc && rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
+    conda clean -a -y && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server pygments flake8 && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# @todo compile vim
 RUN cd /usr/local && \
-    wget https://github.com/neovim/neovim/releases/download/v0.3.8/nvim-linux64.tar.gz && \
-    tar xvzf nvim-linux64.tar.gz && \
+    curl -L https://github.com/neovim/neovim/releases/download/v0.3.8/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
+    tar xzf nvim-linux64.tar.gz && \
     rm nvim-linux64.tar.gz && \
     ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim
 # coder server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
-    tar xvzf code-server.tar.gz && \
+    tar xzf code-server.tar.gz && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
-# install jupyter lab extensions
-RUN mkdir -p /opt/rc && mv /opt/anaconda3/share/jupyter /opt/rc
-RUN jupyter labextension install jupyterlab-drawio && \    
-    jupyter lab build && \
-    jupyter labextension install jupyterlab-kernelspy && \
-    jupyter lab build && \
-    jupyter labextension install @jupyterlab/toc && \
-    jupyter lab build && \
-    rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
-    conda clean -a -y 
+#RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple jupyterlab==1.1.1 && \
+    #jupyter lab build && \
+#RUN conda install -c conda-forge jupyterlab=1.1.1 -y && \
+#RUN jupyter labextension install jupyterlab-drawio && \    
+    #jupyter labextension install jupyterlab-kernelspy && \
+    #jupyter labextension install jupyterlab-spreadsheet && \
+    #jupyter labextension install @jupyterlab/toc && \
+    #jupyter lab build && \
+    #rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
+    #mkdir -p /opt/rc && rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
+    #conda clean -a -y
+    #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
     #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
     #jupyter labextension install @lckr/jupyterlab_variableinspector && \
     #jupyter labextension install @mflevine/jupyterlab_html && \   
-## fzf rdy
+# @todo compile vim
+# fzf 
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf
 # configuration
 COPY .bashrc .inputrc /root/
