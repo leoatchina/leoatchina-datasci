@@ -87,7 +87,7 @@ RUN jupyter labextension install jupyterlab-drawio && \
     jupyter lab build && \
     jupyter labextension install @jupyterlab/toc && \
     jupyter lab build && \
-    rsync -rvh /opt/anaconda3/share/jupyter /opt/rc && \
+    rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
     conda clean -a -y 
     #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
     #jupyter labextension install @lckr/jupyterlab_variableinspector && \
