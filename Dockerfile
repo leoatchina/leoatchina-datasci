@@ -58,8 +58,8 @@ RUN cd /tmp && \
     # @note, conda update --all -y && \
 RUN conda update -n base -c defaults conda -y && \ 
     conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ yarn nodejs && \ 
-    conda update -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ jupyterlab && \
     conda clean -a -y 
+    #conda update -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ jupyterlab && \
 RUN apt update -y && \
     apt install openjdk-8-jdk -y && \
     apt install xvfb libswt-gtk-4-java -y && \
@@ -80,15 +80,18 @@ RUN cd /tmp && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
 # install jupyter lab extensions
-RUN mkdir -p /opt/rc
-RUN jupyter labextension install jupyterlab-drawio && \   
+RUN mkdir -p /opt/rc && mv /opt/anaconda3/share/jupyter /opt/rc
+RUN jupyter labextension install jupyterlab-drawio && \    
+    jupyter lab build && \
     jupyter labextension install jupyterlab-kernelspy && \
+    jupyter lab build && \
     jupyter labextension install @jupyterlab/toc && \
-    jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
-    jupyter labextension install @lckr/jupyterlab_variableinspector && \
-    jupyter labextension install @mflevine/jupyterlab_html && \   
-    jupyter lab build && mv /opt/anaconda3/share/jupyter /opt/rc && \
+    jupyter lab build && \
+    rsync -rvh /opt/anaconda3/share/jupyter /opt/rc && \
     conda clean -a -y 
+    #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
+    #jupyter labextension install @lckr/jupyterlab_variableinspector && \
+    #jupyter labextension install @mflevine/jupyterlab_html && \   
 ## fzf rdy
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf
 # configuration
