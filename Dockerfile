@@ -55,9 +55,6 @@ ENV PATH=/opt/anaconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda.sh && \
     bash anaconda.sh -b -p /opt/anaconda3 && rm -rf /tmp/* && \
-    conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ yarn nodejs && \ 
-    conda update --all -y && \
-    jupyter lab build && \
     apt update -y && \
     apt install openjdk-8-jdk -y && \
     apt install xvfb libswt-gtk-4-java -y && \
@@ -78,18 +75,21 @@ RUN cd /tmp && \
     tar xzf code-server.tar.gz && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
-#RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple jupyterlab==1.1.1 && \
-    #jupyter lab build && \
 #RUN conda install -c conda-forge jupyterlab=1.1.1 -y && \
-#RUN jupyter labextension install jupyterlab-drawio && \    
-    #jupyter labextension install jupyterlab-kernelspy && \
-    #jupyter labextension install jupyterlab-spreadsheet && \
-    #jupyter labextension install @jupyterlab/toc && \
-    #jupyter lab build && \
-    #rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
-    #mkdir -p /opt/rc && rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
-    #conda clean -a -y
-    #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN curl -sL https://deb.nodesource.com/setup_10.x |  bash - && \
+    apt update && apt install nodejs -y && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt update && apt install yarn -y && \
+    jupyter labextension install jupyterlab-drawio && \    
+    jupyter labextension install jupyterlab-kernelspy && \
+    jupyter labextension install jupyterlab-spreadsheet && \
+    jupyter labextension install @jupyterlab/toc && \
+    jupyter lab build && \
+    rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
+    mkdir -p /opt/rc && rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
+    conda clean -a -y && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
     #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
     #jupyter labextension install @lckr/jupyterlab_variableinspector && \
     #jupyter labextension install @mflevine/jupyterlab_html && \   
