@@ -17,7 +17,7 @@ cp -R /opt/rc/.fzf /root/
 cp /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /home/$WKUSER/
 cp -R /opt/rc/.fzf /home/$WKUSER
 # rsync for jupyterlab
-[[ -d /opt/rc/jupter ]] && rsync -rvh --update /opt/rc/jupyter/ /opt/anaconda3/share/jupyter/
+rsync -rvhu /opt/rc/jupyter /opt/anaconda3/share
 
 # user set
 groupadd $WKUSER -g $WKGID

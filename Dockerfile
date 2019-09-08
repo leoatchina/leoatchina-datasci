@@ -60,6 +60,7 @@ RUN cd /tmp && \
     R CMD javareconf && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server pygments flake8 && \
+    mkdir -p /opt/rc && rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
     conda clean -a -y && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /usr/local && \
@@ -74,15 +75,14 @@ RUN cd /tmp && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
 # @todo compile vim
-
 # fzf 
-RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf && rm -rf /root/.fzf/.git
 # configuration
 COPY .bashrc .inputrc /root/
 RUN /root/.fzf/install --all
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
     echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
-RUN mkdir -p /opt/rc && mv /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/rc/
+RUN mv /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/rc/
 RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 755 /opt/config /opt/log
 COPY rserver.conf /etc/rstudio/
 # @todo, use entrypoint/supervisor to create user of current, and run jupyterlab, codeserver as current user
@@ -93,20 +93,20 @@ ENV WKUSER=datasci
 ENV WKUID=1000
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8443 8822
-#RUN conda install -c conda-forge jupyterlab=1.1.1 -y && \
-#RUN curl -sL https://deb.nodesource.com/setup_10.x |  bash - && \
-    #apt update && apt install nodejs -y && \
-    #curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    #echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-    #apt update && apt install yarn -y && \
-    #jupyter labextension install jupyterlab-kernelspy && \
-    #jupyter labextension install jupyterlab-spreadsheet && \
-    #jupyter labextension install @jupyterlab/toc && \
-    #jupyter lab build && \
-    #rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
-    #mkdir -p /opt/rc && rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
-    #conda clean -a -y && \
-    #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
     #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
     #jupyter labextension install @lckr/jupyterlab_variableinspector && \
     #jupyter labextension install @mflevine/jupyterlab_html && \   
+    #jupyter lab build && \
+RUN apt update && apt upgrade -y && \
+    conda update --all -y && \
+    conda clean -a -y && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+#RUN conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge nodejs yarn && \
+    #conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge jupyterlab && \
+    #jupyter labextension install @jupyterlab/toc && \
+    #jupyter labextension install jupyterlab-drawio && \
+    #jupyter labextension install jupyterlab-kernelspy && \
+    #jupyter labextension install jupyterlab-spreadsheet && \
+    #rsync -rh /opt/anaconda3/share/jupyter /opt/rc && rm -rf /opt/anaconda3/share/jupyter && \
+    #conda clean -a -y && \
+    #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
