@@ -96,17 +96,16 @@ EXPOSE 8888 8787 8443 8822
     #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
     #jupyter labextension install @lckr/jupyterlab_variableinspector && \
     #jupyter labextension install @mflevine/jupyterlab_html && \   
-    #jupyter lab build && \
-RUN apt update && apt upgrade -y && \
-    conda update --all -y && \
-    conda clean -a -y && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-#RUN conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge nodejs yarn && \
-    #conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge jupyterlab && \
     #jupyter labextension install @jupyterlab/toc && \
     #jupyter labextension install jupyterlab-drawio && \
     #jupyter labextension install jupyterlab-kernelspy && \
     #jupyter labextension install jupyterlab-spreadsheet && \
-    #rsync -rh /opt/anaconda3/share/jupyter /opt/rc && rm -rf /opt/anaconda3/share/jupyter && \
+    #jupyter lab build && \
+#RUN apt update && apt upgrade -y && \
+    #conda update --all -y && \
+    #conda clean -a -y && \
+    #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+#RUN conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge nodejs yarn && \
+    #conda install -c conda-forge jupyterlab==1.1.2 && \
     #conda clean -a -y && \
     #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
