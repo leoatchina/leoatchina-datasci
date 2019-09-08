@@ -54,13 +54,13 @@ ENV PATH=/opt/anaconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda.sh && \
     bash anaconda.sh -b -p /opt/anaconda3 && \
-    apt update -y && \
-    apt install openjdk-8-jdk -y && \
+    curl -sL https://deb.nodesource.com/setup_10.x |  bash - && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt update && apt upgrade && apt install nodejs yarn openjdk-8-jdk -y && \
     apt install xvfb libswt-gtk-4-java -y && \
     R CMD javareconf && \
-    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
-    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server pygments flake8 && \
-    mkdir -p /opt/rc && rsync -rh /opt/anaconda3/share/jupyter /opt/rc && \
+    mkdir -p /opt/rc && mv /opt/anaconda3/share/jupyter /opt/rc && \
     conda clean -a -y && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /usr/local && \
@@ -93,14 +93,10 @@ ENV WKUSER=datasci
 ENV WKUID=1000
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8443 8822
-    #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
-    #jupyter labextension install @lckr/jupyterlab_variableinspector && \
-    #jupyter labextension install @mflevine/jupyterlab_html && \   
-    #jupyter labextension install @jupyterlab/toc && \
-    #jupyter labextension install jupyterlab-drawio && \
-    #jupyter labextension install jupyterlab-kernelspy && \
-    #jupyter labextension install jupyterlab-spreadsheet && \
-    #jupyter lab build && \
+RNN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
+    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server pygments flake8 && \
+    conda clean -a -y && \
+#RUN conda install -c conda-forge jupyterlab=1.1.1 -y && \
 #RUN apt update && apt upgrade -y && \
     #conda update --all -y && \
     #conda clean -a -y && \
@@ -109,3 +105,14 @@ EXPOSE 8888 8787 8443 8822
     #conda install -c conda-forge jupyterlab==1.1.2 && \
     #conda clean -a -y && \
     #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+    #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
+    #jupyter labextension install @lckr/jupyterlab_variableinspector && \
+    #jupyter labextension install @mflevine/jupyterlab_html && \   
+    #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
+    #jupyter labextension install @lckr/jupyterlab_variableinspector && \
+    #jupyter labextension install @mflevine/jupyterlab_html && \   
+    #jupyter labextension install @jupyterlab/toc && \
+    #jupyter labextension install jupyterlab-drawio && \
+    #jupyter labextension install jupyterlab-kernelspy && \
+    #jupyter labextension install jupyterlab-spreadsheet && \
+    #jupyter lab build && \
