@@ -97,21 +97,21 @@ EXPOSE 8888 8787 8443 8822
 RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server pygments flake8
 # @todo compile vim
-RUN cd /tmp && git clone --depth 1 https://github.com/vim/vim.git && \
-    export LDFLAGS='-L/opt/anaconda3/lib,-L/usr/local/lib,-L/usr/lib' && \
-    export CFLAGS='-I/opt/anaconda3/include,-I/usr/loca/include,-I/usr/include' && \
-    cd vim && \
-    ./configure \
-        --with-features=huge \
-        --enable-multibyte \
-        --enable-python3interp=dynamic \
-        --with-python3-config-dir=/opt/anaconda3/lib/python3.7/config-3.7m-x86_64-linux-gnu \
-        --enable-perlinterp=dynamic \
-        --with-x \
-        --enable-cscope \
-        --prefix=/usr/ && \
-    make && make install && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+#RUN cd /tmp && git clone --depth 1 https://github.com/vim/vim.git && \
+    #export LDFLAGS='-L/opt/anaconda3/lib,-L/usr/local/lib,-L/usr/lib' && \
+    #export CFLAGS='-I/opt/anaconda3/include,-I/usr/loca/include,-I/usr/include' && \
+    #cd vim && \
+    #./configure \
+        #--with-features=huge \
+        #--enable-multibyte \
+        #--enable-python3interp=yes \
+        #--with-python3-config-dir=/opt/anaconda3/lib/python3.7/config-3.7m-x86_64-linux-gnu \
+        #--enable-perlinterp=dynamic \
+        #--with-x \
+        #--enable-cscope \
+        #--prefix=/usr/ && \
+    #make && make install && \
+    #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 #RUN conda install -c conda-forge jupyterlab=1.1.1 -y && \
     #conda update --all -y && \
     #conda clean -a -y && \
