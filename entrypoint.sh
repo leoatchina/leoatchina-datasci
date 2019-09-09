@@ -8,16 +8,24 @@ if [ $WKUID -lt 1000 ]; then
     echo "WKUID must not be less than 1000"
     exit 1
 fi
+
 if [ ! -n "${WKGID+1}" ]; then
     WKGID=$WKUID
 fi
+
+if [ $WKGID -lt 1000 ]; then
+    echo "WKGID must not be less than 1000"
+    exit 1
+fi
 # set config files
-cp /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /root/
+cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /root/
 cp -R /opt/rc/.fzf /root/
-cp /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /home/$WKUSER/
+cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /home/$WKUSER/
 cp -R /opt/rc/.fzf /home/$WKUSER
+chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc && /home/$WKUSER/.fzf.bash 
+chown -R $WKUID:$WKGID /home/$WKUSER/.fzf
 # rsync for jupyterlab
-rsync -rvhu /opt/rc/jupyter /opt/anaconda3/share
+rsync -rvh -u /opt/rc/jupyter /opt/anaconda3/share
 
 # user set
 groupadd $WKUSER -g $WKGID
