@@ -64,11 +64,15 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x |  bash - && \
     apt install xvfb libswt-gtk-4-java -y && \
     R CMD javareconf && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
+    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server pygments flake8 && \
+    conda clean -a -y && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /usr/local && \
     curl -L https://github.com/neovim/neovim/releases/download/v0.3.8/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
     rm nvim-linux64.tar.gz && \
-    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim
+    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/vim
 # coder server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
@@ -94,8 +98,6 @@ ENV WKUSER=datasci
 ENV WKUID=1000
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8443 8822
-RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
-    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server pygments flake8
 # @todo compile vim
 #RUN cd /tmp && git clone --depth 1 https://github.com/vim/vim.git && \
     #export LDFLAGS='-L/opt/anaconda3/lib,-L/usr/local/lib,-L/usr/lib' && \
