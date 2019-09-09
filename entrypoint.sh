@@ -22,7 +22,7 @@ cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /root/
 cp -R /opt/rc/.fzf /root/
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /home/$WKUSER/
 cp -R /opt/rc/.fzf /home/$WKUSER
-chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc && /home/$WKUSER/.fzf.bash 
+chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc /home/$WKUSER/.fzf.bash 
 chown -R $WKUID:$WKGID /home/$WKUSER/.fzf
 # rsync for jupyterlab
 rsync -rvh -u /opt/rc/jupyter /opt/anaconda3/share
@@ -39,7 +39,7 @@ unset ROOTPASSWD
 chmod 777 /root /opt/anaconda3/pkgs
 find /opt/anaconda3/share/jupyter/ -type d | xargs chmod 777
 for d in $(find /root -maxdepth 1 -name ".*" -type d); do find $d -type d | xargs chmod 777 ; done
-for d in $(find /root -maxdepth 1 -name ".*" -type d | grep -v fzf); do find $d -type f | xargs chmod 666 ; done
+for d in $(find /root -maxdepth 1 -name ".*" -type d | grep -v fzf ); do find $d -type f | grep -v vim | xargs chmod 666 ; done
 for d in $(find /home/$WKUSER -maxdepth 1 -name ".*"); do chown -R $WKUSER:$WKGID $d ; done
 
 # sshd server 
