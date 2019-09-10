@@ -98,3 +98,18 @@ ENV WKUSER=datasci
 ENV WKUID=1000
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8443 8822
+RUN conda update -n base conda -y && \
+    conda install -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ jupyterlab=1.1.2 && \
+    conda clean -a -y
+RUN jupyter labextension install @jupyterlab/toc && \
+    jupyter labextension install jupyterlab-drawio && \ 
+    jupyter labextension install jupyterlab-kernelspy && \
+    jupyter labextension install jupyterlab-spreadsheet && \ 
+    jupyter labextension install @mflevine/jupyterlab_html && \ 
+    jupyter labextension install @lckr/jupyterlab_variableinspector && \ 
+    jupyter labextension install @krassowski/jupyterlab_go_to_definition && \ 
+    jupyter labextension install @telamonian/theme-darcula && \
+    jupyter labextension install @mohirio/jupyterlab-horizon-theme && \
+    jupyter lab build && \
+    conda clean -a -y && \
+    rm -rf /opt/rc/jupyter && mv /opt/anaconda3/share/jupyter /opt/rc 
