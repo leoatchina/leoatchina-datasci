@@ -98,38 +98,3 @@ ENV WKUSER=datasci
 ENV WKUID=1000
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8443 8822
-# @todo compile vim
-#RUN cd /tmp && git clone --depth 1 https://github.com/vim/vim.git && \
-    #export LDFLAGS='-L/opt/anaconda3/lib,-L/usr/local/lib,-L/usr/lib' && \
-    #export CFLAGS='-I/opt/anaconda3/include,-I/usr/loca/include,-I/usr/include' && \
-    #cd vim && \
-    #./configure \
-        #--with-features=huge \
-        #--enable-multibyte \
-        #--enable-python3interp=yes \
-        #--with-python3-config-dir=/opt/anaconda3/lib/python3.7/config-3.7m-x86_64-linux-gnu \
-        #--enable-perlinterp=dynamic \
-        #--with-x \
-        #--enable-cscope \
-        #--prefix=/usr/ && \
-    #make && make install && \
-    #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-#RUN conda install -c conda-forge jupyterlab=1.1.1 -y && \
-    #conda update --all -y && \
-    #conda clean -a -y && \
-    #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-#RUN conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge nodejs yarn && \
-    #conda install -c conda-forge jupyterlab==1.1.2 && \
-    #conda clean -a -y && \
-    #apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-    #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
-    #jupyter labextension install @lckr/jupyterlab_variableinspector && \
-    #jupyter labextension install @mflevine/jupyterlab_html && \   
-    #jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
-    #jupyter labextension install @lckr/jupyterlab_variableinspector && \
-    #jupyter labextension install @mflevine/jupyterlab_html && \   
-    #jupyter labextension install @jupyterlab/toc && \
-    #jupyter labextension install jupyterlab-drawio && \
-    #jupyter labextension install jupyterlab-kernelspy && \
-    #jupyter labextension install jupyterlab-spreadsheet && \
-    #jupyter lab build && \
