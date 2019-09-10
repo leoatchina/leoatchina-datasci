@@ -1,4 +1,4 @@
-FROM leoatchina/datasci:stable
+FROM leoatchina/datasci:latest
 # texlive
 RUN cd /tmp && \
     wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb && \
