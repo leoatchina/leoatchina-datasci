@@ -9,11 +9,10 @@
 ### 安装方法
 - 直接pull(建议使用这种方法)
 ```
-docker pull leoatchina/datasci:stable
+docker pull leoatchina/datasci:latest
 ```
 - build docker镜像
-要先装好`docker-ce`和`git`, 注意：最近juypterlab升级，装插件后会显示异常，在我测试通过前不要自行build
-
+要先装好`docker-ce`和`git`。
 
 ### 主要集成软件
 - 基于ubuntu16.04
@@ -22,7 +21,7 @@ docker pull leoatchina/datasci:stable
 - 安装了`ssh-server`,`code-server`
 - 用`supervisor`启动后台web服务
 - 美化bash界面
-- `pkgs.R`和`conda.sh`，收集的一些R包和conda生信软件的安装脚本
+- install_scripts下面的`pkgs.R`和`conda.sh`，收集的一些R包和conda生信软件的安装脚本
 
 ### 2019年8月8日，增加了好多个特性
 - 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`datasci`。 可指定不小于1000的`UID`，默认为`1000`。
@@ -60,7 +59,7 @@ docker pull leoatchina/datasci:stable
 version: "3"  # xml版本
 services:
   datasci:
-    image: leoatchina/datasci:stable
+    image: leoatchina/datasci:latest
     environment:
       - PASSWD=yourpasswd  # PASSWD
       - ROOTPASSWD=rootpasswd # 区分普通用户的root密码，如没有，和普通用户相同
@@ -86,7 +85,7 @@ services:
 
 如上面的yml文件，把`image`这一行换成`build: ./build`， 在`./build`目录下建立`Dockerfile` ，运行时就会安装`tensorflow`, `opencv`
 ```
-FROM leaotchina/datasci:stable
+FROM leaotchina/datasci:latest
 RUN pip install -q tensorflow_hub
 RUN conda install tensorflow && conda install -c menpo opencv
 ```
