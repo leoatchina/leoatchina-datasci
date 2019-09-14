@@ -41,8 +41,11 @@ RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
     add-apt-repository ppa:ubuntugis/ppa -y && \
     apt update -y && \
-    apt install -y r-base-dev r-base r-base-core r-recommended && \
+    apt upgrade -y && \
+    apt install -y r-base-dev r-base r-base-core  && \
     apt install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
+    apt install openjdk-8-jdk xvfb libswt-gtk-4-java -y && \
+    R CMD javareconf && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # rstudio
 RUN cd /tmp && \ 
@@ -54,18 +57,21 @@ ENV PATH=/opt/anaconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda.sh && \
     bash anaconda.sh -b -p /opt/anaconda3 && \
+    conda install -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ nodejs yarn jupyterlab=1.1.3 && \
+    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
+    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server flake8 dash && \
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
+    jupyter labextension install ipysheet && \
+    jupyter labextension install @jupyterlab/toc && \
+    jupyter labextension install jupyterlab-drawio && \ 
+    jupyter labextension install jupyterlab-kernelspy && \
+    jupyter labextension install jupyterlab-spreadsheet && \ 
+    jupyter labextension install @mflevine/jupyterlab_html && \ 
+    jupyter labextension install @krassowski/jupyterlab_go_to_definition && \ 
+    jupyter labextension install @telamonian/theme-darcula && \
+    jupyter labextension install @mohirio/jupyterlab-horizon-theme && \
+    jupyter lab build && \
     mkdir -p /opt/rc && mv /opt/anaconda3/share/jupyter /opt/rc && \
-    conda clean -a -y && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN curl -sL https://deb.nodesource.com/setup_10.x |  bash - && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-    apt update && apt upgrade -y && apt install nodejs yarn openjdk-8-jdk -y && \
-    apt install xvfb libswt-gtk-4-java -y && \
-    R CMD javareconf && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
-    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server pygments flake8 && \
     conda clean -a -y && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /usr/local && \
@@ -79,7 +85,6 @@ RUN cd /tmp && \
     tar xzf code-server.tar.gz && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
-# @todo compile vim
 # fzf 
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf && rm -rf /root/.fzf/.git
 # configuration
@@ -93,23 +98,8 @@ COPY rserver.conf /etc/rstudio/
 # @todo, use entrypoint/supervisor to create user of current, and run jupyterlab, codeserver as current user
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
 ## share ports and dirs 
-ENV PASSWD=jupyter
 ENV WKUSER=datasci
+ENV PASSWD=datasci
 ENV WKUID=1000
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8443 8822
-RUN conda update -n base conda -y && \
-    conda install -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ jupyterlab=1.1.2 && \
-    conda clean -a -y
-RUN jupyter labextension install @jupyterlab/toc && \
-    jupyter labextension install jupyterlab-drawio && \ 
-    jupyter labextension install jupyterlab-kernelspy && \
-    jupyter labextension install jupyterlab-spreadsheet && \ 
-    jupyter labextension install @mflevine/jupyterlab_html && \ 
-    jupyter labextension install @lckr/jupyterlab_variableinspector && \ 
-    jupyter labextension install @krassowski/jupyterlab_go_to_definition && \ 
-    jupyter labextension install @telamonian/theme-darcula && \
-    jupyter labextension install @mohirio/jupyterlab-horizon-theme && \
-    jupyter lab build && \
-    conda clean -a -y && \
-    rm -rf /opt/rc/jupyter && mv /opt/anaconda3/share/jupyter /opt/rc 
