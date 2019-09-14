@@ -1,7 +1,5 @@
 FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
-RUN sed -i 's/archive.ubuntu/mirrors.163/g' /etc/apt/sources.list 
-# @todo: install the software neeeded by nvida/cuda 
 RUN apt update -y && apt upgrade -y && \
     apt install -y wget curl net-tools iputils-ping apt-transport-https openssh-server \
     unzip bzip2 apt-utils gdebi-core tmux \
