@@ -59,26 +59,6 @@ RUN cd /tmp && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server flake8 dash && \
     /opt/anaconda3/bin/conda clean -a -y && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN conda update -n base -c defaults conda && \
-    conda install -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge jupyterlab=1.1.3 && \
-    curl -sL https://deb.nodesource.com/setup_10.x |  bash - && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-    apt update && apt upgrade -y && apt install nodejs yarn -y && \
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
-    jupyter labextension install ipysheet && \
-    jupyter labextension install @jupyterlab/toc && \
-    jupyter labextension install jupyterlab-drawio && \ 
-    jupyter labextension install jupyterlab-kernelspy && \
-    jupyter labextension install jupyterlab-spreadsheet && \ 
-    jupyter labextension install @mflevine/jupyterlab_html && \ 
-    jupyter labextension install @krassowski/jupyterlab_go_to_definition && \ 
-    jupyter labextension install @telamonian/theme-darcula && \
-    jupyter labextension install @mohirio/jupyterlab-horizon-theme && \
-    jupyter lab build && \
-    mkdir -p /opt/rc && mv /opt/anaconda3/share/jupyter /opt/rc && \
-    conda clean -a -y && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /usr/local && \
     curl -L https://github.com/neovim/neovim/releases/download/v0.3.8/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
@@ -90,17 +70,13 @@ RUN cd /tmp && \
     tar xzf code-server.tar.gz && \
     mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
     rm -rf /tmp/*.*
-# fzf 
-RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf && rm -rf /root/.fzf/.git
 # configuration
+RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
 COPY .bashrc .inputrc /root/
-RUN /root/.fzf/install --all
-RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone && \
-    echo "export LC_ALL=en_US.UTF-8"  >> /etc/profile
-RUN mv /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/rc/
-RUN mkdir -p /etc/rstudio /opt/config /opt/log  && chmod -R 755 /opt/config /opt/log
 COPY rserver.conf /etc/rstudio/
-# @todo, use entrypoint/supervisor to create user of current, and run jupyterlab, codeserver as current user
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf && rm -rf /root/.fzf/.git
+RUN /root/.fzf/install --all
+RUN mv /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/rc/
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
 ## share ports and dirs 
 ENV WKUSER=datasci
