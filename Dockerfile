@@ -46,9 +46,7 @@ RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-
     apt install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
     apt install openjdk-8-jdk xvfb libswt-gtk-4-java -y && \
     R CMD javareconf && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# rstudio
-RUN cd /tmp && \ 
+    cd /tmp && \ 
     curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
@@ -57,9 +55,15 @@ ENV PATH=/opt/anaconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2019.07-Linux-x86_64.sh -o anaconda.sh && \
     bash anaconda.sh -b -p /opt/anaconda3 && \
-    conda install -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ nodejs yarn jupyterlab=1.1.3 && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server flake8 dash && \
+    /opt/anaconda3/bin/conda clean -a -y && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN conda install -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge jupyterlab && \
+    curl -sL https://deb.nodesource.com/setup_10.x |  bash - && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt update && apt upgrade -y && apt install nodejs yarn -y && \
     jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
     jupyter labextension install ipysheet && \
     jupyter labextension install @jupyterlab/toc && \
