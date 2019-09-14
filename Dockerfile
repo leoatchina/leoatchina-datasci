@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
-COPY sources.list /etc/apt/sources.list 
+RUN sed -i 's/archive.ubuntu/mirrors.163/g' /etc/apt/sources.list 
 # @todo: install the software neeeded by nvida/cuda 
 RUN apt update -y && apt upgrade -y && \
     apt install -y wget curl net-tools iputils-ping apt-transport-https openssh-server \
@@ -12,19 +12,6 @@ RUN apt update -y && apt upgrade -y && \
     bioperl libdbi-perl tree jq \ 
     locales && locale-gen en_US.UTF-8 && \
     cpan -i Try::Tiny && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# R
-RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/' && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
-    add-apt-repository ppa:ubuntugis/ppa -y && \
-    apt update -y && \
-    apt install -y r-base-dev r-base r-base-core r-recommended && \
-    apt install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
-    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# rstudio
-RUN cd /tmp && \ 
-    curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
-    gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # bash && ctags
 RUN cd /tmp && \ 
@@ -48,6 +35,19 @@ RUN cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
     tar xzf libiconv.tar.gz && cd libiconv-1.16 && \
     ./configure && make && make install && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+# R
+RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/' && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
+    add-apt-repository ppa:ubuntugis/ppa -y && \
+    apt update -y && \
+    apt install -y r-base-dev r-base r-base-core r-recommended && \
+    apt install -y libv8-3.14-dev libudunits2-dev libgdal1i libgdal1-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
+    apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+# rstudio
+RUN cd /tmp && \ 
+    curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
+    gdebi -n rstudio.deb && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # anaconda3
 ENV PATH=/opt/anaconda3/bin:$PATH
