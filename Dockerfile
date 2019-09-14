@@ -59,7 +59,8 @@ RUN cd /tmp && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server flake8 dash && \
     /opt/anaconda3/bin/conda clean -a -y && \
     apt autoremove && apt clean && apt purge && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN conda install -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge jupyterlab && \
+RUN conda update -n base -c defaults conda && \
+    conda install -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge jupyterlab=1.1.3 && \
     curl -sL https://deb.nodesource.com/setup_10.x |  bash - && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
