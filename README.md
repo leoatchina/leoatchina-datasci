@@ -75,7 +75,6 @@ services:
       - ./jupyter:/opt/anaconda3/share/jupyter   # 此目录是jupyterlab插件目录, 映射出来是为了装插件, 有权限问题
       - ./datasci:/home/datasci  # 工作目录， 要和上面的WKUSER一致
       - ./log:/opt/log  # 除rstudio外的log目录
-      - ~/github:/mnt/github     # 个人习惯，比如我的vim配置会放在这里面
       - ./root:/root # root目录，/root/bin会放入$PATH中
     container_name: datasci
 ```
@@ -160,6 +159,5 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 3. 用`conda`安装的并激活一个环境中，报和`libcurl.so`相关的错误
 把你 对应目录下的 `lib/libcurl.so.4`给删除掉，或者从 `/usr/lib/x86_64-linux-gnu`下链接过来
 
-4. 最近发现jupyter lab升级后，装插件后会显示异常，还在排除问题
-
-### TODO， 增加对UID的说明
+4. 最近发现jupyter lab升级后，装插件后会显示异常
+发现是build过程中的问题，要性能强的服务器才能顺利完成这个工作。
