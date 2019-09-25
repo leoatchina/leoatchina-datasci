@@ -50,21 +50,23 @@ RUN cd /tmp && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ENV PATH=/opt/miniconda3/bin:$PATH
 RUN cd /tmp && \
-    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
+    curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
-    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
-    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server flake8 pygments && \
-    conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r r-base r-essentials libssh2 krb5 && \
-    conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge jupyterlab=1.1.4 vim ripgrep nodejs yarn && \
+    conda update -n base -c defaults conda && \
+    /opt/miniconda3/bin/conda clean -a -y && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN 
+    conda install neovim python-language-server flake8 pygments && \
+    conda install -n base -c conda-forge r-base r-essentials libssh2 krb5 jupyterlab=1.1.4 vim ripgrep nodejs yarn && \
     apt install xvfb libswt-gtk-4-java -y && \
-    conda clean -a -y && \
+    /opt/miniconda3/bin/conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # nvim
 RUN cd /usr/local && \
     curl -L https://github.com/neovim/neovim/releases/download/v0.4.2/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
     rm nvim-linux64.tar.gz && \
-    ln -s /usr/local/nvim-linux64/bin/nvim /usr/local/bin/nvim
+    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim
 # coder server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
