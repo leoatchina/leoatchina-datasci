@@ -2,8 +2,9 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
 
+[ -z "$PS1" ] && return
 
 export CLICOLOR=1
 export LSCOLORS=GxFxBxDxCxegedabagaced
@@ -86,12 +87,12 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\[\e[30;1m\]\$(git_branch)\[\e[0m\]\n\$ "
 
-if [[ ! -v $JUPYTER_SERVER_ROOT ]] && [[ ! $PATH == /opt/anaconda3/bin* ]]; then
-    export PATH=/opt/anaconda3/bin:$PATH
+if [[ ! -v $JUPYTER_SERVER_ROOT ]] && [[ ! $PATH == */opt/miniconda3/bin* ]]; then
+    export PATH=/opt/miniconda3/bin:$PATH
 fi
 
-if [[ ! $PATH == */root/bin* ]]; then
-    export PATH=$PATH:/root/bin
+if [[ ! $PATH == */$HOME/.local/bin* ]]; then
+    export PATH=$PATH:$HOME/.local/bin
 fi
 
 [ -f $HOME/.configrc ] && source $HOME/.configrc

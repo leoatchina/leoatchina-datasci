@@ -39,6 +39,10 @@ for d in $(find /root -maxdepth 1 -name ".*" -type d); do find $d -type d | xarg
 for d in $(find /root -maxdepth 1 -name ".*" -type d | grep -v fzf ); do find $d -type f | grep -v vim | xargs chmod 666 ; done
 for d in $(find /home/$WKUSER -maxdepth 1 -name ".*"); do chown -R $WKUSER:$WKGID $d ; done
 
+# Rstudio-server
+echo "Sys.setenv(PATH='/opt/miniconda3/bin:/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin')" >> /usr/lib/rstudio-server/R/ServerOptions.R
+
+
 # sshd server 
 mkdir -p /var/run/sshd
 rm -r /etc/ssh/ssh*key

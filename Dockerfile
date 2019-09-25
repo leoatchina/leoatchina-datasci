@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:16.04
 MAINTAINER leoatchina,leoatchina@gmail.com
 ADD sources.list /etc/apt/sources.list
 RUN apt update -y && apt upgrade -y && \
@@ -21,7 +21,7 @@ RUN apt install -y wget curl net-tools iputils-ping locales  \
     openssh-server \
     libjansson-dev \
     libcairo2-dev libxt-dev \
-    bioperl libdbi-perl libv8-3.14-dev libudunits2-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
+    libv8-3.14-dev libudunits2-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
     cpan -i Try::Tiny && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # bash && ctags
@@ -44,6 +44,10 @@ RUN cd /tmp && \
     tar xzf libiconv.tar.gz && cd libiconv-1.16 && \
     ./configure && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN cd /tmp && \ 
+    curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
+    gdebi -n rstudio.deb && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ENV PATH=/opt/miniconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
@@ -53,9 +57,6 @@ RUN cd /tmp && \
     conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r r-base r-essentials libssh2 krb5 && \
     conda install -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge jupyterlab=1.1.4 vim ripgrep nodejs yarn && \
     apt install xvfb libswt-gtk-4-java -y && \
-    cd /tmp && \ 
-    curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
-    gdebi -n rstudio.deb && \
     conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # nvim
