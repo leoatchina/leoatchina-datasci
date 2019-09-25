@@ -55,8 +55,8 @@ RUN cd /tmp && \
     conda update -n base -c defaults conda && \
     /opt/miniconda3/bin/conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN 
-    conda install neovim python-language-server flake8 pygments && \
+RUN pip install --no-cache-dir pyqt5==5.12 pyqtwebengine==5.12 && \
+    pip install --no-cache-dir neovim python-language-server flake8 pygments && \
     conda install -n base -c conda-forge r-base r-essentials libssh2 krb5 jupyterlab=1.1.4 vim ripgrep nodejs yarn && \
     apt install xvfb libswt-gtk-4-java -y && \
     /opt/miniconda3/bin/conda clean -a -y && \
