@@ -42,12 +42,11 @@ for d in $(find /home/$WKUSER -maxdepth 1 -name ".*"); do chown -R $WKUSER:$WKGI
 # Rstudio-server
 echo "Sys.setenv(PATH='/opt/miniconda3/bin:/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin')" >> /usr/lib/rstudio-server/R/ServerOptions.R
 
-
 # sshd server 
 mkdir -p /var/run/sshd
 rm -r /etc/ssh/ssh*key
-echo "Port 8822" >> /etc/ssh/sshd_config
-echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+sed -i 's/Port 22/Port 8822/g' /etc/ssh/sshd_config
+sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
 dpkg-reconfigure openssh-server 
 
 # code-server
