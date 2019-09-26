@@ -22,8 +22,8 @@ RUN apt install -y wget curl net-tools iputils-ping locales  \
     libjansson-dev \
     libcairo2-dev libxt-dev \
     libv8-3.14-dev libudunits2-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev && \
-    cpan -i Try::Tiny && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+    #cpan -i Try::Tiny && \
 # bash && ctags
 RUN cd /tmp && \ 
     curl https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz -o bash-5.0.tar.gz && \
@@ -44,6 +44,13 @@ RUN cd /tmp && \
     tar xzf libiconv.tar.gz && cd libiconv-1.16 && \
     ./configure && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/' && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
+    apt update -y && \
+    apt install -y r-base-dev r-base r-base-core && \
+    apt install openjdk-8-jdk xvfb libswt-gtk-4-java -y && \
+    R CMD javareconf && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /tmp && \ 
     curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
@@ -52,13 +59,9 @@ ENV PATH=/opt/miniconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
-    conda update -n base -c defaults conda && \
-    /opt/miniconda3/bin/conda clean -a -y && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN pip install --no-cache-dir pyqt5==5.12 pyqtwebengine==5.12 && \
-    pip install --no-cache-dir neovim python-language-server flake8 pygments && \
-    conda install -n base -c conda-forge r-base r-essentials libssh2 krb5 jupyterlab=1.1.4 vim ripgrep nodejs yarn && \
-    apt install xvfb libswt-gtk-4-java -y && \
+    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
+    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server flake8 pygments && \
+    conda install -n base -c conda-forge libssh2 krb5 jupyterlab=1.1.4 vim ripgrep nodejs yarn && \
     /opt/miniconda3/bin/conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # nvim
