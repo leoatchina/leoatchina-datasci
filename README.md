@@ -164,5 +164,6 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 发现是build过程中的问题，要性能强的服务器才能顺利完成这个工作。
 
 4. 安装tidyvers包出问题
-google后发现问题出在haven包上
-withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("haven"), assignment = "+=")
+- google后发现问题出在haven和reaxl包上
+- withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("haven"), assignment = "+=")
+- withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("readxl"), assignment = "+=")
