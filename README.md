@@ -145,19 +145,24 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 
 ### BUGS
 1. 不能在jupyter lab sidebar里删除文件和文件夹
+```
 如下图，在sidebar里点右键不能删除文件和文件夹，报`500`错误
 ![delete bug](images/delete_bug.png)
 观察日志`/opt/log/jupyterlab.log`，发现是一个内部设计的`cross-device link`错误，估计和jupyter lab放在docker里有关
 > OSError: [Errno 18] Invalid cross-device link: b'/home/datasci/untitled.txt' -> b'/root/.local/share/Trash/files/untitled.txt'
 
 **解决方法**：进入shell环境后用 `rm`命令删除，这个`bug`反而起了保护文件的作用
+```
+---
+这个问题其实也是权限问题，现在升级1.1.4后jupyterlab要手动启动，这个bug已经不存在了
 
-2. 作了`conda init bash`等操作后，一重启container都失效了
-要观察上述操作是否往  `~/.bashrc`文件里写入东西，把写入的东西移到`~/.configrc`。
-`~/.bashrc`在重启时会被还原到初始状态。
 
-3. 用`conda`安装的并激活一个环境中，报和`libcurl.so`相关的错误
+2. 用`conda`安装的并激活一个环境中，报和`libcurl.so`相关的错误
 把你 对应目录下的 `lib/libcurl.so.4`给删除掉，或者从 `/usr/lib/x86_64-linux-gnu`下链接过来
 
-4. 最近发现jupyter lab升级后，装插件后会显示异常
+3. 最近发现jupyter lab升级后，装插件后会显示异常
 发现是build过程中的问题，要性能强的服务器才能顺利完成这个工作。
+
+4. 安装tidyvers包出问题
+google后发现问题出在haven包上
+withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("haven"), assignment = "+=")
