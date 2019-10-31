@@ -28,7 +28,7 @@ docker pull leoatchina/datasci:latest
 - `jupyterlab`和`rstudio`和`code-server`都是以上述用户权限运行，这样就解决了原来**文件权限不一样的问题**，默认密码是`jupyter`， 可用`PASSWD`变量指定。
 - `ssh-server`可用`root`或者自定义用户登陆 ，`root`密码默认和自定义用户密码一致，可用`ROOTPASSWD`变量另外指定。
 - ~~由于`jupyterlab`非root权限，因此，如不开放ssh端口不以`root`连入，不能装插件，也不能用`apt`等装系统软件，只能往自己的用户目录下用`conda`命令装软件 ，一定程度上提高了安全性。~~
-- **我是如何解决权限问题的请打开entrypoint.sh**这个启动脚本学习。
+- 我是如何解决权限问题的请打开[entrypoint.sh](entrypoint.sh)这个启动脚本学习。
 - ~~`jupyterlab` 里集成了`table of content`, `variableinspect`, `drawio`等插件， 使用体验已接近`rstudio`。~~
 - 内置`neovim`、`node`、`yarn`，`uctags`、`gtags`、`ripgrep`等软件，能在ssh bash环境下进行用`vim`进行代码编写。
   - 此处推荐下本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用，接近一个轻型IDE，有按键提示，高亮、补全、运行、检查一应具全。
@@ -44,21 +44,20 @@ docker pull leoatchina/datasci:latest
 #### 方法一
 - 用非root账户ssh进入后，启动`tmux`，然后`jupyter lab --config=/opt/config/jupyter_lab_config`，然后访问8888端口
 #### 方法二， 我喜欢这种
-- 启动后，打开`Rstudio Server`，切换到`Terminal`，然后 `jupyter lab --config=/opt/config/jupyter_lab_config`
-#### jupyterlab安装插件的方法
-
+- 启动后，打开`Rstudio Server`，切换到`Terminal`，然后 `jupyter lab --config=/opt/config/jupyter_lab_config`。当然，我更喜欢启动在terminal里启动`tmux`后再启动juoyter lab
+  
 
 ### 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
-  - 8822: for ssh-server
   - 8787: for rstudio server
-  - 8443: for code-server
+  - 8686: for code-server
+  - 8585: for ssh-server
 - 访问密码：
-  - 见dockerfile里的`ENV PASSWD=jupyter`
+  - 见dockerfile里的`ENV PASSWD=datasci`
   - **运行时可以修改密码**
 - 目录:
-  - `/home/datasci`或者`/home/你指定的用户名`
+  - 默认`/home/datasci`或者`/home/你指定的用户名`
   - `/root`目录
 
 ### 使用docker-compose命令
@@ -74,11 +73,12 @@ services:
       - ROOTPASSWD=rootpasswd # 区分普通用户的root密码，如没有，和普通用户相同
       - WKUSER=datasci   # 指定用户名
       - WKUID=23333   # 指定用户ID, 默认是1000
+      - WKGID=23333   # 指定用户GROUPID，默认是1000 ， 这个和WKUID设置成和宿主一致可以搞
     ports:     # 端口映射，右边是container里的端口，左边是实际端口
       - 8787:8787
       - 8888:8888
-      - 8443:8443
-      - 8822:8822
+      - 8686:8686
+      - 8585:8585
     volumes:   # 位置映射，右docker内部，左实际
       - ./pkgs:/opt/miniconda3/pkgs   # 这个不映射在某些低级内核linux上用conda安装软件时会有问题
       - ./datasci:/home/datasci  # 工作目录， 要和上面的WKUSER一致
@@ -102,7 +102,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
 
 ### 运行后的操作
 - 默认密码各个服务都一样为`jupyter`，可在yml文件里调整
-- **ssh-server**端口`8822`，用户名是`root`和`datasci`， 注意`root`密码可以和普通用户不一致
+- **ssh-server**端口`8585`，用户名是`root`和`datasci`， 注意`root`密码可以和普通用户不一致
 - jupyterlab, 通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 ![jupyterlab](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925588870.png)
 - rstudio
@@ -118,34 +118,24 @@ RUN conda install tensorflow && conda install -c menpo opencv
 - `rstudio`和`code-server`的插件都会放到`/home/datasci`下
 - 用`jupyterlab  labextension install` 安装jupyterlab的插件
 ```
-jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
-jupyter labextension install ipysheet && \
-jupyter labextension install @jupyterlab/toc && \
-jupyter labextension install jupyterlab-drawio && \ 
-jupyter labextension install jupyterlab-kernelspy && \
-jupyter labextension install jupyterlab-spreadsheet && \ 
-jupyter labextension install @mflevine/jupyterlab_html && \ 
-jupyter labextension install @krassowski/jupyterlab_go_to_definition && \ 
-jupyter labextension install @telamonian/theme-darcula && \
-jupyter labextension install @mohirio/jupyterlab-horizon-theme && \
-jupyter labextension install jupyterlab_vim && \
-jupyter labextension install @lckr/jupyterlab_variableinspector && \
-jupyter lab build 
+jupyter labextension install @jupyter-widgets/jupyterlab-manager &&
+jupyter labextension install ipysheet &&
+jupyter labextension install @jupyterlab/toc &&
+jupyter labextension install jupyterlab-drawio &&
+jupyter labextension install jupyterlab-kernelspy &&
+jupyter labextension install jupyterlab-spreadsheet &&
+jupyter labextension install @mflevine/jupyterlab_html &&
+jupyter labextension install @krassowski/jupyterlab_go_to_definition &&
+jupyter labextension install @telamonian/theme-darcula &&
+jupyter labextension install @mohirio/jupyterlab-horizon-theme &&
+jupyter labextension install jupyterlab_vim &&
+jupyter labextension install @lckr/jupyterlab_variableinspector &&
+jupyter lab build
 ```
 
 ### 环境变量
-众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。
-
-本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置。
-
-能达到`安装的软件`和`container分离`, 在删除container时不删除安装的软件的目的, 比如`/home/datasci/
-
-```
-export PATH=$PATH:/home/datasci/bioinfo/bin
-export PATH=$PATH:/home/datasci/bioinfo/annovar
-export PATH=$PATH:/home/datasci/bioinfo/firehose
-export PATH=$PATH:/home/datasci/bioinfo/gatk4
-```
+众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置。
+能达到`安装的软件`和`container分离`, 在删除container时不删除安装的软件的目的
 
 ### 应用：用conda快速安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`conda activate`激活这个环境。
@@ -172,6 +162,6 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 发现是build过程中的问题，要性能强的服务器才能顺利完成这个工作。
 
 3. 安装tidyvers包出问题
-- google后发现问题出在haven和reaxl包上, 用下面方法解决
-  - withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("haven"), assignment = "+=")
-  - withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("readxl"), assignment = "+=")
+google后发现问题出在haven和reaxl包上, 用下面方法解决
+> withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("haven"), assignment = "+=")
+  withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("readxl"), assignment = "+=")
