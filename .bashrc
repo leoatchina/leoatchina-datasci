@@ -94,6 +94,6 @@ fi
 if [[ ! $PATH == */$HOME/.local/bin* ]]; then
     export PATH=$PATH:$HOME/.local/bin
 fi
-
+export JUPYTERLAB_DIR=$HOME/.jupyterlab
 [ -f $HOME/.configrc ] && source $HOME/.configrc
 [ -f /usr/local/etc/bash_completion ] && bash /usr/local/etc/bash_completion
