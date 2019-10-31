@@ -52,7 +52,7 @@ RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-
     R CMD javareconf && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /tmp && \ 
-    curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.1335-amd64.deb -o rstudio.deb && \
+    curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.5001-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ENV PATH=/opt/miniconda3/bin:$PATH
@@ -62,7 +62,9 @@ RUN cd /tmp && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server flake8 pygments && \
     conda install -n base -c conda-forge libssh2 krb5 jupyterlab=1.1.4 vim ripgrep nodejs yarn && \
-    /opt/miniconda3/bin/conda clean -a -y && \
+    conda clean -a -y && \
+    mkdir /opt/rc && \
+    mv /opt/miniconda3/share/jupyter /opt/rc && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # nvim
 RUN cd /usr/local && \
@@ -72,20 +74,21 @@ RUN cd /usr/local && \
     ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim
 # coder server
 RUN cd /tmp && \
-    curl -L https://github.com/cdr/code-server/releases/download/1.1156-vsc1.33.1/code-server1.1156-vsc1.33.1-linux-x64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.com/cdr/code-server/releases/download/2.1665-vsc1.39.2/code-server2.1665-vsc1.39.2-linux-x86_64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server1.1156-vsc1.33.1-linux-x64 /opt/code-server && \
+    mv code-server2.1665-vsc1.39.2-linux-x86_64 /opt/code-server && \
     rm -rf /tmp/*.*
 # configuration
-RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
+RUN mkdir -p /etc/rstudio /opt/config /opt/log && chmod -R 755 /opt/config /opt/log
 COPY .bashrc .inputrc /root/
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf && rm -rf /root/.fzf/.git && /root/.fzf/install --all && \
     mv /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/rc/
-COPY rserver.conf /etc/rstudio/
-COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
-## share ports and dirs 
+## users ports and dirs 
+ENV WKUID=1000
 ENV WKUSER=datasci
 ENV PASSWD=datasci
-ENV WKUID=1000
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8443 8822
+## config file
+COPY rserver.conf /etc/rstudio/
+COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
