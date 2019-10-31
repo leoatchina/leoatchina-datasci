@@ -116,7 +116,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
 
 ### 插件特殊说明
 - `rstudio`和`code-server`的插件都会放到`/home/datasci`下
-- 用`jupyterlab  labextension install`
+- 用`jupyterlab  labextension install` 安装jupyterlab的插件
 ```
 jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
 jupyter labextension install ipysheet && \
