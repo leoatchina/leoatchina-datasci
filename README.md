@@ -1,4 +1,4 @@
-## 用集成anaconda3的docker快速布置数据分析平台
+## 用集成miniconda3的docker快速布置数据分析平台
 ### 前言
 众所周知，`conda`和`docker`是进行快速软件安装、平台布置的两大神器，通过这个软件，在终端前敲几个命令即能安装软件就，出了问题也不会影响到系统配置，能够很轻松的还原和重建。
 
@@ -17,7 +17,7 @@ docker pull leoatchina/datasci:latest
 ### 主要集成软件
 - 基于ubuntu16.04
 - 安装了大量编译、编辑、下载、搜索等用到的工具和库
-- 安装了最新版~~`anaconda3`~~ `miniconda3`,`Rstudio-server`
+- 安装了最新版`miniconda3`,`Rstudio-server`
 - 安装了`ssh-server`,`code-server`
 - 用`supervisor`启动后台web服务
 - 美化bash界面
