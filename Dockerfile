@@ -61,7 +61,7 @@ RUN cd /tmp && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server flake8 pygments && \
-    conda install -n base -c conda-forge libssh2 krb5 jupyterlab=1.1.4 vim ripgrep nodejs yarn && \
+    conda install -n base -c conda-forge libssh2 krb5 vim ripgrep nodejs yarn jupyterlab=1.2.0 && \
     conda clean -a -y && \
     mkdir /opt/rc && \
     mv /opt/miniconda3/share/jupyter /opt/rc && \
