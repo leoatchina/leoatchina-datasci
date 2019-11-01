@@ -40,13 +40,14 @@ docker pull leoatchina/datasci:latest
 - 内置`fzf`，你进入bash环境后按`ctrl+T`试试
 
 ### 2019年10月31号
-由于在实际工作中发现jupyterlab服务，由于是用`root`账户用`非root`权限启动后，会出现一系列问题，所以现在改用手动启动，相应配置文件写入到`/opt/config/jupyter_lab_config.py`中，启动后密码同`rstudio server`
-#### 方法一
-- 用非root账户ssh进入后，启动`tmux`，然后`jupyter lab --config=/opt/config/jupyter_lab_config`，然后访问8888端口
+在实际工作中发现因为jupyterlab服务，是由`root`账户用以`supervisor`程序以`非root`权限启动后，会出现一系列问题，所以现在改用手动启动，相应配置文件直接写入到`/opt/config/jupyter_lab_config.py`中手动启动，启动后密码同`rstudio server`
+#### 启动方法一
+- 用非root账户ssh进入后，然后`jupyter lab --config=/opt/config/jupyter_lab_config`，然后访问8888端口
 #### 方法二， 我喜欢这种
-- 启动后，打开`Rstudio Server`，切换到`Terminal`，然后 `jupyter lab --config=/opt/config/jupyter_lab_config`。当然，我更喜欢启动在terminal里启动`tmux`后再启动juoyter lab
+- 启动后，打开`Rstudio Server`，切换到`Terminal`，然后 `jupyter lab --config=/opt/config/jupyter_lab_config`。
+#### 内置tmux
+- 当然，我更喜欢启动在terminal里启动`tmux`后再启动jupyter lab， 这样能保证在关掉ssh终端或者在rstudiostuido的terminal里能复用终端
   
-
 ### 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
@@ -153,8 +154,6 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
 
 ### BUGS
-
-
 1. 用`conda`安装的并激活一个环境中，报和`libcurl.so`相关的错误
 把你 对应目录下的 `lib/libcurl.so.4`给删除掉，或者从 `/usr/lib/x86_64-linux-gnu`下链接过来
 
