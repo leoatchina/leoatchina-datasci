@@ -46,7 +46,7 @@ docker pull leoatchina/datasci:latest
 #### 方法二， 我喜欢这种
 - 启动后，打开`Rstudio Server`，切换到`Terminal`，然后 `jupyter lab --config=/opt/config/jupyter_lab_config`。
 #### 内置tmux
-- 当然，我更喜欢启动在terminal里启动`tmux`后再启动jupyter lab， 这样能保证在关掉ssh终端或者在rstudiostuido的terminal里能复用终端
+- 当然，我更喜欢启动`tmux`后再启动`jupyter lab`， 这样能保证在关掉ssh终端或者在rstudiostuido的terminal里能复用终端
   
 ### 主要控制点
 - 开放端口：
@@ -58,7 +58,7 @@ docker pull leoatchina/datasci:latest
   - 见dockerfile里的`ENV PASSWD=datasci`
   - **运行时可以修改密码**
 - 目录:
-  - 默认`/home/datasci`或者`/home/你指定的用户名`
+  - 默认`/home/datasci`或者`/home/你指定的用户名`,以下以用户名为`datasci`为例
   - `/root`目录
 
 ### 使用docker-compose命令
@@ -102,7 +102,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
 不推荐这种方法，请自行研究如何
 
 ### 运行后的操作
-- 默认密码各个服务都一样为`jupyter`，可在yml文件里调整
+- 默认密码各个服务都一样为`datasci`，可在yml文件里调整
 - **ssh-server**端口`8585`，用户名是`root`和`datasci`， 注意`root`密码可以和普通用户不一致
 - jupyterlab, 通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 ![jupyterlab](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925588870.png)
@@ -117,7 +117,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
 
 ### 插件特殊说明
 - `rstudio`和`code-server`的插件都会放到`/home/datasci`下
-- 用`jupyterlab  labextension install` 安装jupyterlab的插件
+- 用`jupyterlab  labextension install` 安装jupyterlab的插件, 最后要build
 ```
 jupyter labextension install @jupyter-widgets/jupyterlab-manager &&
 jupyter labextension install ipysheet &&
