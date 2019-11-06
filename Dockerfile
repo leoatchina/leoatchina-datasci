@@ -80,9 +80,7 @@ RUN cd /tmp && \
     rm -rf /tmp/*.*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log && chmod -R 755 /opt/config /opt/log
-COPY .bashrc .inputrc /root/
-RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf && rm -rf /root/.fzf/.git && /root/.fzf/install --all && \
-    mv /root/.bashrc /root/.inputrc /root/.fzf.bash /root/.fzf /opt/rc/
+COPY .bashrc .inputrc /opt/rc/
 ## users ports and dirs 
 ENV WKUID=1000
 ENV WKUSER=datasci

@@ -19,12 +19,9 @@ if [ $WKGID -lt 1000 ]; then
 fi
 
 # set config files
-cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /root/
-cp -R /opt/rc/.fzf /root/
-cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.fzf.bash /home/$WKUSER/
-cp -R /opt/rc/.fzf /home/$WKUSER
-chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc /home/$WKUSER/.fzf.bash 
-chown -R $WKUID:$WKGID /home/$WKUSER/.fzf
+cp -n /opt/rc/.bashrc /opt/rc/.inputrc root/
+cp -n /opt/rc/.bashrc /opt/rc/.inputrc home/$WKUSER/
+chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc
 
 # rsync jupyter back
 rsync -rvh -u /opt/rc/jupyter /opt/miniconda3/share

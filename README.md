@@ -37,7 +37,6 @@ docker pull leoatchina/datasci:latest
   - `Alt+I`插入新tab, `Alt+P`往前翻,`Alt+N`往后翻
   - `Alt+Shift+I`关闭当前tab, `Alt+Shift+P`往前移，`Alt+Shift+N`往后移
   - 先导键是`ctrl+X`
-- 内置`fzf`，你进入bash环境后按`ctrl+T`试试
 
 ### 2019年10月31号
 在实际工作中发现因为jupyterlab服务，是由`root`账户用以`supervisor`程序以`非root`权限启动后，会出现一系列问题，所以现在改用手动启动，相应配置文件直接写入到`/opt/config/jupyter_lab_config.py`中手动启动，启动后密码同`rstudio server`
@@ -47,7 +46,7 @@ docker pull leoatchina/datasci:latest
 - 启动后，打开`Rstudio Server`，切换到`Terminal`，然后 `jupyter lab --config=/opt/config/jupyter_lab_config`。
 #### 内置tmux
 - 当然，我更喜欢启动`tmux`后再启动`jupyter lab`， 这样能保证在关掉ssh终端或者在rstudiostuido的terminal里能复用终端
-  
+
 ### 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
