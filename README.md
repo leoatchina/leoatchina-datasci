@@ -1,12 +1,13 @@
-## 用集成miniconda3的docker快速布置数据分析平台
-### 前言
+# 用集成miniconda3的docker快速布置数据分析平台
+
+## 前言
 众所周知，`conda`和`docker`是进行快速软件安装、平台布置的两大神器，通过这个软件，在终端前敲几个命令即能安装软件就，出了问题也不会影响到系统配置，能够很轻松的还原和重建。
 
 不过，虽说类似`rstudio`或者`jupyter lab`这样的分析平台，已经有别人已经做好的镜像，但是通常是最小化安装，常有系统软件动态库缺失，直接后果是导致部分R包不能安装，而且有时要让不同的镜像协同工作时，目录的映射，权限的设置会让没有经验的人犯晕。比如`jupyterlab`通常是以`root`权限运行，生成的文件用`rstudio`打开就不能保存。
 
 为了克服上述问题，本人设计了一个docker image，集成了`rstudio server`、`jupyter lab`、`ssh server`、`code server`,可用于数据分析或生信分析平台的快速布置，也可供linux初学者练习用。
 
-### 安装方法
+## 安装方法
 - 直接pull(建议使用这种方法)
 ```
 docker pull leoatchina/datasci:latest
@@ -14,7 +15,7 @@ docker pull leoatchina/datasci:latest
 - build docker镜像
 要先装好`docker-ce`和`git`。
 
-### 主要集成软件
+## 主要集成软件
 - 基于ubuntu16.04
 - 安装了大量编译、编辑、下载、搜索等用到的工具和库
 - 安装了最新版`miniconda3`,`Rstudio-server`
@@ -23,7 +24,7 @@ docker pull leoatchina/datasci:latest
 - 美化bash界面
 - install_scripts下面的`pkgs.R`和`conda.sh`，收集的一些R包和conda生信软件的安装脚本
 
-### 2019年8月8日，增加了好多个特性
+## 2019年8月8日，增加了好多个特性
 - 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`datasci`。 可指定不小于1000的`UID`，默认为`1000`。
 - `jupyterlab`和`rstudio`和`code-server`都是以上述用户权限运行，这样就解决了原来**文件权限不一样的问题**，默认密码是`jupyter`， 可用`PASSWD`变量指定。
 - `ssh-server`可用`root`或者自定义用户登陆 ，`root`密码默认和自定义用户密码一致，可用`ROOTPASSWD`变量另外指定。
@@ -38,16 +39,16 @@ docker pull leoatchina/datasci:latest
   - `Alt+Shift+I`关闭当前tab, `Alt+Shift+P`往前移，`Alt+Shift+N`往后移
   - 先导键是`ctrl+X`
 
-### 2019年10月31号
+## 2019年10月31号
 在实际工作中发现因为jupyterlab服务，是由`root`账户用以`supervisor`程序以`非root`权限启动后，会出现一系列问题，所以现在改用手动启动，相应配置文件直接写入到`/opt/config/jupyter_lab_config.py`中手动启动，启动后密码同`rstudio server`
-#### 启动方法一
+### 启动方法一
 - 用非root账户ssh进入后，然后`jupyter lab --config=/opt/config/jupyter_lab_config`，然后访问8888端口
-#### 方法二， 我喜欢这种
+### 方法二， 我喜欢这种
 - 启动后，打开`Rstudio Server`，切换到`Terminal`，然后 `jupyter lab --config=/opt/config/jupyter_lab_config`。
-#### 内置tmux
+### 内置tmux
 - 当然，我更喜欢启动`tmux`后再启动`jupyter lab`， 这样能保证在关掉ssh终端或者在rstudiostuido的terminal里能复用终端
 
-### 主要控制点
+## 主要控制点
 - 开放端口：
   - 8888: for jupyter lab
   - 8787: for rstudio server
@@ -60,7 +61,7 @@ docker pull leoatchina/datasci:latest
   - 默认`/home/datasci`或者`/home/你指定的用户名`,以下以用户名为`datasci`为例
   - `/root`目录
 
-### 使用docker-compose命令
+## 使用docker-compose命令
 - `docker-compose -f datasci.yml up -d`
 - `docker-compose.yml`的详细内容如下
 ```
@@ -97,10 +98,10 @@ RUN pip install -q tensorflow_hub
 RUN conda install tensorflow && conda install -c menpo opencv
 ```
 
-### 使用docker run命令启动镜像
+## 使用docker run命令启动镜像
 不推荐这种方法，请自行研究如何
 
-### 运行后的操作
+## 运行后的操作
 - 默认密码各个服务都一样为`datasci`，可在yml文件里调整
 - **ssh-server**端口`8585`，用户名是`root`和`datasci`， 注意`root`密码可以和普通用户不一致
 - jupyterlab, 通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
@@ -114,7 +115,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
   2. 在另一个机器上快速搭建分析环境，把已经装上的软件复制过去就能搭建好分析环境。
   3. 可以用`code-server`, `ssh`登陆container直接进行代码编写
 
-### 插件特殊说明
+## 插件特殊说明
 - `rstudio`和`code-server`的插件都会放到`/home/datasci`下
 - 用`jupyterlab  labextension install` 安装jupyterlab的插件, 最后要build
 ```
@@ -133,11 +134,11 @@ jupyter labextension install @lckr/jupyterlab_variableinspector &&
 jupyter lab build
 ```
 
-### 环境变量
+## 环境变量
 众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置。
 能达到`安装的软件`和`container分离`, 在删除container时不删除安装的软件的目的
 
-### 应用：用conda快速安装生信软件
+**应用：用conda快速安装生信软件**
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`conda activate`激活这个环境。
 
 但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。如下
@@ -152,14 +153,17 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 
 在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
 
-### BUGS
+## BUGS
 1. 用`conda`安装的并激活一个环境中，报和`libcurl.so`相关的错误
+
 把你 对应目录下的 `lib/libcurl.so.4`给删除掉，或者从 `/usr/lib/x86_64-linux-gnu`下链接过来
 
 2. 最近发现jupyter lab升级后，装插件后会显示异常
+
 发现是build过程中的问题，要性能强的服务器才能顺利完成这个工作。
 
 3. 安装tidyvers包出问题
+
 google后发现问题出在haven和reaxl包上, 用下面方法解决
 > withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("haven"), assignment = "+=")
   withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("readxl"), assignment = "+=")
