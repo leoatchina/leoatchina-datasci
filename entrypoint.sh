@@ -47,7 +47,7 @@ chmod 777 /root /opt/miniconda3/pkgs
 rm -rf /opt/miniconda3/pkgs/*
 
 # Rstudio-server
-echo "Sys.setenv(PATH='/opt/miniconda3/bin:/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin')" >> /usr/lib/rstudio-server/R/ServerOptions.R
+echo "Sys.setenv(PATH='/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/opt/miniconda3/bin')" >> /usr/lib/rstudio-server/R/ServerOptions.R
 
 # sshd server 
 mkdir -p /var/run/sshd
