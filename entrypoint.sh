@@ -20,7 +20,7 @@ fi
 
 # set config files
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc root/
-cp -n /opt/rc/.bashrc /opt/rc/.inputrc home/$WKUSER/
+cp -n /opt/rc/.bashrc /opt/rc/.inputrc /home/$WKUSER/
 chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc
 
 # rsync jupyter back
@@ -40,7 +40,6 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /opt/config/jupyterl
 # @todo solve https
 chmod 666 /opt/config/jupyterlab.key
 chmod 666 /opt/config/jupyterlab.csr
-unset ROOTPASSWD
 
 # config privilege 
 chmod 777 /root /opt/miniconda3/pkgs
@@ -71,8 +70,10 @@ SHA1=$(/opt/miniconda3/bin/python /opt/config/passwd.py $PASSWD)
 echo "c.ContentsManager.root_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_config.py
 echo "c.NotebookApp.notebook_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_config.py  # Notebook启动目录
 echo "c.NotebookApp.password = '$SHA1'" >> /opt/config/jupyter_lab_config.py
-unset $PASSWORD
-unset $PASSWD
+
+unset ROOTPASSWD
+unset PASSWORD
+unset PASSWD
 
 echo ""
 echo "========================= starting services with USER $WKUSER whose UID is $WKUID ================================"
