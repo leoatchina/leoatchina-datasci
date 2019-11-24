@@ -41,7 +41,7 @@ RUN apt install cscope libncurses5-dev -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/' && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
-    apt update -y && \
+    apt update -y && apt upgrade -y && \
     apt install -y r-base-dev r-base r-base-core && \
     apt install openjdk-8-jdk xvfb libswt-gtk-4-java -y && \
     R CMD javareconf && \
@@ -69,7 +69,7 @@ RUN cd /usr/local && \
     ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim
 # coder server
 RUN cd /tmp && \
-    curl -L https://github.com/cdr/code-server/releases/download/2.1692-vsc1.39.2/code-server2.1688-vsc1.39.2-linux-x86_64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.com/cdr/code-server/releases/download/2.1692-vsc1.39.2/code-server2.1692-vsc1.39.2-linux-x86_64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
     mv code-server2.1692-vsc1.39.2-linux-x86_64 /opt/code-server && \
     rm -rf /tmp/*.*
