@@ -72,7 +72,6 @@ echo "c.NotebookApp.notebook_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_c
 echo "c.NotebookApp.password = '$SHA1'" >> /opt/config/jupyter_lab_config.py
 
 unset ROOTPASSWD
-unset PASSWORD
 unset PASSWD
 
 echo ""
