@@ -25,8 +25,11 @@ chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc
 
 # rsync jupyter back
 rsync -rvh -u /opt/rc/jupyter /opt/miniconda3/share
-for d in $(find /opt/miniconda3/share/jupyter -type d); do chmod 777 $d; done
-for f in $(find /opt/miniconda3/share/jupyter -type f); do chmod 666 $f; done
+
+if [ $CHMOD -gt 0 ]; then
+    for d in $(find /opt/miniconda3/share/jupyter -type d); do chmod 777 $d; done
+    for f in $(find /opt/miniconda3/share/jupyter -type f); do chmod 666 $f; done
+fi
 
 # user set
 groupadd $WKUSER -g $WKGID
@@ -36,12 +39,41 @@ echo $WKUSER:$PASSWD | chpasswd
 [[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
 
 # set ssl encyption
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /opt/config/jupyterlab.key -out /opt/config/jupyterlab.csr -subj "/C=GB/ST=ZHEJIANG/L=HANGZHOU/O=Global Security/OU=IT Department/CN=jupyterlab"
-# @todo solve https
-chmod 666 /opt/config/jupyterlab.key
-chmod 666 /opt/config/jupyterlab.csr
+mkdir /opt/ssl
+rm -rf /opt/ssl/*.*
+## create for all
+openssl genrsa -out "/opt/ssl/jupyterlab.key" 4096
+openssl req -new -key "/opt/ssl/jupyterlab.key" -out "/opt/ssl/jupyterlab.csr" -sha256 \
+    -subj "/C=$COUNTRY/ST=$PROVINCE/L=$CITY/O=$ORGANIZE/CN=$WEB"
+cat > /opt/ssl/jupyterlab.cnf << EOF
+[root_ca]
+basicConstraints = critical,CA:TRUE,pathlen:1
+keyUsage = critical, nonRepudiation, cRLSign, keyCertSign
+subjectKeyIdentifier=hash
+EOF
+openssl x509 -req -days 3650 -in "/opt/ssl/jupyterlab.csr" -signkey "/opt/ssl/jupyterlab.key" \
+    -sha256 -out "/opt/ssl/jupyterlab.crt" -extfile "/opt/ssl/jupyterlab.cnf" \
+    -extensions root_ca
 
-# config privilege 
+## create for web
+openssl genrsa -out "/opt/ssl/${WEB}.key" 4096
+openssl req -new -key "/opt/ssl/${WEB}.key" -out "/opt/ssl/${WEB}.csr" -sha256 -subj "/C=$COUNTRY/ST=$PROVINCE/L=$CITY/O=$ORGANIZE/CN=$WEB"
+
+cat > /opt/ssl/${WEB}.cnf << EOF
+[server]
+authorityKeyIdentifier=keyid,issuer
+basicConstraints = critical,CA:FALSE
+extendedKeyUsage=serverAuth
+keyUsage = critical, digitalSignature, keyEncipherment
+subjectAltName = DNS:${WEB}, IP:${IP}
+subjectKeyIdentifier=hash
+EOF
+openssl x509 -req -days 3600 -in "/opt/ssl/${WEB}.csr" -sha256 -CA "/opt/ssl/jupyterlab.crt" -CAkey "/opt/ssl/jupyterlab.key" \
+    -CAcreateserial -out "/opt/ssl/${WEB}.crt" -extfile "/opt/ssl/${WEB}.cnf" -extensions server
+
+chmod 666 /opt/ssl/*.*
+
+# privilege 
 chmod 777 /root /opt/miniconda3/pkgs
 rm -rf /opt/miniconda3/pkgs/*
 
@@ -58,10 +90,15 @@ dpkg-reconfigure openssh-server
 # code-server
 echo "[program:code-server]" >>/opt/config/supervisord.conf
 export PASSWORD=$PASSWD
-echo "command=/opt/code-server/code-server /home/$WKWUSER --auth password --host 0.0.0.0 --port 8686 --cert /opt/config/jupyterlab.csr --cert-key /opt/config/jupyterlab.key \
- --locale en-US \
- --extensions-dir /home/$WKUSER/.config/vscode/extensions \
- --user-data-dir  /home/$WKUSER/.config/vscode/config">>/opt/config/supervisord.conf
+echo "command=/opt/code-server/code-server /home/$WKWUSER \
+--auth password \
+--port 8686 \
+--host 0.0.0.0 \
+--cert /opt/ssl/${WEB}.crt \
+--cert-key /opt/ssl/${WEB}.key \
+--user-data-dir /home/$WKUSER/.config/vscode/config \
+--extensions-dir /home/$WKUSER/.config/vscode/extensions \
+--locale en-US">>/opt/config/supervisord.conf
 echo "user=$WKUSER" >>/opt/config/supervisord.conf
 echo "stdout_logfile = /opt/log/code-server.log" >>/opt/config/supervisord.conf
 
@@ -69,7 +106,9 @@ echo "stdout_logfile = /opt/log/code-server.log" >>/opt/config/supervisord.conf
 SHA1=$(/opt/miniconda3/bin/python /opt/config/passwd.py $PASSWD)
 echo "c.ContentsManager.root_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_config.py
 echo "c.NotebookApp.notebook_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_config.py  # Notebook启动目录
-echo "c.NotebookApp.password = '$SHA1'" >> /opt/config/jupyter_lab_config.py
+echo "c.NotebookApp.certfile     = '/opt/ssl/$WEB.crt'" >> /opt/config/jupyter_lab_config.py
+echo "c.NotebookApp.keyfile      = '/opt/ssl/$WEB.key'" >> /opt/config/jupyter_lab_config.py
+echo "c.NotebookApp.password     = '$SHA1'" >> /opt/config/jupyter_lab_config.py
 
 unset ROOTPASSWD
 unset PASSWD
