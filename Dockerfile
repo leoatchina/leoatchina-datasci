@@ -51,12 +51,12 @@ RUN cd /tmp && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ENV PATH=/opt/miniconda3/bin:$PATH
-RUN cd /tmp && \
+RUN rm -f /bin/bash && ln -s /usr/local/bin/bash /bin/bash && \ 
+    cd /tmp && \
     curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
-    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pyqt5==5.12 pyqtwebengine==5.12 && \
-    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple neovim python-language-server flake8 pygments && \
-    conda install -n base -c conda-forge libssh2 krb5 vim ripgrep nodejs yarn jupyterlab=1.2.3 && \
+    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pynvim python-language-server flake8 pygments && \
+    conda install -n base -c conda-forge libssh2 krb5 vim ripgrep nodejs yarn jupyterlab=1.2.4 && \
     conda clean -a -y && \
     mkdir /opt/rc && \
     mv /opt/miniconda3/share/jupyter /opt/rc && \
