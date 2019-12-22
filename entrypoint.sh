@@ -32,13 +32,13 @@ for f in $(find /opt/miniconda3/share/jupyter -type f); do chmod 666 $f; done
 # user set
 groupadd $WKUSER -g $WKGID
 useradd $WKUSER -u $WKUID -g $WKGID -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
+echo $WKUSER:$PASSWD | chpasswd
+[[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
 if [ $CHOWN -gt 0 ]; then
     chown -R $WKUSER:$WKUSER /home/$WKUSER/
-    echo $WKUSER:$PASSWD | chpasswd
 fi
 
 
-[[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
 
 # set ssl encyption
 mkdir /opt/ssl
