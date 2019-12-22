@@ -86,7 +86,7 @@ ENV CITY=HZ
 ENV ORGANIZE=SELF
 ENV WEB=leatchina.data.sci
 ENV IP=0.0.0.0
-ENV CHMOD=1
+ENV CHOWN=1
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8686 8585 
 ## config file

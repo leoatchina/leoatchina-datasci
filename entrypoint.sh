@@ -26,16 +26,18 @@ chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc
 # rsync jupyter back
 rsync -rvh -u /opt/rc/jupyter /opt/miniconda3/share
 
-if [ $CHMOD -gt 0 ]; then
-    for d in $(find /opt/miniconda3/share/jupyter -type d); do chmod 777 $d; done
-    for f in $(find /opt/miniconda3/share/jupyter -type f); do chmod 666 $f; done
-fi
+for d in $(find /opt/miniconda3/share/jupyter -type d); do chmod 777 $d; done
+for f in $(find /opt/miniconda3/share/jupyter -type f); do chmod 666 $f; done
 
 # user set
 groupadd $WKUSER -g $WKGID
 useradd $WKUSER -u $WKUID -g $WKGID -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
-chown -R $WKUSER:$WKUSER /home/$WKUSER/
-echo $WKUSER:$PASSWD | chpasswd
+if [ $CHOWN -gt 0 ]; then
+    chown -R $WKUSER:$WKUSER /home/$WKUSER/
+    echo $WKUSER:$PASSWD | chpasswd
+fi
+
+
 [[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
 
 # set ssl encyption
