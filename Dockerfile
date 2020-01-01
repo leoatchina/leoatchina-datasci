@@ -47,7 +47,7 @@ RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-
     R CMD javareconf && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /tmp && \ 
-    curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.5019-amd64.deb -o rstudio.deb && \
+    curl https://download1.rstudio.org/desktop/xenial/amd64/rstudio-1.2.5033-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ENV PATH=/opt/miniconda3/bin:$PATH
@@ -56,7 +56,7 @@ RUN rm -f /bin/bash && ln -s /usr/local/bin/bash /bin/bash && \
     curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pynvim python-language-server flake8 pygments && \
-    conda install -n base -c conda-forge libssh2 krb5 vim ripgrep nodejs yarn jupyterlab=1.2.4 && \
+    conda install -n base -c conda-forge libssh2 krb5 vim ripgrep nodejs yarn jupyterlab && \
     conda clean -a -y && \
     mkdir /opt/rc && \
     mv /opt/miniconda3/share/jupyter /opt/rc && \
