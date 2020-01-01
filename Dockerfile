@@ -55,6 +55,7 @@ RUN rm -f /bin/bash && ln -s /usr/local/bin/bash /bin/bash && \
     cd /tmp && \
     curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
+    conda update -n base -c defaults conda && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pynvim python-language-server flake8 pygments && \
     conda install -n base -c conda-forge libssh2 krb5 vim ripgrep nodejs yarn jupyterlab && \
     conda clean -a -y && \
