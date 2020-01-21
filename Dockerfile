@@ -70,9 +70,9 @@ RUN cd /usr/local && \
     ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim
 # coder server
 RUN cd /tmp && \
-    curl -L https://github.com/cdr/code-server/releases/download/2.1692-vsc1.39.2/code-server2.1692-vsc1.39.2-linux-x86_64.tar.gz -o code-server.tar.gz && \
+    curl -L  https://github.com/cdr/code-server/releases/download/2.1698/code-server2.1698-vsc1.41.1-linux-x86_64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server2.1692-vsc1.39.2-linux-x86_64 /opt/code-server && \
+    mv code-server2.1698-vsc1.41.1-linux-x86_64 /opt/code-server && \
     rm -rf /tmp/*.*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log && chmod -R 755 /opt/config /opt/log

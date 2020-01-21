@@ -105,8 +105,6 @@ echo "stdout_logfile = /opt/log/code-server.log" >>/opt/config/supervisord.conf
 SHA1=$(/opt/miniconda3/bin/python /opt/config/passwd.py $PASSWD)
 echo "c.ContentsManager.root_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_config.py
 echo "c.NotebookApp.notebook_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_config.py  # Notebook启动目录
-echo "c.NotebookApp.certfile     = '/opt/ssl/$WEB.crt'" >> /opt/config/jupyter_lab_config.py
-echo "c.NotebookApp.keyfile      = '/opt/ssl/$WEB.key'" >> /opt/config/jupyter_lab_config.py
 echo "c.NotebookApp.password     = '$SHA1'" >> /opt/config/jupyter_lab_config.py
 
 unset ROOTPASSWD
