@@ -102,6 +102,7 @@ echo "user=$WKUSER" >>/opt/config/supervisord.conf
 echo "stdout_logfile = /opt/log/code-server.log" >>/opt/config/supervisord.conf
 
 # jupyter config
+chmod 666 /opt/config/jupyter_lab_config.py
 SHA1=$(/opt/miniconda3/bin/python /opt/config/passwd.py $PASSWD)
 echo "c.ContentsManager.root_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_config.py
 echo "c.NotebookApp.notebook_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_config.py  # Notebook启动目录
