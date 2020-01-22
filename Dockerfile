@@ -51,8 +51,8 @@ RUN cd /tmp && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ENV PATH=/opt/miniconda3/bin:$PATH
-RUN rm -f /bin/bash && ln -s /usr/local/bin/bash /bin/bash && \ 
-    cd /tmp && \
+RUN cd /tmp && \
+    rm -f /bin/bash && ln -s /usr/local/bin/bash /bin/bash && \ 
     curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
     conda update -n base -c defaults conda && \
