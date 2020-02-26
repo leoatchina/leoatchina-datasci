@@ -45,21 +45,6 @@ fi
 unset color_prompt force_color_prompt
 export TERM=screen-256color
 export EDITOR=vim
-function git_branch {
-    branch="`git branch 2>/dev/null | grep "^\*" | sed -e "s/^\*\ //"`"
-    if [ "${branch}" != "" ];then
-        if [ "${branch}" = "(no branch)" ];then
-            branch="(`git rev-parse --short HEAD`...)"
-        fi
-        if [[ `git status --porcelain` ]] ; then
-            branch=$branch" x"
-        else
-            branch=$branch" o"
-        fi
-        echo " $branch"
-    fi
-}
-
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     alias ls='/bin/ls --color=auto'
@@ -75,7 +60,25 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
-export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\[\e[30;1m\]\$(git_branch)\[\e[0m\]\n\$ "
+if  [ -x "$(command -v git)"  ]; then
+    function git_branch {
+        branch="`git branch 2>/dev/null | grep "^\*" | sed -e "s/^\*\ //"`"
+        if [ "${branch}" != "" ];then
+            if [ "${branch}" = "(no branch)" ];then
+                branch="(`git rev-parse --short HEAD`...)"
+            fi
+            if [[ `git status --porcelain` ]] ; then
+                branch=$branch" x"
+            else
+                branch=$branch" o"
+            fi
+            echo " $branch"
+        fi
+    }
+    export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\[\e[30;1m\]\$(git_branch)\[\e[0m\]\n\$ "
+else
+    export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\n\$ "
+fi
 
 if [[ ! -v $JUPYTER_SERVER_ROOT ]] && [[ ! $PATH == */opt/miniconda3/bin* ]]; then
     export PATH=/opt/miniconda3/bin:$PATH
