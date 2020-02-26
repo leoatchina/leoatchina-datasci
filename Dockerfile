@@ -50,13 +50,15 @@ RUN cd /tmp && \
     curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.5033-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+ADD .condarc /root
 ENV PATH=/opt/miniconda3/bin:$PATH
 RUN cd /tmp && \
     rm -f /bin/bash && ln -s /usr/local/bin/bash /bin/bash && \ 
-    curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
+    curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
+    /opt/miniconda3/bin/pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pynvim python-language-server neovim-remote flake8 pygments && \
     conda update -n base -c defaults conda && \
-    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pynvim python-language-server neovim-remote flake8 pygments && \
+    conda install -n base -c defaults pip && \
     conda install -n base -c conda-forge time libxml2 libxslt libssh2 krb5 vim ripgrep nodejs yarn lazygit jupyterlab=1.2.6 && \
     conda clean -a -y && \
     mkdir /opt/rc && \
