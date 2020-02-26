@@ -57,7 +57,7 @@ RUN cd /tmp && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
     conda update -n base -c defaults conda && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pynvim python-language-server neovim-remote flake8 pygments && \
-    conda install -n base -c conda-forge libssh2 krb5 vim ripgrep nodejs yarn lazygit jupyterlab=1.2.6 && \
+    conda install -n base -c conda-forge time libxml2 libxslt libssh2 krb5 vim ripgrep nodejs yarn lazygit jupyterlab=1.2.6 && \
     conda clean -a -y && \
     mkdir /opt/rc && \
     mv /opt/miniconda3/share/jupyter /opt/rc && \
@@ -74,7 +74,6 @@ RUN cd /tmp && \
     tar xzf code-server.tar.gz && \
     mv code-server2.1698-vsc1.41.1-linux-x86_64 /opt/code-server && \
     rm -rf /tmp/*.*
-RUN conda install -n base libxml2 libxslt 
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log && chmod -R 755 /opt/config /opt/log
 COPY .bashrc .inputrc /opt/rc/
