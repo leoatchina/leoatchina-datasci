@@ -98,7 +98,6 @@ echo "command=/opt/code-server/code-server /home/$WKUSER \
 # --cert /opt/ssl/${WEB}.crt \
 # --cert-key /opt/ssl/${WEB}.key \
 echo "user=$WKUSER" >>/opt/config/supervisord.conf
-echo "stdout_logfile = /opt/log/code-server.log" >>/opt/config/supervisord.conf
 
 # jupyter config
 chmod 666 /opt/config/jupyter_lab_config.py
