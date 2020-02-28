@@ -59,27 +59,37 @@ RUN cd /tmp && \
     /opt/miniconda3/bin/pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pynvim python-language-server neovim-remote flake8 pygments && \
     conda update -n base -c defaults conda && \
     conda install -n base -c defaults pip && \
-    conda install -n base -c conda-forge time libxml2 libxslt libssh2 krb5 vim ripgrep nodejs yarn lazygit jupyterlab=1.2.6 && \
+    conda install -n base -c conda-forge time libxml2 libxslt libssh2 krb5 ripgrep nodejs yarn lazygit jupyterlab=1.2.6 && \
     conda clean -a -y && \
     mkdir /opt/rc && \
     mv /opt/miniconda3/share/jupyter /opt/rc && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN cd /tmp && \
+    git clone --depth 1 https://github.com/vim/vim.git && \
+    cd vim && \
+    export LDFLAGS='-L/opt/miniconda3/lib -Wl,-rpath,/opt/miniconda3/lib' && \
+    ./configure --with-features=huge \ 
+      --enable-cscope \
+      --enable-multibyte \
+      --enable-python3interp=yes \
+      --with-python3-config-dir=/opt/miniconda3/lib/python3.7/config-3.7m-x86_x64-linux-gnu \
+      --prefix=/usr/local && \
+    make -j16 && make install && \
+    ln -s /usr/local/bin/vim /opt/miniconda3/bin/vim && \
+    rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # nvim
 RUN cd /usr/local && \
     curl -L https://github.com/neovim/neovim/releases/download/v0.4.3/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
     rm nvim-linux64.tar.gz && \
-    ln -s /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim
+    ln -s /usr/local/nvim-linux64/bin/nvim /usr/local/bin/nvim && \
+    ln -s /usr/local/nvim-linux64/bin/nvim /opt/minicond3/bin/nvim
 # coder server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/2.1698/code-server2.1698-vsc1.41.1-linux-x86_64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
     mv code-server2.1698-vsc1.41.1-linux-x86_64 /opt/code-server && \
     rm -rf /tmp/*.*
-RUN cd /tmp && \
-    git clone --depth 1 https://github.com/vim/vim.git && \
-    cd vim 
-
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log && chmod -R 755 /opt/config /opt/log
 COPY .bashrc .inputrc /opt/rc/
