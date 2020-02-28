@@ -76,6 +76,10 @@ RUN cd /tmp && \
     tar xzf code-server.tar.gz && \
     mv code-server2.1698-vsc1.41.1-linux-x86_64 /opt/code-server && \
     rm -rf /tmp/*.*
+RUN cd /tmp && \
+    git clone --depth 1 https://github.com/vim/vim.git && \
+    cd vim 
+
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log && chmod -R 755 /opt/config /opt/log
 COPY .bashrc .inputrc /opt/rc/
