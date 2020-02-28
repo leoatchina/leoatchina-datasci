@@ -43,7 +43,7 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 unset color_prompt force_color_prompt
-export TERM=screen-256color
+export TERM=xterm-256color
 export EDITOR=vim
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
