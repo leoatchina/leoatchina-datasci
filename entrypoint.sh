@@ -19,7 +19,7 @@ if [ $WKGID -lt 1000 ]; then
 fi
 
 # set config files
-cp -n /opt/rc/.bashrc /opt/rc/.inputrc root/
+cp -n /opt/rc/.bashrc /opt/rc/.inputrc /root/
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /home/$WKUSER/
 chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc
 
@@ -74,7 +74,6 @@ chmod 666 /opt/ssl/*.*
 
 # privilege 
 chmod 777 /root /opt/miniconda3/pkgs
-rm -rf /opt/miniconda3/pkgs/*
 
 # Rstudio-server
 echo "Sys.setenv(PATH='/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/opt/miniconda3/bin')" >> /usr/lib/rstudio-server/R/ServerOptions.R
@@ -89,15 +88,15 @@ dpkg-reconfigure openssh-server
 # code-server
 echo "[program:code-server]" >>/opt/config/supervisord.conf
 export PASSWORD=$PASSWD
-echo "command=/opt/code-server/code-server /home/$WKWUSER \
+echo "command=/opt/code-server/code-server /home/$WKUSER \
 --auth password \
 --port 8686 \
 --host 0.0.0.0 \
---cert /opt/ssl/${WEB}.crt \
---cert-key /opt/ssl/${WEB}.key \
 --user-data-dir /home/$WKUSER/.config/vscode/config \
 --extensions-dir /home/$WKUSER/.config/vscode/extensions \
 --locale en-US">>/opt/config/supervisord.conf
+# --cert /opt/ssl/${WEB}.crt \
+# --cert-key /opt/ssl/${WEB}.key \
 echo "user=$WKUSER" >>/opt/config/supervisord.conf
 echo "stdout_logfile = /opt/log/code-server.log" >>/opt/config/supervisord.conf
 
