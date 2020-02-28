@@ -41,12 +41,14 @@ docker pull leoatchina/datasci:latest
 
 ## 2019年10月31号
 在实际工作中发现因为jupyterlab服务，是由`root`账户用以`supervisor`程序以`非root`权限启动后，会出现一系列问题，所以现在改用手动启动，相应配置文件直接写入到`/opt/config/jupyter_lab_config.py`中手动启动，启动后密码同`rstudio server`
-### 启动方法一
-- 用非root账户ssh进入后，然后`jupyter lab --config=/opt/config/jupyter_lab_config`，然后访问8888端口
-### 方法二， 我喜欢这种
-- 启动后，打开`Rstudio Server`，切换到`Terminal`，然后 `jupyter lab --config=/opt/config/jupyter_lab_config`。
+### 启动方法
+用ssh进入后，然后`jupyter lab --config=/opt/config/jupyter_lab_config`，然后访问8888端口
 ### 内置tmux
-- 当然，我更喜欢启动`tmux`后再启动`jupyter lab`， 这样能保证在关掉ssh终端或者在rstudiostuido的terminal里能复用终端
+- 当然，我更喜欢启动`tmux`后再启动`jupyter lab`， 这样能保证在关掉ssh终端后jupyterlab仍然在运行 。
+
+## 2020年2月28号
+发现code-server在升级后了也不能通过supervisor启动，也改成手动启动。
+方法: `/opt/config/start-codeserver.sh`, 端口8685
 
 ## 主要控制点
 - 开放端口：
@@ -60,6 +62,8 @@ docker pull leoatchina/datasci:latest
 - 目录:
   - 默认`/home/datasci`或者`/home/你指定的用户名`,以下以用户名为`datasci`为例
   - `/root`目录
+
+
 
 ## 使用docker-compose命令
 - `docker-compose -f datasci.yml up -d`
@@ -113,7 +117,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
 - 以此，就可快速布置软件环境并有以下好处
   1. 启动分析流程后，发现代码写错了要强行结束时，只要删除`container`，不需要一个个去kill进程
   2. 在另一个机器上快速搭建分析环境，把已经装上的软件复制过去就能搭建好分析环境。
-  3. 可以用`code-server`, `ssh`登陆container直接进行代码编写
+  3. 可以用`ssh`登陆container直接进行代码编写
 
 ## 插件特殊说明
 - `rstudio`和`code-server`的插件都会放到`/home/datasci`下

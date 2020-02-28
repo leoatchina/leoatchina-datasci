@@ -86,18 +86,15 @@ sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd
 dpkg-reconfigure openssh-server 
 
 # code-server
-echo "[program:code-server]" >>/opt/config/supervisord.conf
-export PASSWORD=$PASSWD
-echo "command=/opt/code-server/code-server /home/$WKUSER \
+echo "export PASSWORD=$PASSWD" > /opt/config/start-codeserver.sh
+echo "/opt/code-server/code-server /home/$WKUSER \
 --auth password \
 --port 8686 \
 --host 0.0.0.0 \
 --user-data-dir /home/$WKUSER/.config/vscode/config \
 --extensions-dir /home/$WKUSER/.config/vscode/extensions \
---locale en-US">>/opt/config/supervisord.conf
-# --cert /opt/ssl/${WEB}.crt \
-# --cert-key /opt/ssl/${WEB}.key \
-echo "user=$WKUSER" >>/opt/config/supervisord.conf
+--locale en-US">>/opt/config/start-codeserver.sh
+chmod 777 /opt/config/start-codeserver.sh
 
 # jupyter config
 chmod 666 /opt/config/jupyter_lab_config.py
