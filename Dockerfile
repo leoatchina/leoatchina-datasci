@@ -82,8 +82,7 @@ RUN cd /usr/local && \
     curl -L https://github.com/neovim/neovim/releases/download/v0.4.3/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
     rm nvim-linux64.tar.gz && \
-    ln -s /usr/local/nvim-linux64/bin/nvim /usr/local/bin/nvim && \
-    ln -s /usr/local/nvim-linux64/bin/nvim /opt/miniconda3/bin/nvim
+    ln -s /usr/local/nvim-linux64/bin/nvim /usr/local/bin/nvim
 # coder server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/2.1698/code-server2.1698-vsc1.41.1-linux-x86_64.tar.gz -o code-server.tar.gz && \
