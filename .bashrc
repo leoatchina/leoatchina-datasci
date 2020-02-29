@@ -44,6 +44,15 @@ if [ -n "$force_color_prompt" ]; then
 fi
 unset color_prompt force_color_prompt
 export EDITOR=vim
+if [ -z $TMUX ]; then
+    export TERM=xterm-256color
+else
+    if [ -z $JUPYTERLAB_DIR ]; then
+        export TERM=xterm-256color
+    else 
+        export TERM=screen-256color 
+    fi
+fi
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     alias ls='/bin/ls --color=auto'
