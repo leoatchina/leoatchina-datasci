@@ -32,26 +32,11 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-        # We have color support; assume it's compliant with Ecma-48
-        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-        # a case would tend to support setf rather than setaf.)
-        color_prompt=yes
-    else
-        color_prompt=
-    fi
-fi
-unset color_prompt force_color_prompt
 export EDITOR=vim
-if [ -z $TMUX ]; then
+if [ $TMUX == '' ]; then
     export TERM=xterm-256color
 else
-    if [ -z $JUPYTERLAB_DIR ]; then
-        export TERM=xterm-256color
-    else 
-        export TERM=screen-256color 
-    fi
+    export TERM=screen-256color 
 fi
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
