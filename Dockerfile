@@ -71,13 +71,11 @@ RUN cd /tmp && \
     cd vim && \
     export LDFLAGS='-L/opt/miniconda3/lib -Wl,-rpath,/opt/miniconda3/lib' && \
     ./configure --with-features=huge \ 
-      --enable-cscope \
       --enable-multibyte \
       --enable-python3interp=yes \
       --with-python3-config-dir=/opt/miniconda3/lib/python3.7/config-3.7m-x86_x64-linux-gnu \
       --prefix=/usr/local && \
     make -j16 && make install && \
-    ln -s /usr/local/bin/vim /opt/miniconda3/bin/vim && \
     rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # nvim
 RUN cd /usr/local && \
