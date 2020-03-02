@@ -50,6 +50,9 @@ RUN cd /tmp && \
     curl https://download2.rstudio.org/server/trusty/amd64/rstudio-server-1.2.5033-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN apt update && \
+    apt install -y language-pack-zh-hans && locale-gen zh_CN.UTF-8 && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ADD .condarc /root
 ENV PATH=/opt/miniconda3/bin:$PATH
 RUN cd /tmp && \
@@ -57,9 +60,8 @@ RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
     /opt/miniconda3/bin/pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pynvim python-language-server neovim-remote flake8 pygments && \
-    conda update -n base -c defaults conda && \
-    conda install -n base -c defaults pip && \
-    conda install -n base -c conda-forge time libxml2 libxslt libssh2 krb5 ripgrep nodejs yarn lazygit jupyterlab=1.2.6 && \
+    conda update -n base -c defaults conda pip && \
+    conda install -n base -c conda-forge time libxml2 libxslt libssh2 krb5 ripgrep nodejs yarn lazygit jupyterlab=2.0.0 && \
     conda clean -a -y && \
     mkdir /opt/rc && \
     mv /opt/miniconda3/share/jupyter /opt/rc && \
@@ -94,7 +96,10 @@ RUN cd /tmp && \
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log && chmod -R 755 /opt/config /opt/log
 COPY .bashrc .inputrc /opt/rc/
-## users ports and dirs 
+## users ports and dirs and configs
+RUN echo "export.UTF-8" >> /etc/profilesource /etc/profile
+RUN echo "export LC_ALL='C.UTF-8'" >> /etc/profile
+ENV LANG C.UTF-8
 ENV WKUID=1000
 ENV WKUSER=datasci
 ENV PASSWD=datasci

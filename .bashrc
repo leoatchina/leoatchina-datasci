@@ -33,11 +33,16 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 export EDITOR=vim
-if [ $TMUX == '' ]; then
-    export TERM=xterm-256color
-else
-    export TERM=screen-256color 
-fi
+export LANG='zh_CN.UTF-8'
+export LC_ALL='zh_CN.UTF-8'
+export TERM=xterm-256color
+# if [ $TMUX == '' ]; then
+#     export TERM=xterm-256color
+# else
+#     export TERM=screen-256color 
+# fi
+
+
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     alias ls='/bin/ls --color=auto'
