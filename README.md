@@ -10,7 +10,7 @@
 ## 安装方法
 - 直接pull(建议使用这种方法)
 ```
-docker pull leoatchina/datasci:latest
+docker pull leoatchina/datasci:2.0.0  
 ```
 - build docker镜像
 要先装好`docker-ce`和`git`。
@@ -47,8 +47,9 @@ docker pull leoatchina/datasci:latest
 - 当然，我更喜欢启动`tmux`后再启动`jupyter lab`， 这样能保证在关掉ssh终端后jupyterlab仍然在运行 。
 
 ## 2020年2月28号
-发现code-server在升级后了也不能通过supervisor启动，也改成手动启动。
-方法: `/opt/config/start-codeserver.sh`, 端口8685
+- 发现code-server在升级后了也不能通过supervisor启动，也改成手动启动。
+方法: `bash /opt/config/start-codeserver.sh`, 端口8686
+- 运动 jupyterlab前，要 `jupyter lab build`下
 
 ## 主要控制点
 - 开放端口：
@@ -62,7 +63,6 @@ docker pull leoatchina/datasci:latest
 - 目录:
   - 默认`/home/datasci`或者`/home/你指定的用户名`,以下以用户名为`datasci`为例
   - `/root`目录
-
 
 
 ## 使用docker-compose命令
@@ -122,21 +122,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
 ## 插件特殊说明
 - `rstudio`和`code-server`的插件都会放到`/home/datasci`下
 - 用`jupyterlab  labextension install` 安装jupyterlab的插件, 最后要build
-```
-jupyter labextension install @jupyter-widgets/jupyterlab-manager &&
-jupyter labextension install ipysheet &&
-jupyter labextension install @jupyterlab/toc &&
-jupyter labextension install jupyterlab-drawio &&
-jupyter labextension install jupyterlab-kernelspy &&
-jupyter labextension install jupyterlab-spreadsheet &&
-jupyter labextension install @mflevine/jupyterlab_html &&
-jupyter labextension install @krassowski/jupyterlab_go_to_definition &&
-jupyter labextension install @telamonian/theme-darcula &&
-jupyter labextension install @mohirio/jupyterlab-horizon-theme &&
-jupyter labextension install jupyterlab_vim &&
-jupyter labextension install @lckr/jupyterlab_variableinspector &&
-jupyter lab build
-```
+
 
 ## 环境变量
 众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置。
