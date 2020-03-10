@@ -24,7 +24,7 @@ cp -n /opt/rc/.bashrc /opt/rc/.inputrc /home/$WKUSER/
 chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc
 
 # rsync jupyter back
-rsync -rvh -u /opt/rc/jupyter /opt/miniconda3/share
+# rsync -rvh -u /opt/rc/jupyter /opt/miniconda3/share
 
 # user set
 groupadd $WKUSER -g $WKGID

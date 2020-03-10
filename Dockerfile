@@ -59,13 +59,12 @@ RUN cd /tmp && \
     rm -f /bin/bash && ln -s /usr/local/bin/bash /bin/bash && \ 
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
-    conda update -n base -c defaults conda pip && \
-    conda install -n base -c conda-forge time libxml2 libxslt libssh2 krb5 ripgrep nodejs yarn lazygit jupyterlab=2.0.0 && \
-    /opt/miniconda3/bin/pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pynvim neovim-remote flake8 pygments msgpack-python jedi==0.15 && \
+    conda clean -a -y
+RUN conda update -n base -c defaults conda pip && \
+    conda install -n base -c conda-forge time libxml2 libxslt libssh2 krb5 ripgrep nodejs yarn lazygit jupyterlab=2.0.1 && \
+    /opt/miniconda3/bin/pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple pynvim neovim-remote flake8 pygments msgpack-python jedi==0.15.2 && \
     /opt/miniconda3/bin/pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple python-language-server && \ 
     conda clean -a -y && \
-    mkdir /opt/rc && \
-    mv /opt/miniconda3/share/jupyter /opt/rc && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /tmp && \
     git clone --depth 1 https://github.com/vim/vim.git && \
@@ -91,7 +90,7 @@ RUN cd /tmp && \
     mv code-server2.1698-vsc1.41.1-linux-x86_64 /opt/code-server && \
     rm -rf /tmp/*.*
 # configuration
-RUN mkdir -p /etc/rstudio /opt/config /opt/log && chmod -R 755 /opt/config /opt/log
+RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
 COPY .bashrc .inputrc /opt/rc/
 ## users ports and dirs and configs
 RUN echo "export.UTF-8" >> /etc/profilesource /etc/profile
