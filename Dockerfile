@@ -110,4 +110,5 @@ ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8686 8585 
 ## config file
 COPY rserver.conf /etc/rstudio/
+
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
