@@ -155,5 +155,7 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 3. 安装tidyvers包出问题
 
 google后发现问题出在haven和reaxl包上, 用下面方法解决
-> withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("haven"), assignment = "+=")
-  withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("readxl"), assignment = "+=")
+``` 
+withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("haven"), assignment = "+=")
+withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("readxl"), assignment = "+=")
+```
