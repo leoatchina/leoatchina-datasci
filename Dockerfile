@@ -62,9 +62,10 @@ RUN cd /tmp && \
     conda update -n base -c defaults conda pip && \
     conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN conda install -n base -c conda-forge time libxml2 libxslt libssh2 krb5 ripgrep lazygit yarn nodejs=12.16 jupyterlab=2.0.1 && \
+RUN conda install -n base -c conda-forge time libxml2 libxslt libssh2 krb5 ripgrep lazygit zsh yarn nodejs=12.16 jupyterlab=2.0.1 && \
     /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments ranger-fm msgpack-python jedi==0.15.2 && \
     /opt/miniconda3/bin/pip install --no-cache-dir python-language-server && \
+    ln -s /opt/miniconda3/bin/zsh /usr/local/bin/zsh && \
     conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # RUN /opt/miniconda3/bin/pip install --no-cache-dir pandas scikit-learn numpy matplotlib scipy seaborn ggplot plotly xgboost && \
