@@ -53,7 +53,6 @@ RUN cd /tmp && \
 RUN apt update && \
     apt install -y language-pack-zh-hans && locale-gen zh_CN.UTF-8 && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-ADD .condarc /root
 ENV PATH=/opt/miniconda3/bin:$PATH
 RUN cd /tmp && \
     rm -f /bin/bash && ln -s /usr/local/bin/bash /bin/bash && \
@@ -62,15 +61,14 @@ RUN cd /tmp && \
     conda update -n base -c defaults conda pip && \
     conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN conda install -n base -c conda-forge time libxml2 libxslt libssh2 krb5 ripgrep lazygit zsh yarn nodejs=12.16 jupyterlab=2.0.1 && \
-    /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments ranger-fm msgpack-python jedi==0.15.2 && \
-    /opt/miniconda3/bin/pip install --no-cache-dir python-language-server && \
+ADD .condarc /root
+RUN conda install -n base -c conda-forge xeus-python time libxml2 libxslt libssh2 krb5 ripgrep lazygit zsh yarn nodejs jupyterlab=2.1.0 && \
     ln -s /opt/miniconda3/bin/zsh /usr/local/bin/zsh && \
+    /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
+    /opt/miniconda3/bin/jupyter lab build && \
+    /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments ranger-fm msgpack-python python-language-server && \
     conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# RUN /opt/miniconda3/bin/pip install --no-cache-dir pandas scikit-learn numpy matplotlib scipy seaborn ggplot plotly xgboost && \
-#     conda clean -a -y && \
-#     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /tmp && \
     git clone --depth 1 https://github.com/vim/vim.git && \
     cd vim && \
@@ -90,10 +88,13 @@ RUN cd /usr/local && \
     ln -s /usr/local/nvim-linux64/bin/nvim /usr/local/bin/nvim
 # coder server
 RUN cd /tmp && \
-    curl -L https://github.com/cdr/code-server/releases/download/2.1698/code-server2.1698-vsc1.41.1-linux-x86_64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.com/cdr/code-server/releases/download/3.1.0/code-server-3.1.0-linux-arm64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server2.1698-vsc1.41.1-linux-x86_64 /opt/code-server && \
+    mv code-server-3.1.0-linux-arm64 /opt/code-server && \
     rm -rf /tmp/*.*
+# RUN /opt/miniconda3/bin/pip install --no-cache-dir pandas scikit-learn numpy matplotlib scipy seaborn ggplot plotly xgboost && \
+#     conda clean -a -y && \
+#     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
 COPY .bashrc .inputrc /opt/rc/
