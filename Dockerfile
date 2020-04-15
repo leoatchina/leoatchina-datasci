@@ -62,24 +62,13 @@ RUN cd /tmp && \
     conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ADD .condarc /root
-RUN conda install -n base -c conda-forge xeus-python time libxml2 libxslt libssh2 krb5 ripgrep lazygit zsh yarn nodejs jupyterlab=2.1.0 && \
+RUN conda install -n base -c conda-forge vim xeus-python time libxml2 libxslt libssh2 krb5 ripgrep lazygit zsh yarn nodejs jupyterlab=2.1.0 && \
     ln -s /opt/miniconda3/bin/zsh /usr/local/bin/zsh && \
     /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
     /opt/miniconda3/bin/jupyter lab build && \
     /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments ranger-fm msgpack-python python-language-server && \
     conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN cd /tmp && \
-    git clone --depth 1 https://github.com/vim/vim.git && \
-    cd vim && \
-    export LDFLAGS='-L/opt/miniconda3/lib -Wl,-rpath,/opt/miniconda3/lib' && \
-    ./configure --with-features=huge \
-      --enable-multibyte \
-      --enable-python3interp=yes \
-      --with-python3-config-dir=/opt/miniconda3/lib/python3.7/config-3.7m-x86_x64-linux-gnu \
-      --prefix=/usr/local && \
-    make -j16 && make install && \
-    rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # nvim
 RUN cd /usr/local && \
     curl -L https://github.com/neovim/neovim/releases/download/v0.4.3/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
