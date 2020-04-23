@@ -1,7 +1,8 @@
 # for some reasons, you should install this packages at first
 options(encoding = 'UTF-8')
-options(repos  = "https://mirrors.ustc.edu.cn/CRAN")
-options(BioC_mirror = "https://mirrors.ustc.edu.cn/bioc")
+options("repos" = c(CRAN="https://mirrors.tuna.tsinghua.edu.cn/CRAN/"))
+options(BioC_mirror="https://mirrors.tuna.tsinghua.edu.cn/bioconductor")
+
 require_packages = c(
   "AlgDesign",
   "ape",
