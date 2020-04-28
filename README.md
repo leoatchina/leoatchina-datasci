@@ -10,7 +10,7 @@
 ## 安装方法
 - 直接pull(建议使用这种方法)
 ```
-docker pull leoatchina/datasci:2.0.0  
+docker pull leoatchina/datasci
 ```
 - build docker镜像
 要先装好`docker-ce`和`git`。
@@ -22,7 +22,7 @@ docker pull leoatchina/datasci:2.0.0
 - 安装了`ssh-server`,`code-server`
 - 用`supervisor`启动后台web服务
 - 美化bash界面
-- install_scripts下面的`pkgs.R`和`conda.sh`，收集的一些R包和conda生信软件的安装脚本
+- install_scripts下面的脚本为我收集的一些R包和conda生信软件的安装脚本
 
 ## 2019年8月8日，增加了好多个特性
 - 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`datasci`。 可指定不小于1000的`UID`，默认为`1000`。
@@ -42,9 +42,9 @@ docker pull leoatchina/datasci:2.0.0
 ## 2019年10月31号
 在实际工作中发现因为jupyterlab服务，是由`root`账户用以`supervisor`程序以`非root`权限启动后，会出现一系列问题，所以现在改用手动启动，相应配置文件直接写入到`/opt/config/jupyter_lab_config.py`中手动启动，启动后密码同`rstudio server`
 ### 启动方法
-用ssh进入后，然后`jupyter lab --config=/opt/config/jupyter_lab_config`，然后访问8888端口
+用ssh进入后,命令行`jupyter lab --config=/opt/config/jupyter_lab_config`，然后访问8888端口
 ### 内置tmux
-- 当然，我更喜欢启动`tmux`后再启动`jupyter lab`， 这样能保证在关掉ssh终端后jupyterlab仍然在运行 。
+我更喜欢启动`tmux`后再启动`jupyter lab`， 这样能保证在关掉ssh终端后jupyterlab仍然在运行 。
 
 ## 2020年2月28号
 - 发现code-server在升级后了也不能通过supervisor启动，也改成手动启动。
