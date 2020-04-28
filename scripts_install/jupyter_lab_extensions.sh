@@ -6,5 +6,6 @@ jupyter labextension install jupyterlab-spreadsheet
 jupyter labextension install @krassowski/jupyterlab_go_to_definition
 jupyter labextension install @mohirio/jupyterlab-horizon-theme
 jupyter labextension install @lckr/jupyterlab_variableinspector
+jupyter labextension install @jupyterlab/debugger
 # jupyter labextension install @axelfahy/jupyterlab-vim 
 jupyter lab build 
