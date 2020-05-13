@@ -77,13 +77,10 @@ RUN cd /usr/local && \
     ln -s /usr/local/nvim-linux64/bin/nvim /usr/local/bin/nvim
 # coder server
 RUN cd /tmp && \
-    curl -L https://github.com/cdr/code-server/releases/download/3.1.0/code-server-3.1.0-linux-arm64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.com/cdr/code-server/releases/download/3.2.0/code-server-3.2.0-linux-x86_64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server-3.1.0-linux-arm64 /opt/code-server && \
+    mv code-server-3.2.0-linux-x86_64 /opt/code-server && \
     rm -rf /tmp/*.*
-# RUN /opt/miniconda3/bin/pip install --no-cache-dir pandas scikit-learn numpy matplotlib scipy seaborn ggplot plotly xgboost && \
-#     conda clean -a -y && \
-#     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
 COPY .bashrc .inputrc /opt/rc/
