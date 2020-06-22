@@ -62,7 +62,7 @@ RUN cd /tmp && \
     conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ADD .condarc /root
-RUN conda install -n base -c conda-forge vim xeus-python time libxml2 libxslt libssh2 krb5 ripgrep lazygit zsh yarn nodejs jupyterlab && \
+RUN conda install -n base -c conda-forge vim=8.2.0814 xeus-python time libxml2 libxslt libssh2 krb5 ripgrep lazygit zsh yarn nodejs jupyterlab && \
     ln -s /opt/miniconda3/bin/zsh /usr/local/bin/zsh && \
     /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
     /opt/miniconda3/bin/jupyter lab build && \
