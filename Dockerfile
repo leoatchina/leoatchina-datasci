@@ -33,8 +33,8 @@ RUN apt install cscope libncurses5-dev -y && \
     git clone --depth 1 https://github.com/universal-ctags/ctags.git && \
     cd ctags && ./autogen.sh && ./configure && make && make install && \
     cd /tmp && \
-    curl http://ftp.vim.org/ftp/gnu/global/global-6.6.3.tar.gz -o global.tar.gz && \
-    tar xzf global.tar.gz && cd global-6.6.3 && ./configure --with-sqlite3 && make && make install && \
+    curl http://ftp.vim.org/ftp/gnu/global/global-6.6.4.tar.gz -o global.tar.gz && \
+    tar xzf global.tar.gz && cd global-6.6.4 && ./configure --with-sqlite3 && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
     tar xzf libiconv.tar.gz && cd libiconv-1.16 && ./configure && make && make install && \
@@ -62,7 +62,7 @@ RUN cd /tmp && \
     conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ADD .condarc /root
-RUN conda install -n base -c conda-forge vim=8.2.0814 xeus-python time libxml2 libxslt libssh2 krb5 ripgrep lazygit zsh yarn nodejs jupyterlab && \
+RUN conda install -n base -c conda-forge vim xeus-python time libxml2 libxslt libssh2 krb5 ripgrep lazygit zsh yarn nodejs jupyterlab=2.1.5 && \
     ln -s /opt/miniconda3/bin/zsh /usr/local/bin/zsh && \
     /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
     /opt/miniconda3/bin/jupyter lab build && \
