@@ -47,6 +47,11 @@ RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-
     R CMD javareconf && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /tmp && \
+    apt install libevent-dev -y && \
+    curl -L https://github.com/tmux/tmux/releases/download/3.1b/tmux-3.1b.tar.gz -o tmux-3.1b.tar.gz && \
+    tar xzf tmux-3.1b.tar.gz && cd tmux-3.1b && ./configure && make && make install && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN cd /tmp && \
     curl https://download2.rstudio.org/server/xenial/amd64/rstudio-server-1.3.959-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
@@ -102,5 +107,4 @@ ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 EXPOSE 8888 8787 8686 8585
 ## config file
 COPY rserver.conf /etc/rstudio/
-
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
