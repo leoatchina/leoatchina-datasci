@@ -81,12 +81,15 @@ RUN cd /usr/local && \
     tar xzf nvim-linux64.tar.gz && \
     rm nvim-linux64.tar.gz && \
     ln -s /usr/local/nvim-linux64/bin/nvim /usr/local/bin/nvim
-# coder server
+# code-server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/v3.4.1/code-server-3.4.1-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
     mv code-server-3.4.1-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
+# tmux and zsh
+RUN ln -s /opt/miniconda3/bin/zsh /usr/bin/zsh && \
+    rm /usr/bin/tmux && ln -s /usr/local/bin/tmux /usr/bin/tmux
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
 COPY .bashrc .inputrc /opt/rc/
