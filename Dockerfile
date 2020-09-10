@@ -67,15 +67,17 @@ RUN cd /tmp && \
     conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ADD .condarc /root
-RUN conda install -n base -c conda-forge xeus-python time libxml2 libxslt libssh2 krb5 ripgrep zsh yarn nodejs bat jupyterlab=2.2.2 && \
-    /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
-    /opt/miniconda3/bin/jupyter lab build && \
+RUN conda install -n base -c conda-forge xeus-python time libxml2 libxslt libssh2 krb5 ripgrep zsh yarn nodejs bat && \
     conda clean -a -y
 RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments ranger-fm python-language-server && \
     ln -s /opt/miniconda3/bin/zsh /usr/local/bin/zsh && \
     rm /usr/bin/tmux && ln -s /usr/local/bin/tmux /usr/bin/tmux && \
     conda clean -a -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN conda install -n base -c conda-forge jupyterlab && \ 
+    /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
+    /opt/miniconda3/bin/jupyter lab build && \
+    conda clean -a -y
 # nvim
 RUN conda install -n base -c conda-forge vim && \ 
     ln -s /opt/miniconda3/bin/vim /usr/local/bin/vim && \
@@ -87,9 +89,9 @@ RUN conda install -n base -c conda-forge vim && \
     ln -s /usr/local/nvim-linux64/bin/nvim /usr/local/bin/nvim
 # code-server
 RUN cd /tmp && \
-    curl -L https://github.com/cdr/code-server/releases/download/v3.4.1/code-server-3.4.1-linux-amd64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.com/cdr/code-server/releases/download/v3.5.0/code-server-3.5.0-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server-3.4.1-linux-amd64 /opt/code-server && \
+    mv code-server-3.5.0-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
