@@ -26,18 +26,19 @@ docker pull leoatchina/datasci
 
 ## 2019年8月8日，增加了好多个特性
 - 运行时可以自定义用户名， 用 `WKUSER`变量指定，默认是`datasci`。 可指定不小于1000的`UID`，默认为`1000`。
-- `jupyterlab`和`rstudio`和`code-server`都是以上述用户权限运行，这样就解决了原来**文件权限不一样的问题**，默认密码是`jupyter`， 可用`PASSWD`变量指定。
+- `jupyterlab`和`rstudio`和`code-server`都是以上述用户权限运行，这样就解决了原来文件权限不一致的问题，默认密码是`datasci`， 可用`PASSWD`变量指定。
 - `ssh-server`可用`root`或者自定义用户登陆 ，`root`密码默认和自定义用户密码一致，可用`ROOTPASSWD`变量另外指定。
 - ~~由于`jupyterlab`非root权限，因此，如不开放ssh端口不以`root`连入，不能装插件，也不能用`apt`等装系统软件，只能往自己的用户目录下用`conda`命令装软件 ，一定程度上提高了安全性。~~
 - 我是如何解决权限问题的请打开[entrypoint.sh](entrypoint.sh)这个启动脚本学习。
 - ~~`jupyterlab` 里集成了`table of content`, `variableinspect`, `drawio`等插件， 使用体验已接近`rstudio`。~~
 - 内置`neovim`、`node`、`yarn`，`uctags`、`gtags`、`ripgrep`等软件，能在ssh bash环境下进行用`vim`进行代码编写。
   - 此处推荐下本人的[leoatchina的vim配置](https://github.com/leoatchina/leoatchina-vim.git)使用，接近一个轻型IDE，有按键提示，高亮、补全、运行、检查一应具全。
-- 内置`tmux`。 这里又强推下本人的配置 [tmux config](https://github.com/leoatchina/leoatchina-tmux.git)
+- 内置`tmux`。 这里又推下本人的配置 [tmux config](https://github.com/leoatchina/leoatchina-tmux.git)
   - ln -s leoatchina-tmux/.tmux.conf ~/.tmux.conf
   - `Alt+I`插入新tab, `Alt+P`往前翻,`Alt+N`往后翻
   - `Alt+Shift+I`关闭当前tab, `Alt+Shift+P`往前移，`Alt+Shift+N`往后移
-  - 先导键是`ctrl+X`
+  - 先导键是`M-b`
+  - 还有其他一些快捷键见源代码学习
 
 ## 2019年10月31号
 在实际工作中发现因为jupyterlab服务，是由`root`账户用以`supervisor`程序以`非root`权限启动后，会出现一系列问题，所以现在改用手动启动，相应配置文件直接写入到`/opt/config/jupyter_lab_config.py`中手动启动，启动后密码同`rstudio server`
@@ -46,10 +47,9 @@ docker pull leoatchina/datasci
 ### 内置tmux
 我更喜欢启动`tmux`后再启动`jupyter lab`， 这样能保证在关掉ssh终端后jupyterlab仍然在运行 。
 
-## 2020年2月28号
-- 发现code-server在升级后了也不能通过supervisor启动，也改成手动启动。
-方法: `bash /opt/config/start-codeserver.sh`, 端口8686
-- 运动 jupyterlab前，要 `jupyter lab build`下
+## 2020年10月12日
+- 通过改进supervisor的启动代码，code-server也可以普通用户身份自启动
+- code-server 3.5.0要解决ssh证书问题，比较麻烦，还是用3.4.1版本
 
 ## 主要控制点
 - 开放端口：
@@ -59,7 +59,7 @@ docker pull leoatchina/datasci
   - 8585: for ssh-server
 - 访问密码：
   - 见dockerfile里的`ENV PASSWD=datasci`
-  - **运行时可以修改密码**
+  - 运行时可以修改密码
 - 目录:
   - 默认`/home/datasci`或者`/home/你指定的用户名`,以下以用户名为`datasci`为例
   - `/root`目录
@@ -78,7 +78,7 @@ services:
       - ROOTPASSWD=rootpasswd # 区分普通用户的root密码，如没有，和普通用户相同
       - WKUSER=datasci   # 指定用户名
       - WKUID=23333   # 指定用户ID, 默认是1000
-      - WKGID=23333   # 指定用户GROUPID，默认是1000 ， 这个和WKUID设置成和宿主一致可以搞
+      - WKGID=23333   # 指定用户GROUPID，默认是1000
     ports:     # 端口映射，右边是container里的端口，左边是实际端口
       - 8787:8787
       - 8888:8888
@@ -91,11 +91,11 @@ services:
       - ./root:/root # root目录
     container_name: datasci
 ```
+
 如上，会生成一个名为`datasci`的container。
+如在启动时想安装其他软件，可以在运行时用`build`指定一个放有`Dockerfile`的目录
+以上面的yml文件为基础，把`image`这一行换成`build: ./build`， 在`./build`目录下建立`Dockerfile` ，运行时就会安装`tensorflow`, `opencv`
 
-如在启动里想安装相应软件，可以在运行时用`build`指定一个放有`Dockerfile`的目录
-
-如上面的yml文件，把`image`这一行换成`build: ./build`， 在`./build`目录下建立`Dockerfile` ，运行时就会安装`tensorflow`, `opencv`
 ```
 FROM leaotchina/datasci:latest
 RUN pip install -q tensorflow_hub
@@ -107,7 +107,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
 
 ## 运行后的操作
 - 默认密码各个服务都一样为`datasci`，可在yml文件里调整
-- **ssh-server**端口`8585`，用户名是`root`和`datasci`， 注意`root`密码可以和普通用户不一致
+- `ssh-server`端口`8585`，用户名是`root`和`datasci`， 注意`root`密码可以和普通用户不一致
 - jupyterlab, 通过`file->new->terminal`输入`bash`,就会打开一个有高亮的 shell环境
 ![jupyterlab](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551925588870.png)
 - rstudio
@@ -115,9 +115,9 @@ RUN conda install tensorflow && conda install -c menpo opencv
 - code-sever, 要忽略掉`warning`才能打开
 ![code-server](https://www.github.com/leoatchina/leoatchina-notes/raw/master/Notes/2019/5/4/1556964572166.png)
 - 以此，就可快速布置软件环境并有以下好处
-  1. 启动分析流程后，发现代码写错了要强行结束时，只要删除`container`，不需要一个个去kill进程
-  2. 在另一个机器上快速搭建分析环境，把已经装上的软件复制过去就能搭建好分析环境。
-  3. 可以用`ssh`登陆container直接进行代码编写
+1. 启动分析流程后，发现代码写错了要强行结束时，只要删除`container`，不需要一个个去kill进程
+2. 在另一个机器上快速搭建分析环境，把已经装上的软件复制过去就能搭建好分析环境。
+3. 可以用`ssh`登陆container直接进行代码编写
 
 ## 插件特殊说明
 - `rstudio`和`code-server`的插件都会放到`/home/datasci`下
@@ -128,7 +128,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
 众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置。
 能达到`安装的软件`和`container分离`, 在删除container时不删除安装的软件的目的
 
-**应用：用conda快速安装生信软件**
+## 应用：用conda快速安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`conda activate`激活这个环境。
 
 但其实还有一个参数`-p`用于指定安装目录，利用了这一点，我们就可以把自己`docker`里`conda`安装软件到`非conda内部目录`，而是`映射过来的目录`。如下
@@ -136,13 +136,9 @@ RUN conda install tensorflow && conda install -c menpo opencv
 conda install -p /home/datasci/bioinfo -c bioconda roary
 ```
 ![enter descriptiowork](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551926299681.png)
-
 就安装到对应的位置，如`samtools`,`bcftools`,`varscan`等一众生信软件都可以如此安装。
-
 由于在`.configrc`里作了路径配置，这些软件即时能用！
-
 在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
-
 ## BUGS
 1. 用`conda`安装的并激活一个环境中，报和`libcurl.so`相关的错误
 
@@ -155,7 +151,7 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 3. 安装tidyvers包出问题
 
 google后发现问题出在haven和reaxl包上, 用下面方法解决
-``` 
+```
 withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("haven"), assignment = "+=")
 withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("readxl"), assignment = "+=")
 ```
