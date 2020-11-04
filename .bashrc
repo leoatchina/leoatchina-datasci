@@ -2,7 +2,7 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 # If not running interactively, don't do anything
-export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
+export PATH=/sbin:/usr/sbin:/bin:/usr/local/bin:/usr/bin
 
 [ -z "$PS1" ] && return
 
@@ -33,8 +33,8 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 export EDITOR=vim
-export LANG='zh_CN.UTF-8'
-export LC_ALL='zh_CN.UTF-8'
+# export LANG='zh_CN.UTF-8'
+# export LC_ALL='zh_CN.UTF-8'
 export TERM=xterm-256color
 # if [ $TMUX == '' ]; then
 #     export TERM=xterm-256color
@@ -83,8 +83,10 @@ if [[ ! -v $JUPYTER_SERVER_ROOT ]] && [[ ! $PATH == */opt/miniconda3/bin* ]]; th
 fi
 
 if [[ ! $PATH == */$HOME/.local/bin* ]]; then
-    export PATH=$PATH:$HOME/.local/bin
+    export PATH=$HOME/.local/bin:$PATH
 fi
+
 export JUPYTERLAB_DIR=$HOME/.jupyterlab
+
 [ -f $HOME/.configrc ] && source $HOME/.configrc
 [ -f /usr/local/etc/bash_completion ] && bash /usr/local/etc/bash_completion
