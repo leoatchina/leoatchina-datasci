@@ -59,7 +59,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 if  [ -x "$(command -v git)"  ]; then
-    function git_branch {
+    git_branch() {
         branch="`git branch 2>/dev/null | grep "^\*" | sed -e "s/^\*\ //"`"
         if [ "${branch}" != "" ];then
             if [ "${branch}" = "(no branch)" ];then
