@@ -18,7 +18,7 @@ RUN apt install -y wget curl net-tools iputils-ping locales  \
     gdebi-core \
     openssh-server \
     libjansson-dev \
-    libcairo2-dev libxt-dev \
+    libcairo2-dev libxt-dev librdf0-dev \
     libv8-3.14-dev libudunits2-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
     #cpan -i Try::Tiny && \
@@ -76,9 +76,9 @@ RUN apt install vim -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # code-server
 RUN cd /tmp && \
-    curl -L https://github.com/cdr/code-server/releases/download/3.4.1/code-server-3.4.1-linux-amd64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.com/cdr/code-server/releases/download/v3.6.2/code-server-3.6.2-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server-3.4.1-linux-amd64 /opt/code-server && \
+    mv code-server-3.6.2-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
