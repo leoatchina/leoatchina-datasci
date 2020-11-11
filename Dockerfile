@@ -18,7 +18,7 @@ RUN apt install -y wget curl net-tools iputils-ping locales  \
     gdebi-core \
     openssh-server \
     libjansson-dev \
-    libcairo2-dev libxt-dev librdf0-dev \
+    libcairo2-dev libxt-dev librdf0 librdf0-dev \
     libv8-3.14-dev libudunits2-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
     #cpan -i Try::Tiny && \
@@ -27,8 +27,8 @@ RUN cd /tmp && \
     git clone --depth 1 https://github.com/universal-ctags/ctags.git && \
     cd ctags && ./autogen.sh && ./configure && make && make install && \
     cd /tmp && \
-    curl http://ftp.vim.org/ftp/gnu/global/global-6.6.4.tar.gz -o global.tar.gz && \
-    tar xzf global.tar.gz && cd global-6.6.4 && ./configure --with-sqlite3 && make && make install && \
+    curl http://ftp.vim.org/ftp/gnu/global/global-6.6.5.tar.gz -o global.tar.gz && \
+    tar xzf global.tar.gz && cd global-6.6.5 && ./configure --with-sqlite3 && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
     tar xzf libiconv.tar.gz && cd libiconv-1.16 && ./configure && make && make install && \
@@ -44,7 +44,7 @@ RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-
     R CMD javareconf && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /tmp && \
-    curl https://download2.rstudio.org/server/xenial/amd64/rstudio-server-1.3.959-amd64.deb -o rstudio.deb && \
+    curl https://download2.rstudio.org/server/xenial/amd64/rstudio-server-1.3.1093-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ENV PATH=/opt/miniconda3/bin:$PATH
@@ -54,7 +54,6 @@ RUN cd /tmp && \
     conda update -n base -c defaults conda pip && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
-ADD .condarc /root
 RUN conda install -n base -c conda-forge xeus-python time libxml2 libxslt libssh2 krb5 ripgrep zsh yarn nodejs bat && \
     ln -s /opt/miniconda3/bin/zsh /usr/local/bin/zsh && \
     /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments ranger-fm python-language-server && \
