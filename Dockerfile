@@ -39,7 +39,7 @@ RUN cd /tmp && \
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/' && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
     apt update -y && apt upgrade -y && \
-    apt install -y r-base-dev r-base r-base-core && \
+    apt install -y r-base-dev r-base r-base-core r-recommended && \
     apt install -y openjdk-8-jdk xvfb libswt-gtk-4-java && \
     R CMD javareconf && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
