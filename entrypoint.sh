@@ -23,18 +23,20 @@ cp -n /opt/rc/.bashrc /opt/rc/.inputrc /root/
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /home/$WKUSER/
 chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc
 
-# rsync jupyter back
-# rsync -rvh -u /opt/rc/jupyter /opt/miniconda3/share
-
+# THREADS
+export THREADS=`grep proc /proc/cpuinfo|wc -l`
+echo "This server has $THREADS threads"
 # user set
 groupadd $WKUSER -g $WKGID
 useradd $WKUSER -u $WKUID -g $WKGID -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
 echo $WKUSER:$PASSWD | chpasswd
 [[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
 if [ $CHOWN -gt 0 ]; then
+    echo ""
+    echo "===== Changing the ownship of the mapped homedir to $WKUSER, it may cost long time, please wait. ====="
     chown -R $WKUSER:$WKUSER /home/$WKUSER/
-    for d in $(find /opt/miniconda3/share/jupyter -type d); do chmod 777 $d; done
-    for f in $(find /opt/miniconda3/share/jupyter -type f); do chmod 666 $f; done
+    find /opt/miniconda3/share/jupyter -type d|xargs -P $THREADS -i chmod 777 {}
+    find /opt/miniconda3/share/jupyter -type f|xargs -P $THREADS -i chmod 666 {}
 fi
 
 # set ssl encyption
@@ -96,7 +98,12 @@ echo "/opt/code-server/code-server /home/$WKUSER \
 --locale en-US">>/opt/config/start-codeserver.sh
 chmod 777 /opt/config/start-codeserver.sh
 
-# jupyter config
+echo "[program:codeserver]" >> /opt/config/supervisord.conf
+echo "autostart=true" >> /opt/config/supervisord.conf
+echo "command=su - $WKUSER -c '/bin/bash /opt/config/start-codeserver.sh'" >> /opt/config/supervisord.conf
+
+# jupyterlab config
+# jupyterlab is not suggested to start automatically
 chmod 666 /opt/config/jupyter_lab_config.py
 SHA1=$(/opt/miniconda3/bin/python /opt/config/passwd.py $PASSWD)
 echo "c.ContentsManager.root_dir = '/home/$WKUSER'" >> /opt/config/jupyter_lab_config.py
@@ -111,5 +118,5 @@ echo "========================= starting services with USER $WKUSER whose UID is
 # rstudio
 systemctl enable rstudio-server
 service rstudio-server restart
-# start with supervisor
+# start sshd with supervisor and codeserver
 /usr/bin/supervisord -c /opt/config/supervisord.conf
