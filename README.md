@@ -125,6 +125,9 @@ RUN conda install tensorflow && conda install -c menpo opencv
 
 
 ## 环境变量
+20201116, 回头来看当初还是认识较浅，应该通过yml文件来安装自己的软件包并控制版本，在[bioinfo.yml](./scripts_install/bioinfo.yml)文件里里我放入了可能要用到的生信软件，conda
+`env create --file bioinfo.yml`就能安装
+------------------------
 众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置。
 能达到`安装的软件`和`container分离`, 在删除container时不删除安装的软件的目的
 
@@ -136,25 +139,21 @@ RUN conda install tensorflow && conda install -c menpo opencv
 conda install -p /home/datasci/bioinfo -c bioconda roary
 ```
 ![enter descriptiowork](https://leoatchina-notes-1253974443.cos.ap-shanghai.myqcloud.com/Notes/2019/3/7/1551926299681.png)
-
 就安装到对应的位置，如`samtools`,`bcftools`,`varscan`等一众生信软件都可以如此安装。
-
 由于在`.configrc`里作了路径配置，这些软件即时能用！
-
 在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
+
 
 ## BUGS
 1. 用`conda`安装的并激活一个环境中，报和`libcurl.so`相关的错误
 
-把你 对应目录下的 `lib/libcurl.so.4`给删除掉，或者从 `/usr/lib/x86_64-linux-gnu`下链接过来
+把你对应目录下的 `lib/libcurl.so.4`给删除掉，或者从 `/usr/lib/x86_64-linux-gnu`下链接过来
 
 2. 最近发现jupyter lab升级后，装插件后会显示异常
-
 发现是build过程中的问题，要性能强的服务器才能顺利完成这个工作。
 
 3. 安装tidyvers包出问题
-
-google后发现问题出在haven和reaxl包上, 用下面方法解决
+google后发现问题出在haven和reaxl包上, 在R脚本里用下面方法解决
 ``` 
 withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("haven"), assignment = "+=")
 withr::with_makevars(c(PKG_LIBS = "-liconv"), install.packages("readxl"), assignment = "+=")
