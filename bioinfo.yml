@@ -1,7 +1,7 @@
 version: "3"
 services:
   bioinfo:
-    image: leoatchina/datasci:2.2.9
+    image: leoatchina/datasci
     restart: always
     privileged: true
     environment:
