@@ -9,3 +9,5 @@
 *.run
 *.txt
 *.swp
+/bioinfo
+/root

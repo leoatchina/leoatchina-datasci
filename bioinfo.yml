@@ -1,0 +1,20 @@
+version: "3"
+services:
+  bioinfo:
+    image: leoatchina/datasci:2.2.9
+    restart: always
+    privileged: true
+    environment:
+      - PASSWD=bioinfo
+      - WKUSER=bioinfo
+      - CHOWN=0
+    ports:
+      - 8888:8888
+      - 8787:8787
+      - 8686:8686
+      - 8585:8585
+    volumes:
+      - ./root:/root
+      - ./bioinfo:/home/bioinfo
+    container_name: bioinfo
+    hostname: bioinfo
