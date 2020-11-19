@@ -1,7 +1,7 @@
 name: bioinfo
 channels:
-  - hcc
   - bioconda
+  - hcc
   - conda-forge
   - defaults
 dependencies:
@@ -123,6 +123,7 @@ dependencies:
   - python=3.7.9=h7579374_0
   - python_abi=3.7=1_cp37m
   - readline=8.0=h7b6447c_0
+  - samtools=1.11=h6270b1f_0
   - setuptools=50.3.1=py37h06a4308_1
   - sqlite=3.33.0=h62c20be_0
   - sra-tools=2.8.0=0
@@ -133,3 +134,4 @@ dependencies:
   - xz=5.2.5=h7b6447c_0
   - zlib=1.2.11=h7b6447c_3
   - zstd=1.4.5=h6597ccf_2
+prefix: /home/bioinfo/miniconda3/envs/bioinfo

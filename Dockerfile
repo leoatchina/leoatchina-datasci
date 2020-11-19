@@ -81,7 +81,7 @@ RUN cd /tmp && \
     rm -rf /tmp/*.*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
-COPY .bashrc .inputrc /opt/rc/
+COPY .bashrc .inputrc .bash_profile /opt/rc/
 ## users ports and dirs and configs
 RUN echo "export LC_ALL='C.UTF-8'" >> /etc/profile
 ENV LANG C.UTF-8

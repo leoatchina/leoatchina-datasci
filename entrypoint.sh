@@ -19,8 +19,8 @@ if [ $WKGID -lt 1000 ]; then
 fi
 
 # set config files
-cp -n /opt/rc/.bashrc /opt/rc/.inputrc /root/
-cp -n /opt/rc/.bashrc /opt/rc/.inputrc /home/$WKUSER/
+cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.bash_profile /root/
+cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.bash_profile /home/$WKUSER/
 chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc
 
 # THREADS
