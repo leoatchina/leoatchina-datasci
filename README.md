@@ -134,6 +134,7 @@ RUN conda install tensorflow && conda install -c menpo opencv
 
 
 ## 环境变量
+
 20201116, 回头来看当初还是认识较浅，应该通过yml文件来安装自己的软件包并控制版本，在[bioinfo.yml](./scripts_install/bioinfo.yml)文件里里我放入了可能要用到的生信软件，conda
 `env create --file bioinfo.yml`就能安装
 ------------------------
