@@ -1,9 +1,9 @@
 FROM ubuntu:16.04
-MAINTAINER leoatchina,leoatchina@gmail.com
+MAINTAINER leoatchina,leoatchina@outlook.com
 ADD sources.list /etc/apt/sources.list
 RUN apt update -y && apt upgrade -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN apt install -y wget curl net-tools iputils-ping locales  \
+RUN apt install -y wget curl net-tools iputils-ping locales nginx \
     unzip bzip2 apt-utils screen \
     git htop xclip cmake sudo tree jq \
     build-essential gfortran automake bash-completion \
@@ -16,12 +16,11 @@ RUN apt install -y wget curl net-tools iputils-ping locales  \
     apt install -y bioperl libdbi-perl \
     supervisor \
     gdebi-core \
-    openssh-server \
+    openssh-server python2.7-dev \
     libjansson-dev \
     libcairo2-dev libxt-dev librdf0 librdf0-dev \
     libv8-3.14-dev libudunits2-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-    #cpan -i Try::Tiny && \
 # bash && ctags && cscope && gtags
 RUN cd /tmp && \
     git clone --depth 1 https://github.com/universal-ctags/ctags.git && \
