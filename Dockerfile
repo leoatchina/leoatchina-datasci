@@ -74,9 +74,9 @@ RUN apt install vim -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # code-server
 RUN cd /tmp && \
-    curl -L https://github.com/cdr/code-server/releases/download/v3.6.2/code-server-3.6.2-linux-amd64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.com/cdr/code-server/releases/download/v3.7.3/code-server-3.7.3-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server-3.6.2-linux-amd64 /opt/code-server && \
+    mv code-server-3.7.3-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
