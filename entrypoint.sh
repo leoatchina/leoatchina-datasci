@@ -21,7 +21,7 @@ fi
 # set config files
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.bash_profile /root/
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.bash_profile /home/$WKUSER/
-chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc
+chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc /home/$WKUSER/.bash_profile
 
 # THREADS
 export THREADS=`grep proc /proc/cpuinfo|wc -l`
@@ -34,7 +34,7 @@ echo $WKUSER:$PASSWD | chpasswd
 if [ $CHOWN -gt 0 ]; then
     echo ""
     echo "===== Changing the ownship of the mapped homedir to $WKUSER, it may cost long time, please wait. ====="
-    chown -R $WKUSER:$WKUSER /home/$WKUSER/
+    find /home/$WKUSER | xargs -P $THREADS chown -R $WKUSER:$WKUSER /home/$WKUSER/
     find /opt/miniconda3/share/jupyter -type d|xargs -P $THREADS -i chmod 777 {}
     find /opt/miniconda3/share/jupyter -type f|xargs -P $THREADS -i chmod 666 {}
 fi
