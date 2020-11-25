@@ -9,5 +9,6 @@
 *.run
 *.txt
 *.swp
+tags
 /bioinfo
 /root
