@@ -65,6 +65,15 @@ docker pull leoatchina/datasci
   - `/root`目录
 
 
+## 一个示范
+很多人反应看不明白，那好吧直接给你一个配置文件，首先要安装好docker和docker-compose
+```
+git clone http://gitee.com/leoatchina/leoatchina-datasci.git
+cd leoatchina-dataci
+docker-compose -f bioinfo.yml dow && dockr-compos -f bioinfo.yml up -d
+```
+WINDOWS下把上面的`&&` 换成 `;`, 然后打开`http://127.0.0.1:8787`, `http://127.0.0.1:8686`, 用户名和密码都是`bioinfo`
+
 ## 使用docker-compose命令
 - `docker-compose -f datasci.yml up -d`
 - `docker-compose.yml`的详细内容如下
