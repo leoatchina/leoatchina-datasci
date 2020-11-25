@@ -134,12 +134,11 @@ RUN conda install tensorflow && conda install -c menpo opencv
 
 
 ## 环境变量
-
+------------------------
 20201116, 回头来看当初还是认识较浅，应该通过yml文件来安装自己的软件包并控制版本，在[bioinfo.yml](./scripts_install/bioinfo.yml)文件里里我放入了可能要用到的生信软件，conda
 `env create --file bioinfo.yml`就能安装
 ------------------------
-众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置。
-能达到`安装的软件`和`container分离`, 在删除container时不删除安装的软件的目的
+~~众所周知，bash在启动时，会加载用户目录下的`.bashrc`进行一些系统变量的设置，同时又可以通过`source`命令加载指定的配置。本镜像内置的`.bashrc`会source`$HOME`下面的`.configrc`文件，可以在在里面自行设置。能达到`安装的软件`和`container分离`, 在删除container时不删除安装的软件的目的~~
 
 ## 应用：用conda快速安装生信软件
 各位在学习其他conda教程时，经常会学到`conda create -n XXX`新建一个运行环境以满足特定安装需求，还可以通过`conda activate`激活这个环境。
