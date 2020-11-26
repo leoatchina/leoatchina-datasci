@@ -153,9 +153,11 @@ conda install -p /home/datasci/bioinfo -c bioconda roary
 在安装这些软件相应`container`被删除后，这些通过`-p`安装上的软件不会随着删除，下次重做`container`只要目录映射一致，**不需要重装软件，不需要重装软件，不需要重装软件**。
 
 ## TODO
-- jupyter_lab 2.3.0+
-- python2.7-dev
-- code-server 3.7.2+
+- [ ] jupyter_lab 2.3.0+
+- [ ] nginx config 
+- [x] python2.7-dev
+- [x] nginx install
+- [x] code-server 3.7.2+
 
 ## BUGS
 1. 用`conda`安装的并激活一个环境中，报和`libcurl.so`相关的错误
