@@ -1,10 +1,11 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
-# If not running interactively, don't do anything
-export PATH=/sbin:/usr/sbin:/bin:/usr/local/bin:/usr/bin
+#!/bin/bash
+# File              : .bashrc
+# Author            : leoatchina <leoatchina@outlook.com>
+# Date              : 2020.12.08
+# Last Modified Date: 2020.12.08
+# Last Modified By  : leoatchina <leoatchina@outlook.com>
 
-[ -z "$PS1" ] && return
+export PATH=/sbin:/usr/sbin:/bin:/usr/local/bin:/usr/bin
 
 export CLICOLOR=1
 export LSCOLORS=GxFxBxDxCxegedabagaced
@@ -27,21 +28,16 @@ shopt -s checkwinsize
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
 
 export EDITOR=vim
+if [[ -z "$TMUX" ]]; then
+    export TERM=xterm-256color
+else
+    export TERM=tmux-256color 
+fi
+
 # export LANG='zh_CN.UTF-8'
 # export LC_ALL='zh_CN.UTF-8'
-export TERM=xterm-256color
-# if [ $TMUX == '' ]; then
-#     export TERM=xterm-256color
-# else
-#     export TERM=screen-256color 
-# fi
-
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -58,7 +54,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
-if  [ -x "$(command -v git)"  ]; then
+if [ -x "$(command -v git)" ]; then
     git_branch() {
         branch="`git branch 2>/dev/null | grep "^\*" | sed -e "s/^\*\ //"`"
         if [ "${branch}" != "" ];then
@@ -81,12 +77,11 @@ fi
 if [[ ! -v $JUPYTER_SERVER_ROOT ]] && [[ ! $PATH == */opt/miniconda3/bin* ]]; then
     export PATH=/opt/miniconda3/bin:$PATH
 fi
+export JUPYTERLAB_DIR=$HOME/.jupyterlab
 
 if [[ ! $PATH == */$HOME/.local/bin* ]]; then
     export PATH=$HOME/.local/bin:$PATH
 fi
-
-export JUPYTERLAB_DIR=$HOME/.jupyterlab
 
 [ -f $HOME/.configrc ] && source $HOME/.configrc
 [ -f /usr/local/etc/bash_completion ] && bash /usr/local/etc/bash_completion
