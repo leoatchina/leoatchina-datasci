@@ -30,11 +30,7 @@ shopt -s checkwinsize
 
 
 export EDITOR=vim
-if [[ -z "$TMUX" ]]; then
-    export TERM=xterm-256color
-else
-    export TERM=tmux-256color 
-fi
+export TERM=xterm-256color
 
 # export LANG='zh_CN.UTF-8'
 # export LC_ALL='zh_CN.UTF-8'
@@ -83,5 +79,5 @@ if [[ ! $PATH == */$HOME/.local/bin* ]]; then
     export PATH=$HOME/.local/bin:$PATH
 fi
 
-[ -f $HOME/.configrc ] && source $HOME/.configrc
 [ -f /usr/local/etc/bash_completion ] && bash /usr/local/etc/bash_completion
+[ -f $HOME/.configrc ] && source $HOME/.configrc
