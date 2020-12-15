@@ -30,11 +30,7 @@ shopt -s checkwinsize
 
 
 export EDITOR=vim
-if [[ -z "$TMUX" ]]; then
-    export TERM=xterm-256color
-else
-    export TERM=tmux-256color 
-fi
+export TERM=xterm-256color
 
 # export LANG='zh_CN.UTF-8'
 # export LC_ALL='zh_CN.UTF-8'
@@ -53,6 +49,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
+    alias wget='wget -c'
 fi
 if [ -x "$(command -v git)" ]; then
     git_branch() {
