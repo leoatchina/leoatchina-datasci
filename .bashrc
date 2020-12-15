@@ -80,5 +80,5 @@ if [[ ! $PATH == */$HOME/.local/bin* ]]; then
     export PATH=$HOME/.local/bin:$PATH
 fi
 
-[ -f $HOME/.configrc ] && source $HOME/.configrc
 [ -f /usr/local/etc/bash_completion ] && bash /usr/local/etc/bash_completion
+[ -f $HOME/.configrc ] && source $HOME/.configrc
