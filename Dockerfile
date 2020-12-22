@@ -53,10 +53,10 @@ RUN cd /tmp && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
 RUN conda install -n base -c conda-forge git xeus-python time libxml2 libxslt libssh2 krb5 ripgrep zsh yarn nodejs bat jupyterlab && \
-    ln -s /opt/miniconda3/bin/zsh /usr/local/bin/zsh && \
     /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments ranger-fm python-language-server && \
     /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
     /opt/miniconda3/bin/jupyter lab build && \
+    ln -s /opt/miniconda3/bin/zsh /usr/local/bin/zsh && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
 # vim
@@ -72,9 +72,9 @@ RUN apt install vim -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # code-server
 RUN cd /tmp && \
-    curl -L https://github.com/cdr/code-server/releases/download/v3.7.3/code-server-3.7.3-linux-amd64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.com/cdr/code-server/releases/download/v3.8.0/code-server-3.8.0-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server-3.7.3-linux-amd64 /opt/code-server && \
+    mv code-server-3.8.0-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log

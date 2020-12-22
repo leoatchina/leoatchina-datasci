@@ -31,12 +31,13 @@ groupadd $WKUSER -g $WKGID
 useradd $WKUSER -u $WKUID -g $WKGID -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
 echo $WKUSER:$PASSWD | chpasswd
 [[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
+
 if [ $CHOWN -gt 0 ]; then
     echo ""
     echo "===== Changing the ownship of the mapped homedir to $WKUSER, it may cost long time, please wait. ====="
-    find /home/$WKUSER | xargs -P $THREADS chown -R $WKUSER:$WKUSER /home/$WKUSER/
-    find /opt/miniconda3/share/jupyter -type d|xargs -P $THREADS -i chmod 777 {}
-    find /opt/miniconda3/share/jupyter -type f|xargs -P $THREADS -i chmod 666 {}
+    find /home/$WKUSER -print 0 | xargs -0 -P $THREADS chown -R $WKUSER:$WKUSER {}
+    find /opt/miniconda3/share/jupyter -type d -print 0 |xargs -0 -P $THREADS -i chmod 777 {}
+    find /opt/miniconda3/share/jupyter -type f -print 0 |xargs -0 -P $THREADS -i chmod 666 {}
 fi
 
 # set ssl encyption
