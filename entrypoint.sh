@@ -81,11 +81,13 @@ chmod 777 /root /opt/miniconda3/pkgs
 # Rstudio-server
 echo "Sys.setenv(PATH='/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/opt/miniconda3/bin')" >> /usr/lib/rstudio-server/R/ServerOptions.R
 
-# sshd server 
+# sshd server, allow x11 forword
 mkdir -p /var/run/sshd
 rm -r /etc/ssh/ssh*key
 sed -i 's/Port 22/Port 8585/g' /etc/ssh/sshd_config
 sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
+echo 'AllowTcpForwarding yes' >> /etc/ssh/sshd_config
+echo 'X11UseLocalhost no' >> /etc/ssh/sshd_config
 dpkg-reconfigure openssh-server 
 
 # code-server
