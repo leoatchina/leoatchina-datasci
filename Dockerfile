@@ -23,17 +23,11 @@ RUN apt install -y wget curl net-tools iputils-ping locales nginx \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # bash && ctags && cscope && gtags
 RUN cd /tmp && \
-    git clone --depth 1 https://github.com/universal-ctags/ctags.git && \
-    cd ctags && ./autogen.sh && ./configure && make && make install && \
-    cd /tmp && \
     curl http://ftp.vim.org/ftp/gnu/global/global-6.6.5.tar.gz -o global.tar.gz && \
     tar xzf global.tar.gz && cd global-6.6.5 && ./configure --with-sqlite3 && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
     tar xzf libiconv.tar.gz && cd libiconv-1.16 && ./configure && make && make install && \
-    cd /tmp && \
-    curl -L https://github.com/tmux/tmux/releases/download/3.1b/tmux-3.1b.tar.gz -o tmux-3.1b.tar.gz && \
-    tar xzf tmux-3.1b.tar.gz && cd tmux-3.1b && ./configure && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/' && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
@@ -52,17 +46,19 @@ RUN cd /tmp && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
-RUN conda install -n base -c conda-forge git xeus-python time libxml2 libxslt libssh2 krb5 ripgrep zsh yarn nodejs bat jupyterlab && \
+RUN conda install -n base -c conda-forge git xeus-python time libxml2 libxslt libssh2 krb5 ripgrep zsh yarn nodejs bat jupyterlab tmux && \
     /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments ranger-fm python-language-server && \
     /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
     /opt/miniconda3/bin/jupyter lab build && \
-    ln -s /opt/miniconda3/bin/zsh /usr/local/bin/zsh && \
+    ln -s /opt/miniconda3/bin/zsh /usr/bin && \
+    ln -s /opt/miniconda3/bin/tmux /usr/bin && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
 # vim
 RUN apt install vim -y && \
     conda install -n base -c conda-forge vim && \
     ln -sf /opt/miniconda3/bin/vim /usr/bin/vim && \
+    conda install -c https://conda.anaconda.org/asford universal-ctags -y && \
     conda clean -a -y && \
     cd /usr/local && \
     curl -L https://github.com/neovim/neovim/releases/download/v0.4.4/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
@@ -72,9 +68,9 @@ RUN apt install vim -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # code-server
 RUN cd /tmp && \
-    curl -L https://github.com/cdr/code-server/releases/download/v3.8.0/code-server-3.8.0-linux-amd64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.com/cdr/code-server/releases/download/v3.9.3/code-server-3.9.3-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server-3.8.0-linux-amd64 /opt/code-server && \
+    mv code-server-3.9.3-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
