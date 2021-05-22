@@ -35,9 +35,9 @@ echo $WKUSER:$PASSWD | chpasswd
 if [ $CHOWN -gt 0 ]; then
     echo ""
     echo "===== Changing the ownship of the mapped homedir to $WKUSER, it may cost long time, please wait. ====="
-    find /home/$WKUSER -print 0 | xargs -0 -P $THREADS chown -R $WKUSER:$WKUSER {}
-    find /opt/miniconda3/share/jupyter -type d -print 0 |xargs -0 -P $THREADS -i chmod 777 {}
-    find /opt/miniconda3/share/jupyter -type f -print 0 |xargs -0 -P $THREADS -i chmod 666 {}
+    find /home/$WKUSER -print0 | xargs -0 -P $THREADS chown -R $WKUSER:$WKUSER {}
+    find /opt/miniconda3/share/jupyter -type d -print0 | xargs -0 -P $THREADS -i chmod 777 {}
+    find /opt/miniconda3/share/jupyter -type f -print0 | xargs -0 -P $THREADS -i chmod 666 {}
 fi
 
 # set ssl encyption
