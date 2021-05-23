@@ -78,7 +78,6 @@ COPY .bashrc .inputrc .bash_profile /opt/rc/
 ## users ports and dirs and configs
 RUN echo "export LC_ALL='C.UTF-8'" >> /etc/profile
 ENV LANG C.UTF-8
-ENV WKUID=1000
 ENV WKUSER=datasci
 ENV PASSWD=datasci
 ENV COUNTRY=CN

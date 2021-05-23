@@ -4,6 +4,14 @@ if [[ $WKUSER == root ]]; then
     echo "WKUSER must not be root"
     exit 1
 fi
+
+if [ -n "${WKUID+1}" ];then
+    echo "WKUID is $WKUID" 
+else
+		WKUID=$UID
+    echo "WKUID is set to $WKUID"
+fi
+
 if [ $WKUID -lt 1000 ]; then
     echo "WKUID must not be less than 1000"
     exit 1
@@ -21,19 +29,19 @@ fi
 # set config files
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.bash_profile /root/
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.bash_profile /home/$WKUSER/
-chown $WKUID:$WKGID /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc /home/$WKUSER/.bash_profile
+chown $WKUID:$WKGID /home/$WKUSER /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc /home/$WKUSER/.bash_profile
 
-# THREADS
-export THREADS=`grep proc /proc/cpuinfo|wc -l`
-echo "This server has $THREADS threads"
 # user set
 groupadd $WKUSER -g $WKGID
 useradd $WKUSER -u $WKUID -g $WKGID -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
 echo $WKUSER:$PASSWD | chpasswd
-[[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
 
+[[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
 if [ $CHOWN -gt 0 ]; then
-    echo ""
+    # THREADS
+    export THREADS=`grep proc /proc/cpuinfo | wc -l`
+    echo "======================================================================================================"
+    echo "=============================== This server has $THREADS threads ====================================="
     echo "===== Changing the ownship of the mapped homedir to $WKUSER, it may cost long time, please wait. ====="
     find /home/$WKUSER -print0 | xargs -0 -P $THREADS -i chown -R $WKUSER:$WKUSER {}
     find /opt/miniconda3/share/jupyter -type d -print0 | xargs -0 -P $THREADS -i chmod 777 {}
