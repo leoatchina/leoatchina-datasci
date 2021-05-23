@@ -26,23 +26,24 @@ if [ $WKGID -lt 1000 ]; then
     exit 1
 fi
 
+# user set
+groupadd $WKUSER -g $WKGID
+useradd $WKUSER -u $WKUID -g $WKGID -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
+echo $WKUSER:$PASSWD | chpasswd
+[[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
+
 # set config files
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.bash_profile /root/
 cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.bash_profile /home/$WKUSER/
 chown $WKUID:$WKGID /home/$WKUSER /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc /home/$WKUSER/.bash_profile
 
-# user set
-groupadd $WKUSER -g $WKGID
-useradd $WKUSER -u $WKUID -g $WKGID -m -d /home/$WKUSER -s /bin/bash -p $WKUSER
-echo $WKUSER:$PASSWD | chpasswd
+# THREADS
+export THREADS=`grep proc /proc/cpuinfo | wc -l`
 
-[[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
 if [ $CHOWN -gt 0 ]; then
-    # THREADS
-    export THREADS=`grep proc /proc/cpuinfo | wc -l`
     echo "======================================================================================================"
-    echo "=============================== This server has $THREADS threads ====================================="
-    echo "===== Changing the ownship of the mapped homedir to $WKUSER, it may cost long time, please wait. ====="
+    echo "This server has $THREADS threads"
+    echo "Changing the ownership of the mapped homedir to $WKUSER, it may cost long time, please wait."
     find /home/$WKUSER -print0 | xargs -0 -P $THREADS -i chown -R $WKUSER:$WKUSER {}
     find /opt/miniconda3/share/jupyter -type d -print0 | xargs -0 -P $THREADS -i chmod 777 {}
     find /opt/miniconda3/share/jupyter -type f -print0 | xargs -0 -P $THREADS -i chmod 666 {}
