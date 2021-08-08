@@ -23,8 +23,8 @@ RUN apt install -y wget curl net-tools iputils-ping locales nginx \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # bash && ctags && cscope && gtags
 RUN cd /tmp && \
-    curl http://ftp.vim.org/ftp/gnu/global/global-6.6.5.tar.gz -o global.tar.gz && \
-    tar xzf global.tar.gz && cd global-6.6.5 && ./configure --with-sqlite3 && make && make install && \
+    curl http://ftp.vim.org/ftp/gnu/global/global-6.6.7.tar.gz -o global.tar.gz && \
+    tar xzf global.tar.gz && cd global-6.6.7 && ./configure --with-sqlite3 && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
     tar xzf libiconv.tar.gz && cd libiconv-1.16 && ./configure && make && make install && \
@@ -37,7 +37,7 @@ RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-
     R CMD javareconf && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /tmp && \
-    curl https://download2.rstudio.org/server/xenial/amd64/rstudio-server-1.3.1093-amd64.deb -o rstudio.deb && \
+    curl https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.4.1717-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 ENV PATH=/opt/miniconda3/bin:$PATH
@@ -57,20 +57,20 @@ RUN conda install -n base -c conda-forge git xeus-python time libxml2 libxslt li
 # vim
 RUN apt install vim -y && \
     conda install -n base -c conda-forge vim && \
-    ln -sf /opt/miniconda3/bin/vim /usr/bin/vim && \
+    ln -sf /opt/miniconda3/bin/vim /usr/bin && \
     conda install -c https://conda.anaconda.org/asford universal-ctags -y && \
     conda clean -a -y && \
     cd /usr/local && \
-    curl -L https://github.com/neovim/neovim/releases/download/v0.4.4/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
+    curl -L https://github.com/neovim/neovim/releases/download/v0.5.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
     rm nvim-linux64.tar.gz && \
-    ln -sf /usr/local/nvim-linux64/bin/nvim /usr/bin/nvim && \
+    ln -sf /usr/local/nvim-linux64/bin/nvim /usr/bin && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # code-server
 RUN cd /tmp && \
-    curl -L https://github.com/cdr/code-server/releases/download/v3.9.3/code-server-3.9.3-linux-amd64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.com/cdr/code-server/releases/download/v3.11.1/code-server-3.11.1-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server-3.9.3-linux-amd64 /opt/code-server && \
+    mv code-server-3.11.1-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
