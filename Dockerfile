@@ -24,12 +24,15 @@ RUN apt install -y wget curl net-tools iputils-ping locales nginx \
 # bash && ctags && cscope && gtags
 RUN cd /tmp && \
     curl http://ftp.vim.org/ftp/gnu/global/global-6.6.7.tar.gz -o global.tar.gz && \
-    tar xzf global.tar.gz && cd global-6.6.7 && ./configure --with-sqlite3 && make && make install && \
+    tar xzf global.tar.gz && cd global-6.6.7 && ./configure --with-sqlite3 --prefix=/usr && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
-    tar xzf libiconv.tar.gz && cd libiconv-1.16 && ./configure && make && make install && \
+    tar xzf libiconv.tar.gz && cd libiconv-1.16 && ./configure --prefix=/usr && make && make install && \
+    cd /tmp && \
+    curl https://www.openssl.org/source/openssl-1.1.0l.tar.gz -o openssl.tar.gz && \
+    tar xzf openssl.tar.gz && cd openssl-1.1.0l && ./config --prefix=/usr && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/' && \
+RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran40/' && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
     apt update -y && apt upgrade -y && \
     apt install -y r-base-dev r-base r-base-core r-recommended && \
