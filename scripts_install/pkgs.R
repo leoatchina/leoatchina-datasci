@@ -43,7 +43,6 @@ require_packages = c(
                      "gsubfn",
                      "gtable",
                      "gvlma",
-                     "gWidgets",
                      "Hmisc",
                      "htmltools",
                      "IDPmisc",
@@ -79,7 +78,6 @@ require_packages = c(
                      "pracma",
                      "pROC",
                      "psych",
-                     "qualityTools",
                      "quantmod",
                      "R.matlab",
                      "R.utils",
@@ -94,10 +92,8 @@ require_packages = c(
                      "rjson",
                      "rmarkdown",
                      "rms",
-                     "RMySQL",
                      "robust",
                      "robustbase",
-                     "RODBC",
                      "rredis",
                      "rsconnect",
                      "Rserve",
@@ -135,8 +131,42 @@ require_packages = c(
                      "zip",
                      "zoo"
 )
+                     # "qualityTools",
+                     # "gWidgets",
+                     # "RMySQL",
+                     # "RODBC",
 install_packages = setdiff(require_packages,unname(installed.packages()[,1]))
 if(length(install_packages)){install.packages(install_packages)}
+
+bioPackages = c(
+    "GDCRNATools",
+    "dplyr", "stringi", "purrr",
+    "R.utils", "data.table",
+    "GEOquery",
+    "FactoMineR", "factoextra", "ggfortify",
+    "pheatmap",
+    "ggplot2",
+    "limma", "DESeq2", "edgeR",
+    "clusterProfiler", "org.Hs.eg.db", "org.Mm.eg.db",
+    "pathview",
+    "RTCGA", "RTCGA.rnaseq", "RTCGA.clinical", "RTCGA.mutations",
+    "RTCGA.mRNA", "RTCGA.miRNASeq", "RTCGA.RPPA", "RTCGA.CNV", "RTCGA.methylation"
+)
+
+# %%
+CRANpackages <- row.names(available.packages())
+
+lapply(bioPackages, function(bioPackage){
+         if (!require(bioPackage, character.only = T)){
+           if (bioPackage %in% CRANpackages){
+             install.packages(bioPackage)
+           }else{
+             if (!requireNamespace("BiocManager", quietly = TRUE))
+               install.packages("BiocManager")
+             BiocManager::install(bioPackage, update = TRUE, ask = FALSE)
+           }
+         }
+})
 
 # install from github
 library(devtools)
@@ -146,43 +176,3 @@ devtools::install_github("thomasp85/ggforce")
 devtools::install_github("GuangchuangYu/DOSE")
 devtools::install_github("GuangchuangYu/enrichplot")
 devtools::install_github("GuangchuangYu/clusterProfiler")
-
-bioPackages =
-  c(
-    "GDCRNATools", ##
-    "dplyr", "stringi", "purrr", ##
-    "R.utils", "data.table", ## unzip and read table
-    "GEOquery", ## download
-    "FactoMineR", "factoextra", "ggfortify", ## PCA
-    "pheatmap", ## heatmap
-    "ggplot2", ## Volcano plot
-    "limma", "DESeq2", "edgeR", ## DEG
-    "clusterProfiler", "org.Hs.eg.db", "org.Mm.eg.db", ## annotation
-    "pathview", ## kegg
-    "RTCGA","RTCGA.rnaseq","RTCGA.clinical","RTCGA.mutations",
-    "RTCGA.mRNA","RTCGA.miRNASeq","RTCGA.RPPA","RTCGA.CNV","RTCGA.methylation"
-  )
-lapply( bioPackages,
-       function(bioPackage) {
-         if ( !require( bioPackage, character.only = T ) ) {
-           CRANpackages = available.packages()
-           ## install packages by CRAN
-           if ( bioPackage %in% rownames( CRANpackages ) ) {
-             install.packages( bioPackage )
-           }else{
-             ## install packages by bioconductor
-             ## R version >= 3.5 ===> BiocManager
-             if ( as.character( sessionInfo()$R.version$minor ) >= 3.5 ) {
-               if (!requireNamespace("BiocManager", quietly = TRUE))
-                 install.packages("BiocManager")
-               BiocManager::install(bioPackage, update = TRUE, ask = FALSE)
-             }else{
-               ## R version < 3.5 ===> BiocInstaller
-               if (!requireNamespace("BiocInstaller", quietly = TRUE))
-                 source( "https://bioconductor.org/biocLite.R" )
-               BiocInstaller::biocLite( bioPackage, ask = FALSE)
-             }
-           }
-         }
-       }
-)
