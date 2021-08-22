@@ -43,22 +43,20 @@ RUN cd /tmp && \
     curl https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.4.1717-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# node
-RUN cd /tmp && \
-    curl https://nodejs.org/dist/v14.17.5/node-v14.17.5-linux-x64.tar.xz -o node.tar.xz && \
-    tar Jxf node.tar.xz && rsync -rvh /tmp/node-v14.17.5-linux-x64/ /usr/ && rm -rf /tmp/*
 ENV PATH=/opt/miniconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
-RUN conda install -n base -c conda-forge git tmux xeus-python time libxml2 libxslt libssh2 krb5 ripgrep zsh bat jupyterlab && \
+RUN conda install -n base -c conda-forge git tmux xeus-python time libxml2 libxslt libssh2 krb5 ripgrep zsh bat jupyterlab nodejs yarn && \
     ln -sf /opt/miniconda3/bin/rg   /usr/bin && \
     ln -sf /opt/miniconda3/bin/zsh  /usr/bin && \
     ln -sf /opt/miniconda3/bin/git  /usr/bin && \
     ln -sf /opt/miniconda3/bin/tmux /usr/bin && \
-    /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments ranger-fm python-language-server && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
+    conda clean -a -y
+RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments ranger-fm python-language-server && \
     /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
     /opt/miniconda3/bin/jupyter lab build && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
