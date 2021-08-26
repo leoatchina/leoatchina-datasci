@@ -23,8 +23,8 @@ RUN apt install -y wget curl net-tools iputils-ping locales nginx \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # bash && ctags && cscope && gtags
 RUN cd /tmp && \
-    curl http://ftp.vim.org/ftp/gnu/global/global-6.6.7.tar.gz -o global.tar.gz && \
-    tar xzf global.tar.gz && cd global-6.6.7 && ./configure --with-sqlite3 --prefix=/usr && make && make install && \
+    curl https://github.91chifun.workers.dev/https://github.com//universal-ctags/ctags/archive/refs/tags/p5.9.20210822.0.tar.gz -o ctags.tar.gz && \
+    tar xzf ctags.tar.gz && cd ctags*  && ./autogen.sh && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
     tar xzf libiconv.tar.gz && cd libiconv-1.16 && ./configure --prefix=/usr && make && make install && \
@@ -65,14 +65,12 @@ RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 p
 RUN apt install vim -y && \
     conda install -n base -c conda-forge vim && \
     ln -sf /opt/miniconda3/bin/vim /usr/bin && \
-    conda install -c https://conda.anaconda.org/asford universal-ctags -y && \
-    conda clean -a -y && \
     cd /usr/local && \
     curl -L https://github.com/neovim/neovim/releases/download/v0.5.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
     rm nvim-linux64.tar.gz && \
-    ln -sf /usr/local/nvim-linux64/bin/nvim /usr/bin && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
+    conda clean -a -y
 # code-server
 RUN cd /tmp && \
     curl -L https://github.com/cdr/code-server/releases/download/v3.11.1/code-server-3.11.1-linux-amd64.tar.gz -o code-server.tar.gz && \
