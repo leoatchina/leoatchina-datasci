@@ -54,6 +54,7 @@ require_packages = c(
                      "kohonen",
                      "lars",
                      "lattice",
+                     "languageserver",
                      "lubridate",
                      "magic",
                      "magrittr",
