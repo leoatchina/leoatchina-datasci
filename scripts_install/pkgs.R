@@ -60,10 +60,12 @@ require_packages = c(
                      "MASS",
                      "mcmc",
                      "microbenchmark",
+                     "mice",
                      "miniUI",
                      "mosaic",
                      "mvnormtest",
                      "nnet",
+                     "NMF",
                      "nortest",
                      "officer",
                      "openxlsx",
@@ -105,6 +107,7 @@ require_packages = c(
                      "rworldmap",
                      "scatterplot3d",
                      "sciplot",
+                     "servr",
                      "shiny",
                      "shinyAce",
                      "shinyBS",
@@ -149,6 +152,7 @@ bioPackages = c(
     "limma", "DESeq2", "edgeR",
     "clusterProfiler", "org.Hs.eg.db", "org.Mm.eg.db",
     "pathview",
+    "sigminer",
     "RTCGA", "RTCGA.rnaseq", "RTCGA.clinical", "RTCGA.mutations",
     "RTCGA.mRNA", "RTCGA.miRNASeq", "RTCGA.RPPA", "RTCGA.CNV", "RTCGA.methylation"
 )
