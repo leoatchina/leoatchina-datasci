@@ -140,8 +140,8 @@ if(length(install_packages)){install.packages(install_packages)}
 
 bioPackages = c(
     "GDCRNATools",
-    "dplyr", "stringi", "purrr",
     "R.utils", "data.table",
+    "maftools",
     "GEOquery",
     "FactoMineR", "factoextra", "ggfortify",
     "pheatmap",

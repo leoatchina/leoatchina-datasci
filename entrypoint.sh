@@ -33,8 +33,8 @@ echo $WKUSER:$PASSWD | chpasswd
 [[ -v ROOTPASSWD ]] && echo root:$ROOTPASSWD | chpasswd || echo root:$PASSWD | chpasswd
 
 # set config files
-cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.bash_profile /root/
-cp -n /opt/rc/.bashrc /opt/rc/.inputrc /opt/rc/.bash_profile /home/$WKUSER/
+cp -n /opt/rc/.bashrc /opt/rc/.configrc /opt/rc/.inputrc /opt/rc/.bash_profile /root/
+cp -n /opt/rc/.bashrc /opt/rc/.configrc /opt/rc/.inputrc /opt/rc/.bash_profile /home/$WKUSER/
 chown $WKUID:$WKGID /home/$WKUSER /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc /home/$WKUSER/.bash_profile
 
 # THREADS
