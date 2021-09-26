@@ -143,7 +143,6 @@ install_packages = setdiff(require_packages,unname(installed.packages()[,1]))
 if(length(install_packages)){install.packages(install_packages)}
 
 bioPackages = c(
-    "GDCRNATools",
     "R.utils", "data.table",
     "maftools",
     "GEOquery",
@@ -153,10 +152,11 @@ bioPackages = c(
     "limma", "DESeq2", "edgeR",
     "clusterProfiler", "org.Hs.eg.db", "org.Mm.eg.db",
     "pathview",
-    "sigminer",
-    "RTCGA", "RTCGA.rnaseq", "RTCGA.clinical", "RTCGA.mutations",
-    "RTCGA.mRNA", "RTCGA.miRNASeq", "RTCGA.RPPA", "RTCGA.CNV", "RTCGA.methylation"
+    "sigminer"
 )
+    # "GDCRNATools",
+    # "RTCGA", "RTCGA.rnaseq", "RTCGA.clinical", "RTCGA.mutations",
+    # "RTCGA.mRNA", "RTCGA.miRNASeq", "RTCGA.RPPA", "RTCGA.CNV", "RTCGA.methylation",
 
 # %%
 CRANpackages <- row.names(available.packages())
