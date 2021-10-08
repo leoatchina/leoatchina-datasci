@@ -63,7 +63,7 @@ RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 p
     conda clean -a -y
 # vim
 RUN apt install vim -y && \
-    conda install -n base -c conda-forge vim && \
+    conda install -n base -c conda-forge vim mamba && \
     ln -sf /opt/miniconda3/bin/vim /usr/bin && \
     cd /usr/local && \
     curl -L https://github.91chifun.workers.dev/https://github.com//neovim/neovim/releases/download/v0.5.1/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
