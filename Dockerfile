@@ -66,7 +66,7 @@ RUN apt install vim -y && \
     conda install -n base -c conda-forge vim && \
     ln -sf /opt/miniconda3/bin/vim /usr/bin && \
     cd /usr/local && \
-    curl -L https://github.91chifun.workers.dev/https://github.com//neovim/neovim/releases/download/v0.5.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
+    curl -L https://github.91chifun.workers.dev/https://github.com//neovim/neovim/releases/download/v0.5.1/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
     ln -sf /usr/local/nvim-linux64/bin/nvim /usr/bin && \
     rm nvim-linux64.tar.gz && \
@@ -74,9 +74,9 @@ RUN apt install vim -y && \
     conda clean -a -y
 # code-server
 RUN cd /tmp && \
-    curl -L https://github.91chifun.workers.dev/https://github.com/cdr/code-server/releases/download/v3.11.1/code-server-3.11.1-linux-amd64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.91chifun.workers.dev/https://github.com//cdr/code-server/releases/download/v3.12.0/code-server-3.12.0-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server-3.11.1-linux-amd64 /opt/code-server && \
+    mv code-server-3.12.0-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
