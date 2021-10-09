@@ -49,21 +49,24 @@ RUN cd /tmp && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
-RUN conda install -n base -c conda-forge git tmux xeus-python time libxml2 libxslt libssh2 krb5 ripgrep zsh bat jupyterlab nodejs yarn && \
-    ln -sf /opt/miniconda3/bin/rg   /usr/bin && \
-    ln -sf /opt/miniconda3/bin/zsh  /usr/bin && \
-    ln -sf /opt/miniconda3/bin/git  /usr/bin && \
-    ln -sf /opt/miniconda3/bin/tmux /usr/bin && \
+RUN conda install -n base -c conda-forge mamba && \
+    mamba install -n base -c conda-forge git tmux xeus-python time libxml2 libxslt libssh2 krb5 ripgrep zsh bat jupyterlab nodejs yarn ranger-fm && \
+    ln -sf /opt/miniconda3/bin/rg     /usr/bin && \
+    ln -sf /opt/miniconda3/bin/zsh    /usr/bin && \
+    ln -sf /opt/miniconda3/bin/git    /usr/bin && \
+    ln -sf /opt/miniconda3/bin/tmux   /usr/bin && \
+    ln -sf /opt/miniconda3/bin/ranger /usr/bin && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
-RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments ranger-fm python-language-server && \
+RUN apt install libx11-dev libxext-dev -y && \
+    /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments python-language-server ueberzug && \
     /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
     /opt/miniconda3/bin/jupyter lab build && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
 # vim
 RUN apt install vim -y && \
-    conda install -n base -c conda-forge vim mamba && \
+    conda install -n base -c conda-forge vim && \
     ln -sf /opt/miniconda3/bin/vim /usr/bin && \
     cd /usr/local && \
     curl -L https://github.91chifun.workers.dev/https://github.com//neovim/neovim/releases/download/v0.5.1/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
