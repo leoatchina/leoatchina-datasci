@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 MAINTAINER leoatchina,leoatchina@outlook.com
 ADD sources.list /etc/apt/sources.list
 RUN apt update -y && apt upgrade -y && \
