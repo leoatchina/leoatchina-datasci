@@ -5,12 +5,11 @@ RUN apt update -y && apt upgrade -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN apt install -y wget curl net-tools iputils-ping nginx \
     unzip bzip2 apt-utils screen \
-    git htop xclip cmake sudo tree jq \
-    software-properties-common \
+    htop xclip cmake sudo tree jq \
     build-essential gfortran automake bash-completion \
     libapparmor1 libedit2 libc6 \
     psmisc rrdtool libzmq3-dev \
-    libtool apt-transport-https libevent-dev language-pack-zh-hans && \
+    libtool apt-transport-https libevent-dev && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     apt update -y && \
@@ -19,12 +18,12 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     openssh-server python2.7-dev \
     libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
     libv8-3.14-dev libudunits2-dev libproj-dev \
+    ripgrep zsh \
     gdal-bin proj-bin \
+    libx11-dev libxext-dev \
     libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN apt install -y locales && locale-gen en_US.UTF-8 && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# ctags && cscope && gtags
+# ctags
 RUN cd /tmp && \
     curl https://github.com//universal-ctags/ctags/archive/refs/tags/p5.9.20210822.0.tar.gz -o ctags.tar.gz && \
     tar xzf ctags.tar.gz && cd ctags*  && ./autogen.sh && ./configure --prefix=/usr && make && make install && \
@@ -35,6 +34,10 @@ RUN cd /tmp && \
     curl https://www.openssl.org/source/openssl-1.1.0l.tar.gz -o openssl.tar.gz && \
     tar xzf openssl.tar.gz && cd openssl-1.1.0l && ./config --prefix=/usr && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+# RUN apt install -y software-properties-common language-pack-zh-hans locales && locale-gen en_US.UTF-8 && \
+#     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+
+# R language
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran40/' && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
     apt update -y && apt upgrade -y && \
@@ -46,6 +49,8 @@ RUN cd /tmp && \
     curl https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.4.1717-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+
+# miniconda3
 ENV PATH=/opt/miniconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
@@ -53,26 +58,26 @@ RUN cd /tmp && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
 RUN conda install -n base -c conda-forge mamba && \
-    mamba install -n base -c conda-forge git tmux xeus-python time libxml2 libxslt libssh2 krb5 ripgrep zsh bat jupyterlab nodejs yarn ranger-fm && \
-    ln -sf /opt/miniconda3/bin/rg     /usr/bin && \
-    ln -sf /opt/miniconda3/bin/zsh    /usr/bin && \
-    ln -sf /opt/miniconda3/bin/git    /usr/bin && \
-    ln -sf /opt/miniconda3/bin/tmux   /usr/bin && \
-    ln -sf /opt/miniconda3/bin/ranger /usr/bin && \
+    mamba install -n base -c conda-forge git tmux xeus-python time libxml2 \
+              libxslt libssh2 krb5 bat jupyterlab nodejs yarn ranger-fm && \
+    ln -sf /opt/miniconda3/bin/rg     /usr/local/bin && \
+    ln -sf /opt/miniconda3/bin/git    /usr/local/bin && \
+    ln -sf /opt/miniconda3/bin/tmux   /usr/local/bin && \
+    ln -sf /opt/miniconda3/bin/ranger /usr/local/bin && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
-RUN apt install libx11-dev libxext-dev -y && \
-    /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments python-language-server ueberzug && \
+
+RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments python-language-server ueberzug && \
     /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
     /opt/miniconda3/bin/jupyter lab build && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
     conda clean -a -y
 # vim
 RUN apt install vim -y && \
-    conda install -n base -c conda-forge vim && \
+    mamba install -n base -c conda-forge vim && \
     ln -sf /opt/miniconda3/bin/vim /usr/bin && \
     cd /usr/local && \
-    curl -L https://github.91chifun.workers.dev/https://github.com//neovim/neovim/releases/download/v0.5.1/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
+    curl -L https://https://github.com//neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
     ln -sf /usr/local/nvim-linux64/bin/nvim /usr/bin && \
     rm nvim-linux64.tar.gz && \
