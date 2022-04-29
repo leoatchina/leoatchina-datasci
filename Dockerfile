@@ -1,6 +1,8 @@
 FROM ubuntu:20.04
 MAINTAINER leoatchina,leoatchina@outlook.com
 ADD sources.list /etc/apt/sources.list
+WORKDIR /var/build
+ENV DEBIAN_FRONTEND noninteractive
 RUN apt update -y && apt upgrade -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN apt install -y wget curl net-tools iputils-ping nginx \
@@ -11,19 +13,21 @@ RUN apt install -y wget curl net-tools iputils-ping nginx \
     psmisc rrdtool libzmq3-dev \
     libtool apt-transport-https libevent-dev && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN apt install -y software-properties-common language-pack-zh-hans locales && locale-gen en_US.UTF-8 && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     apt update -y && \
     apt install -y bioperl libdbi-perl \
     supervisor gdebi-core \
     openssh-server python2.7-dev \
     libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
-    libv8-3.14-dev libudunits2-dev libproj-dev \
+    libudunits2-dev libproj-dev \
     ripgrep zsh \
     gdal-bin proj-bin \
     libx11-dev libxext-dev \
     libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# ctags
+# ctags gtags
 RUN cd /tmp && \
     curl https://github.com//universal-ctags/ctags/archive/refs/tags/p5.9.20210822.0.tar.gz -o ctags.tar.gz && \
     tar xzf ctags.tar.gz && cd ctags*  && ./autogen.sh && ./configure --prefix=/usr && make && make install && \
@@ -33,12 +37,15 @@ RUN cd /tmp && \
     cd /tmp && \
     curl https://www.openssl.org/source/openssl-1.1.0l.tar.gz -o openssl.tar.gz && \
     tar xzf openssl.tar.gz && cd openssl-1.1.0l && ./config --prefix=/usr && make && make install && \
+    cd /tmp && \
+    wget https://ftp.gnu.org/pub/gnu/global/global-6.6.8.tar.gz && \
+    tar xzf global-6.6.8.tar.gz && \
+    cd global-6.6.8 && \
+    ./configure --prefix=/usr --with-sqlite3 && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# RUN apt install -y software-properties-common language-pack-zh-hans locales && locale-gen en_US.UTF-8 && \
-#     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 # R language
-RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran40/' && \
+RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
     apt update -y && apt upgrade -y && \
     apt install -y r-base-dev r-base r-base-core r-recommended && \
@@ -55,8 +62,7 @@ ENV PATH=/opt/miniconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
-    conda clean -a -y
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 RUN conda install -n base -c conda-forge mamba && \
     mamba install -n base -c conda-forge git tmux xeus-python time libxml2 \
               libxslt libssh2 krb5 bat jupyterlab nodejs yarn ranger-fm && \
@@ -64,14 +70,12 @@ RUN conda install -n base -c conda-forge mamba && \
     ln -sf /opt/miniconda3/bin/git    /usr/local/bin && \
     ln -sf /opt/miniconda3/bin/tmux   /usr/local/bin && \
     ln -sf /opt/miniconda3/bin/ranger /usr/local/bin && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
-    conda clean -a -y
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 
 RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments python-language-server ueberzug && \
     /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
     /opt/miniconda3/bin/jupyter lab build && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
-    conda clean -a -y
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 # vim
 RUN apt install vim -y && \
     mamba install -n base -c conda-forge vim && \
@@ -81,8 +85,7 @@ RUN apt install vim -y && \
     tar xzf nvim-linux64.tar.gz && \
     ln -sf /usr/local/nvim-linux64/bin/nvim /usr/bin && \
     rm nvim-linux64.tar.gz && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && \
-    conda clean -a -y
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 # code-server
 RUN cd /tmp && \
     curl -L https://github.91chifun.workers.dev/https://github.com//cdr/code-server/releases/download/v3.12.0/code-server-3.12.0-linux-amd64.tar.gz -o code-server.tar.gz && \
