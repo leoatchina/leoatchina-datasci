@@ -3,7 +3,7 @@ MAINTAINER leoatchina,leoatchina@outlook.com
 ADD sources.list /etc/apt/sources.list
 RUN apt update -y && apt upgrade -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN apt install -y wget curl net-tools iputils-ping locales nginx \
+RUN apt install -y wget curl net-tools iputils-ping nginx \
     unzip bzip2 apt-utils screen \
     git htop xclip cmake sudo tree jq \
     software-properties-common \
@@ -11,7 +11,6 @@ RUN apt install -y wget curl net-tools iputils-ping locales nginx \
     libapparmor1 libedit2 libc6 \
     psmisc rrdtool libzmq3-dev \
     libtool apt-transport-https libevent-dev language-pack-zh-hans && \
-    locale-gen en_US.UTF-8 && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     apt update -y && \
@@ -22,6 +21,8 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     libv8-3.14-dev libudunits2-dev libproj-dev \
     gdal-bin proj-bin \
     libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN apt install -y locales && locale-gen en_US.UTF-8 && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 # ctags && cscope && gtags
 RUN cd /tmp && \
