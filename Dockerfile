@@ -27,9 +27,10 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     libx11-dev libxext-dev \
     libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+
 # ctags gtags
 RUN cd /tmp && \
-    curl https://github.com//universal-ctags/ctags/archive/refs/tags/p5.9.20210822.0.tar.gz -o ctags.tar.gz && \
+    curl https://github.com/universal-ctags/ctags/archive/refs/tags/p5.9.20210822.0.tar.gz -o ctags.tar.gz && \
     tar xzf ctags.tar.gz && cd ctags*  && ./autogen.sh && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
