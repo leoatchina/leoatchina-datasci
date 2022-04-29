@@ -22,39 +22,39 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     openssh-server python2.7-dev \
     libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
     libudunits2-dev libproj-dev \
-    ripgrep zsh \
+    git ripgrep zsh \
     gdal-bin proj-bin \
     libx11-dev libxext-dev \
     libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-
 # ctags gtags
 RUN cd /tmp && \
-    curl https://github.com/universal-ctags/ctags/archive/refs/tags/p5.9.20210822.0.tar.gz -o ctags.tar.gz && \
-    tar xzf ctags.tar.gz && cd ctags*  && ./autogen.sh && ./configure --prefix=/usr && make && make install && \
+    git clone --depth=1 https://gitclone.com/github.com/universal-ctags/ctags.git && cd ctags && \
+    ./autogen.sh && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
-    tar xzf libiconv.tar.gz && cd libiconv-1.16 && ./configure --prefix=/usr && make && make install && \
+    tar xzf libiconv.tar.gz && \
+    cd libiconv-1.16 && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
     curl https://www.openssl.org/source/openssl-1.1.0l.tar.gz -o openssl.tar.gz && \
-    tar xzf openssl.tar.gz && cd openssl-1.1.0l && ./config --prefix=/usr && make && make install && \
+    tar xzf openssl.tar.gz && \
+    cd openssl-1.1.0l && ./config --prefix=/usr && make && make install && \
     cd /tmp && \
     wget https://ftp.gnu.org/pub/gnu/global/global-6.6.8.tar.gz && \
     tar xzf global-6.6.8.tar.gz && \
     cd global-6.6.8 && \
     ./configure --prefix=/usr --with-sqlite3 && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-
 # R language
-RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 51716619E084DAB9 && \
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
+    add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' && \
     apt update -y && apt upgrade -y && \
     apt install -y r-base-dev r-base r-base-core r-recommended && \
     apt install -y openjdk-8-jdk xvfb libswt-gtk-4-java && \
     R CMD javareconf && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN cd /tmp && \
-    curl https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.4.1717-amd64.deb -o rstudio.deb && \
+    curl https://download1.rstudio.org/desktop/bionic/amd64/rstudio-2022.02.2-485-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
@@ -67,10 +67,6 @@ RUN cd /tmp && \
 RUN conda install -n base -c conda-forge mamba && \
     mamba install -n base -c conda-forge git tmux xeus-python time libxml2 \
               libxslt libssh2 krb5 bat jupyterlab nodejs yarn ranger-fm && \
-    ln -sf /opt/miniconda3/bin/rg     /usr/local/bin && \
-    ln -sf /opt/miniconda3/bin/git    /usr/local/bin && \
-    ln -sf /opt/miniconda3/bin/tmux   /usr/local/bin && \
-    ln -sf /opt/miniconda3/bin/ranger /usr/local/bin && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 
 RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments python-language-server ueberzug && \
@@ -82,14 +78,14 @@ RUN apt install vim -y && \
     mamba install -n base -c conda-forge vim && \
     ln -sf /opt/miniconda3/bin/vim /usr/bin && \
     cd /usr/local && \
-    curl -L https://https://github.com//neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
+    curl -L https://github.do/https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
     ln -sf /usr/local/nvim-linux64/bin/nvim /usr/bin && \
     rm nvim-linux64.tar.gz && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 # code-server
 RUN cd /tmp && \
-    curl -L https://github.91chifun.workers.dev/https://github.com//cdr/code-server/releases/download/v3.12.0/code-server-3.12.0-linux-amd64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.do/https://github.com//cdr/code-server/releases/download/v3.12.0/code-server-3.12.0-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
     mv code-server-3.12.0-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
