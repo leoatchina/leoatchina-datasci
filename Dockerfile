@@ -6,24 +6,26 @@ RUN apt update -y && apt upgrade -y && \
 RUN apt install -y wget curl net-tools iputils-ping locales nginx \
     unzip bzip2 apt-utils screen \
     git htop xclip cmake sudo tree jq \
+    software-properties-common \
     build-essential gfortran automake bash-completion \
     libapparmor1 libedit2 libc6 \
-    psmisc rrdtool libzmq3-dev libtool apt-transport-https libevent-dev language-pack-zh-hans \
-    && locale-gen en_US.UTF-8 && \
-    apt install -y software-properties-common && \
-    add-apt-repository ppa:ubuntugis/ppa -y && \
+    psmisc rrdtool libzmq3-dev \
+    libtool apt-transport-https libevent-dev language-pack-zh-hans && \
+    locale-gen en_US.UTF-8 && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     apt update -y && \
     apt install -y bioperl libdbi-perl \
-    supervisor \
-    gdebi-core \
+    supervisor gdebi-core \
     openssh-server python2.7-dev \
-    libjansson-dev \
-    libcairo2-dev libxt-dev librdf0 librdf0-dev \
-    libv8-3.14-dev libudunits2-dev libproj-dev gdal-bin proj-bin libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
+    libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
+    libv8-3.14-dev libudunits2-dev libproj-dev \
+    gdal-bin proj-bin \
+    libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-# bash && ctags && cscope && gtags
+# ctags && cscope && gtags
 RUN cd /tmp && \
-    curl https://github.91chifun.workers.dev/https://github.com//universal-ctags/ctags/archive/refs/tags/p5.9.20210822.0.tar.gz -o ctags.tar.gz && \
+    curl https://github.com//universal-ctags/ctags/archive/refs/tags/p5.9.20210822.0.tar.gz -o ctags.tar.gz && \
     tar xzf ctags.tar.gz && cd ctags*  && ./autogen.sh && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
