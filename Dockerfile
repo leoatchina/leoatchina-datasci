@@ -13,7 +13,7 @@ RUN apt update -y && apt upgrade -y && \
 
 RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
     apt install -y --fix-missing \
-      supervisor gdebi-core python2.7-dev git ripgrep zsh && \
+      supervisor gdebi-core python2.7-dev git ripgrep zsh bison flex && \
     apt install -y --fix-missing \
       gdal-bin proj-bin psmisc rrdtool libzmq3-dev \
       libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
@@ -45,7 +45,8 @@ RUN cd /tmp && \
     cd global-6.6.8 && ./configure --prefix=/usr/local --with-sqlite3 && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
-    # openssh-server nginx bioperl libdbi-perl
+    # NOTE: openssh-server nginx bioperl libdbi-perl
+
 # code-server
 RUN cd /tmp && \
     curl -L https://github.do/https://github.com/coder/code-server/releases/download/v4.3.0/code-server-4.3.0-linux-amd64.tar.gz -o code-server.tar.gz && \
