@@ -15,10 +15,10 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
     apt install -y --fix-missing bioperl libdbi-perl \
       supervisor gdebi-core \
       python2.7-dev libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
-      libudunits2-dev libproj-dev libapparmor1 libedit2 libc6 \
-      psmisc rrdtool libzmq3-dev \
-      libtool apt-transport-https libevent-dev \
+      libudunits2-dev libproj-dev libapparmor1 libedit2 libc6 apt-transport-https && \
+    apt install -y --fix-missing psmisc rrdtool libzmq3-dev \
       git ripgrep gdal-bin proj-bin \
+      libtool libevent-dev \
       libx11-dev libxext-dev \
       libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
