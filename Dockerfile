@@ -13,38 +13,41 @@ RUN apt update -y && apt upgrade -y && \
 
 RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
     apt install -y --fix-missing \
-      supervisor gdebi-core \
-      python2.7-dev libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
+      supervisor gdebi-core python2.7-dev \
+      libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
       libudunits2-dev libproj-dev libapparmor1 libedit2 libc6 apt-transport-https && \
-    apt install -y --fix-missing psmisc rrdtool libzmq3-dev \
-      git ripgrep gdal-bin proj-bin \
+    apt install -y --fix-missing \
+      git ripgrep \
+      gdal-bin proj-bin \
+      psmisc rrdtool libzmq3-dev \
       libtool libevent-dev \
       libx11-dev libxext-dev \
-      libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev && \
+      libgdal-dev libgeos-dev \
+      libclang-dev cscope libncurses5-dev && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 # ctags gtags tmux
 RUN cd /tmp && \
     git clone --depth=1 https://gitclone.com/github.com/universal-ctags/ctags.git && cd ctags && \
-    ./autogen.sh && ./configure --prefix=/usr && make && make install && \
+    ./autogen.sh && ./configure --prefix=/usr/local && make && make install && \
     cd /tmp && \
     git clone --depth=1 https://gitclone.com/github.com/tmux/tmux.git && cd tmux && \
-    ./autogen.sh && ./configure --prefix=/usr && make && make install && \
+    ./autogen.sh && ./configure --prefix=/usr/local && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
     tar xzf libiconv.tar.gz && \
-    cd libiconv-1.16 && ./configure --prefix=/usr && make && make install && \
+    cd libiconv-1.16 && ./configure --prefix=/usr/local && make && make install && \
     cd /tmp && \
     curl https://www.openssl.org/source/openssl-1.1.0l.tar.gz -o openssl.tar.gz && \
     tar xzf openssl.tar.gz && \
-    cd openssl-1.1.0l && ./config --prefix=/usr && make && make install && \
+    cd openssl-1.1.0l && ./config --prefix=/usr/local && make && make install && \
     cd /tmp && \
     wget https://ftp.gnu.org/pub/gnu/global/global-6.6.8.tar.gz && \
     tar xzf global-6.6.8.tar.gz && \
-    cd global-6.6.8 && ./configure --prefix=/usr --with-sqlite3 && make && make install && \
+    cd global-6.6.8 && ./configure --prefix=/usr/local --with-sqlite3 && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
-    # openssh-server nginx bioperl libdbi-perl 
+    # openssh-server nginx bioperl libdbi-perl
 # code-server
 RUN cd /tmp && \
     curl -L https://github.do/https://github.com/coder/code-server/releases/download/v4.3.0/code-server-4.3.0-linux-amd64.tar.gz -o code-server.tar.gz && \
@@ -108,7 +111,7 @@ ENV WEB=leatchina.data.sci
 ENV IP=0.0.0.0
 ENV CHOWN=1
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
-EXPOSE 8888 8787 80 22 
+EXPOSE 8888 8787 80 22
 # config file
 COPY rserver.conf /etc/rstudio/
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
