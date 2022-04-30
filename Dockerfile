@@ -45,7 +45,6 @@ RUN cd /tmp && \
     cd global-6.6.8 && ./configure --prefix=/usr/local --with-sqlite3 && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
-    # NOTE: openssh-server nginx bioperl libdbi-perl
 
 # code-server
 RUN cd /tmp && \
@@ -53,6 +52,9 @@ RUN cd /tmp && \
     tar xzf code-server.tar.gz && \
     mv code-server-4.3.0-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
+
+
+# NOTE: openssh-server nginx bioperl libdbi-perl
 
 # R language
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
@@ -77,7 +79,6 @@ RUN conda install -n base -c conda-forge mamba && \
     mamba install -n base -c conda-forge xeus-python libxml2 \
               libxslt libssh2 krb5 bat jupyterlab nodejs yarn ranger-fm && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
-
 RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments python-language-server ueberzug && \
     /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
     /opt/miniconda3/bin/jupyter lab build && \
@@ -85,12 +86,10 @@ RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 p
 
 # vim
 RUN apt install vim -y && \
-    mamba install -n base -c conda-forge vim && \
-    ln -sf /opt/miniconda3/bin/vim /usr/bin && \
     cd /usr/local && \
     curl -L https://github.do/https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
-    ln -sf /usr/local/nvim-linux64/bin/nvim /usr/bin && \
+    ln -sf /usr/local/nvim-linux64/bin/nvim /usr/local/bin && \
     rm nvim-linux64.tar.gz && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 
