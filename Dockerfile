@@ -12,7 +12,7 @@ RUN apt update -y && apt upgrade -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
-    apt install -y --fix-missing bioperl libdbi-perl \
+    apt install -y --fix-missing \
       supervisor gdebi-core \
       python2.7-dev libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
       libudunits2-dev libproj-dev libapparmor1 libedit2 libc6 apt-transport-https && \
@@ -23,7 +23,7 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
       libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
-# ctags gtags
+# ctags gtags tmux
 RUN cd /tmp && \
     git clone --depth=1 https://gitclone.com/github.com/universal-ctags/ctags.git && cd ctags && \
     ./autogen.sh && ./configure --prefix=/usr && make && make install && \
@@ -44,8 +44,7 @@ RUN cd /tmp && \
     cd global-6.6.8 && ./configure --prefix=/usr --with-sqlite3 && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
-    # openssh-server nginx 
-
+    # openssh-server nginx bioperl libdbi-perl 
 # code-server
 RUN cd /tmp && \
     curl -L https://github.do/https://github.com/coder/code-server/releases/download/v4.3.0/code-server-4.3.0-linux-amd64.tar.gz -o code-server.tar.gz && \
