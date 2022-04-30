@@ -5,28 +5,30 @@ WORKDIR /var/build
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt update -y && apt upgrade -y && \
-    apt install -y wget curl net-tools iputils-ping nginx \
-    unzip bzip2 apt-utils screen \
-    htop xclip cmake sudo tree jq && \
+    apt install -y wget curl net-tools iputils-ping \
+      zip unzip bzip2 apt-utils screen \
+      htop xclip cmake sudo tree jq time && \
     apt install -y software-properties-common language-pack-zh-hans locales && locale-gen en_US.UTF-8 && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
-RUN add-apt-repository ppa:ubuntugis/ppa -y && \
-    apt update -y && \
-    apt install -y bioperl libdbi-perl \
-    supervisor gdebi-core \
-    python2.7-dev libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
-    libudunits2-dev libproj-dev libapparmor1 libedit2 libc6 \
-    psmisc rrdtool libzmq3-dev \
-    libtool apt-transport-https libevent-dev && \
-    git ripgrep zsh gdal-bin proj-bin \
-    libx11-dev libxext-dev \
-    libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
+RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
+    apt install -y --fix-missing bioperl libdbi-perl \
+      supervisor gdebi-core \
+      python2.7-dev libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
+      libudunits2-dev libproj-dev libapparmor1 libedit2 libc6 \
+      psmisc rrdtool libzmq3-dev \
+      libtool apt-transport-https libevent-dev \
+      git ripgrep gdal-bin proj-bin \
+      libx11-dev libxext-dev \
+      libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 # ctags gtags
 RUN cd /tmp && \
     git clone --depth=1 https://gitclone.com/github.com/universal-ctags/ctags.git && cd ctags && \
+    ./autogen.sh && ./configure --prefix=/usr && make && make install && \
+    cd /tmp && \
+    git clone --depth=1 https://gitclone.com/github.com/tmux/tmux.git && cd tmux && \
     ./autogen.sh && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
     curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
@@ -39,11 +41,10 @@ RUN cd /tmp && \
     cd /tmp && \
     wget https://ftp.gnu.org/pub/gnu/global/global-6.6.8.tar.gz && \
     tar xzf global-6.6.8.tar.gz && \
-    cd global-6.6.8 && \
-    ./configure --prefix=/usr --with-sqlite3 && make && make install && \
+    cd global-6.6.8 && ./configure --prefix=/usr --with-sqlite3 && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
-    # openssh-server 
+    # openssh-server nginx 
 
 # code-server
 RUN cd /tmp && \
@@ -72,7 +73,7 @@ RUN cd /tmp && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 RUN conda install -n base -c conda-forge mamba && \
-    mamba install -n base -c conda-forge git tmux xeus-python time libxml2 \
+    mamba install -n base -c conda-forge xeus-python libxml2 \
               libxslt libssh2 krb5 bat jupyterlab nodejs yarn ranger-fm && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 
