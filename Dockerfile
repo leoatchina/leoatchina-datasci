@@ -32,12 +32,12 @@ RUN cd /tmp && \
     git clone --depth=1 https://gitclone.com/github.com/tmux/tmux.git && cd tmux && \
     ./autogen.sh && ./configure --prefix=/usr/local && make && make install && \
     cd /tmp && \
-    curl https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
-    tar xzf libiconv.tar.gz && \
+    wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz && \
+    tar xzf libiconv-1.16.tar.gz && \
     cd libiconv-1.16 && ./configure --prefix=/usr/local && make && make install && \
     cd /tmp && \
-    curl https://www.openssl.org/source/openssl-1.1.0l.tar.gz -o openssl.tar.gz && \
-    tar xzf openssl.tar.gz && \
+    wget https://www.openssl.org/source/openssl-1.1.0l.tar.gz && \
+    tar xzf openssl-1.1.0l.tar.gz && \
     cd openssl-1.1.0l && ./config --prefix=/usr/local && make && make install && \
     cd /tmp && \
     wget https://ftp.gnu.org/pub/gnu/global/global-6.6.8.tar.gz && \
