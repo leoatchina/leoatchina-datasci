@@ -13,13 +13,11 @@ RUN apt update -y && apt upgrade -y && \
 
 RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
     apt install -y --fix-missing \
-      supervisor gdebi-core python2.7-dev \
-      libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
-      libudunits2-dev libproj-dev libapparmor1 libedit2 libc6 apt-transport-https && \
+      supervisor gdebi-core python2.7-dev git ripgrep zsh && \
     apt install -y --fix-missing \
-      git ripgrep \
-      gdal-bin proj-bin \
-      psmisc rrdtool libzmq3-dev \
+      gdal-bin proj-bin psmisc rrdtool libzmq3-dev \
+      libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
+      libudunits2-dev libproj-dev libapparmor1 libedit2 libc6 apt-transport-https \
       libtool libevent-dev \
       libx11-dev libxext-dev \
       libgdal-dev libgeos-dev \
