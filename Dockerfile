@@ -3,30 +3,27 @@ MAINTAINER leoatchina,leoatchina@outlook.com
 ADD sources.list /etc/apt/sources.list
 WORKDIR /var/build
 ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt update -y && apt upgrade -y && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN apt install -y wget curl net-tools iputils-ping nginx \
+    apt install -y wget curl net-tools iputils-ping nginx \
     unzip bzip2 apt-utils screen \
-    htop xclip cmake sudo tree jq \
-    build-essential gfortran automake bash-completion \
-    libapparmor1 libedit2 libc6 \
-    psmisc rrdtool libzmq3-dev \
-    libtool apt-transport-https libevent-dev && \
+    htop xclip cmake sudo tree jq && \
+    apt install -y software-properties-common language-pack-zh-hans locales && locale-gen en_US.UTF-8 && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-RUN apt install -y software-properties-common language-pack-zh-hans locales && locale-gen en_US.UTF-8 && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+
 RUN add-apt-repository ppa:ubuntugis/ppa -y && \
     apt update -y && \
     apt install -y bioperl libdbi-perl \
     supervisor gdebi-core \
-    openssh-server python2.7-dev \
-    libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
-    libudunits2-dev libproj-dev \
-    git ripgrep zsh \
-    gdal-bin proj-bin \
+    python2.7-dev libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
+    libudunits2-dev libproj-dev libapparmor1 libedit2 libc6 \
+    psmisc rrdtool libzmq3-dev \
+    libtool apt-transport-https libevent-dev && \
+    git ripgrep zsh gdal-bin proj-bin \
     libx11-dev libxext-dev \
     libgdal-dev libgeos-dev libclang-dev cscope libncurses5-dev -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+
 # ctags gtags
 RUN cd /tmp && \
     git clone --depth=1 https://gitclone.com/github.com/universal-ctags/ctags.git && cd ctags && \
@@ -45,6 +42,16 @@ RUN cd /tmp && \
     cd global-6.6.8 && \
     ./configure --prefix=/usr --with-sqlite3 && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+
+    # openssh-server 
+
+# code-server
+RUN cd /tmp && \
+    curl -L https://github.do/https://github.com/coder/code-server/releases/download/v4.3.0/code-server-4.3.0-linux-amd64.tar.gz -o code-server.tar.gz && \
+    tar xzf code-server.tar.gz && \
+    mv code-server-4.3.0-linux-amd64 /opt/code-server && \
+    rm -rf /tmp/*.*
+
 # R language
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
     add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' && \
@@ -73,6 +80,7 @@ RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 p
     /opt/miniconda3/bin/jupyter labextension install @jupyterlab/debugger && \
     /opt/miniconda3/bin/jupyter lab build && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
+
 # vim
 RUN apt install vim -y && \
     mamba install -n base -c conda-forge vim && \
@@ -83,16 +91,11 @@ RUN apt install vim -y && \
     ln -sf /usr/local/nvim-linux64/bin/nvim /usr/bin && \
     rm nvim-linux64.tar.gz && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
-# code-server
-RUN cd /tmp && \
-    curl -L https://github.do/https://github.com/coder/code-server/releases/download/v4.3.0/code-server-4.3.0-linux-amd64.tar.gz -o code-server.tar.gz && \
-    tar xzf code-server.tar.gz && \
-    mv code-server-4.3.0-linux-amd64 /opt/code-server && \
-    rm -rf /tmp/*.*
+
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
 COPY .bashrc .inputrc .bash_profile .configrc /opt/rc/
-## users ports and dirs and configs
+# users ports and dirs and configs
 RUN echo "export LC_ALL='C.UTF-8'" >> /etc/profile
 ENV LANG C.UTF-8
 ENV WKUSER=datasci
@@ -105,7 +108,7 @@ ENV WEB=leatchina.data.sci
 ENV IP=0.0.0.0
 ENV CHOWN=1
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
-EXPOSE 8888 8787 8686 8585
-## config file
+EXPOSE 8888 8787 80 22 
+# config file
 COPY rserver.conf /etc/rstudio/
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/

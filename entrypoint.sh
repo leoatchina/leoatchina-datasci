@@ -1,12 +1,12 @@
 #!/bin/sh
-# check name 
+# check name
 if [[ $WKUSER == root ]]; then
     echo "WKUSER must not be root"
     exit 1
 fi
 
 if [ -n "${WKUID+1}" ];then
-    echo "WKUID is $WKUID" 
+    echo "WKUID is $WKUID"
 else
 		WKUID=$UID
     echo "WKUID is set to $WKUID"
@@ -39,11 +39,10 @@ chown $WKUID:$WKGID /home/$WKUSER /home/$WKUSER/.bashrc /home/$WKUSER/.inputrc /
 
 # THREADS
 export THREADS=`grep proc /proc/cpuinfo | wc -l`
+echo "============================== This server has $THREADS threads ========================================="
 
 if [ $CHOWN -gt 0 ]; then
-    echo "======================================================================================================"
-    echo "This server has $THREADS threads"
-    echo "Changing the ownership of the mapped homedir to $WKUSER, it may cost long time, please wait."
+    echo "Changing the ownership of the mapped home dir to $WKUSER, it may cost long time, please wait."
     find /home/$WKUSER -print0 | xargs -0 -P $THREADS -i chown -R $WKUSER:$WKUSER {}
     find /opt/miniconda3/share/jupyter -type d -print0 | xargs -0 -P $THREADS -i chmod 777 {}
     find /opt/miniconda3/share/jupyter -type f -print0 | xargs -0 -P $THREADS -i chmod 666 {}
@@ -52,7 +51,7 @@ fi
 # set ssl encyption
 mkdir /opt/ssl
 rm -rf /opt/ssl/*.*
-## create for all
+# create ssl config key
 openssl genrsa -out "/opt/ssl/jupyterlab.key" 4096
 openssl req -new -key "/opt/ssl/jupyterlab.key" -out "/opt/ssl/jupyterlab.csr" -sha256 \
     -subj "/C=$COUNTRY/ST=$PROVINCE/L=$CITY/O=$ORGANIZE/CN=$WEB"
@@ -84,7 +83,7 @@ openssl x509 -req -days 3600 -in "/opt/ssl/${WEB}.csr" -sha256 -CA "/opt/ssl/jup
 
 chmod 666 /opt/ssl/*.*
 
-# privilege 
+# privilege
 chmod 777 /root /opt/miniconda3/pkgs
 
 # Rstudio-server
@@ -93,17 +92,16 @@ echo "Sys.setenv(PATH='/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/opt/minicon
 # sshd server, allow x11 forword
 mkdir -p /var/run/sshd
 rm -r /etc/ssh/ssh*key
-sed -i 's/Port 22/Port 8585/g' /etc/ssh/sshd_config
 sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
 echo 'AllowTcpForwarding yes' >> /etc/ssh/sshd_config
 echo 'X11UseLocalhost no' >> /etc/ssh/sshd_config
-dpkg-reconfigure openssh-server 
+dpkg-reconfigure openssh-server
 
 # code-server
 echo "export PASSWORD=$PASSWD" > /opt/config/start-codeserver.sh
 echo "/opt/code-server/code-server /home/$WKUSER \
 --auth password \
---port 8686 \
+--port 80 \
 --host 0.0.0.0 \
 --user-data-dir /home/$WKUSER/.config/vscode/config \
 --extensions-dir /home/$WKUSER/.config/vscode/extensions \
