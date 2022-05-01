@@ -3,8 +3,8 @@ FROM leoatchina/ubuntu20.04
 RUN cd /usr/local && \
     curl -L https://github.do/https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
-    rsync -rvh --size-only /usr/local/nvim-linux64 /usr/local && \
-    rm nvim-linux64* && \
+    ln -sf /usr/local/nvim-linux64/bin/nvim /usr/local/bin && \
+    rm nvim-linux64.tar.gz && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 RUN apt install -y supervisor openssh-server nginx bioperl libdbi-perl && \
@@ -54,7 +54,6 @@ ENV IP=0.0.0.0
 ENV CHOWN=1
 
 EXPOSE 8888 8787 8080 22
-ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
 # config file
 COPY rserver.conf /etc/rstudio/
 COPY jupyter_lab_config.py supervisord.conf passwd.py entrypoint.sh /opt/config/
