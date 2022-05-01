@@ -1,5 +1,13 @@
 FROM leoatchina/ubuntu20.04
-RUN apt install -y openssh-server nginx bioperl libdbi-perl && \
+
+RUN cd /usr/local && \
+    curl -L https://github.do/https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
+    tar xzf nvim-linux64.tar.gz && \
+    mv -R /usr/local/nvim-linux64/* /usr/local && \
+    rm nvim-linux64* && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+
+RUN apt install -y supervisor openssh-server nginx bioperl libdbi-perl && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 # R language

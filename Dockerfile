@@ -13,7 +13,7 @@ RUN apt update -y && apt upgrade -y && \
 
 RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
     apt install -y --fix-missing \
-      supervisor gdebi-core python2.7-dev git ripgrep zsh bison flex && \
+      vim gdebi-core python2.7-dev git ripgrep zsh bison flex && \
     apt install -y --fix-missing \
       gdal-bin proj-bin psmisc rrdtool libzmq3-dev \
       libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
@@ -24,7 +24,7 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
       libclang-dev cscope libncurses5-dev && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
-# ctags gtags tmux
+# neovim ctags gtags tmux
 RUN cd /tmp && \
     git clone --depth=1 https://gitclone.com/github.com/universal-ctags/ctags.git && cd ctags && \
     ./autogen.sh && ./configure --prefix=/usr && make && make install && \
@@ -32,26 +32,17 @@ RUN cd /tmp && \
     git clone --depth=1 https://gitclone.com/github.com/tmux/tmux.git && cd tmux && \
     ./autogen.sh && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
-    wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz && \
-    tar xzf libiconv-1.16.tar.gz && \
+    curl -L https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
+    tar xzf libiconv.tar.gz && \
     cd libiconv-1.16 && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
-    wget https://www.openssl.org/source/openssl-1.1.1n.tar.gz && \
-    tar xzf openssl-1.1.1n.tar.gz && \
+    curl -L https://www.openssl.org/source/openssl-1.1.1n.tar.gz -o openssl.tar.gz && \
+    tar xzf openssl.tar.gz && \
     cd openssl-1.1.1n && ./config --prefix=/usr && make && make install && \
     cd /tmp && \
-    wget https://ftp.gnu.org/pub/gnu/global/global-6.6.8.tar.gz && \
-    tar xzf global-6.6.8.tar.gz && \
+    curl -L https://ftp.gnu.org/pub/gnu/global/global-6.6.8.tar.gz -o global.tar.gz && \
+    tar xzf global.tar.gz && \
     cd global-6.6.8 && ./configure --prefix=/usr --with-sqlite3 && make && make install && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-
-# vim/nvim
-RUN apt install vim -y && \
-    cd /usr/local && \
-    curl -L https://github.do/https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
-    tar xzf nvim-linux64.tar.gz && \
-    ln -sf /usr/local/nvim-linux64/bin/nvim /usr/local/bin && \
-    rm nvim-linux64.tar.gz && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 # code-server
