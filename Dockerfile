@@ -27,22 +27,22 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
 # ctags gtags tmux
 RUN cd /tmp && \
     git clone --depth=1 https://gitclone.com/github.com/universal-ctags/ctags.git && cd ctags && \
-    ./autogen.sh && ./configure --prefix=/usr/local && make && make install && \
+    ./autogen.sh && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
     git clone --depth=1 https://gitclone.com/github.com/tmux/tmux.git && cd tmux && \
-    ./autogen.sh && ./configure --prefix=/usr/local && make && make install && \
+    ./autogen.sh && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
     wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz && \
     tar xzf libiconv-1.16.tar.gz && \
-    cd libiconv-1.16 && ./configure --prefix=/usr/local && make && make install && \
+    cd libiconv-1.16 && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
-    wget https://www.openssl.org/source/openssl-1.1.0l.tar.gz && \
-    tar xzf openssl-1.1.0l.tar.gz && \
-    cd openssl-1.1.0l && ./config --prefix=/usr/local && make && make install && \
+    wget https://www.openssl.org/source/openssl-1.1.1n.tar.gz && \
+    tar xzf openssl-1.1.1n.tar.gz && \
+    cd openssl-1.1.1n && ./config --prefix=/usr && make && make install && \
     cd /tmp && \
     wget https://ftp.gnu.org/pub/gnu/global/global-6.6.8.tar.gz && \
     tar xzf global-6.6.8.tar.gz && \
-    cd global-6.6.8 && ./configure --prefix=/usr/local --with-sqlite3 && make && make install && \
+    cd global-6.6.8 && ./configure --prefix=/usr --with-sqlite3 && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 
