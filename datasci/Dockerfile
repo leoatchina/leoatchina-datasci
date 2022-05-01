@@ -1,5 +1,6 @@
 FROM leoatchina/ubuntu20.04
-# NOTE: openssh-server nginx bioperl libdbi-perl
+RUN apt install -y openssh-server nginx bioperl libdbi-perl && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 # R language
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
