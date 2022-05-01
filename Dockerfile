@@ -45,6 +45,14 @@ RUN cd /tmp && \
     cd global-6.6.8 && ./configure --prefix=/usr --with-sqlite3 && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
+# vim/nvim
+RUN apt install vim -y && \
+    cd /usr/local && \
+    curl -L https://github.do/https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
+    tar xzf nvim-linux64.tar.gz && \
+    ln -sf /usr/local/nvim-linux64/bin/nvim /usr/local/bin && \
+    rm nvim-linux64.tar.gz && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 # code-server
 RUN cd /tmp && \
@@ -84,14 +92,6 @@ RUN /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 p
     /opt/miniconda3/bin/jupyter lab build && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 
-# vim
-RUN apt install vim -y && \
-    cd /usr/local && \
-    curl -L https://github.do/https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
-    tar xzf nvim-linux64.tar.gz && \
-    ln -sf /usr/local/nvim-linux64/bin/nvim /usr/local/bin && \
-    rm nvim-linux64.tar.gz && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 
 # configuration
 RUN mkdir -p /etc/rstudio /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
