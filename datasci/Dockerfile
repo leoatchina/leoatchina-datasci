@@ -3,7 +3,7 @@ FROM leoatchina/ubuntu20.04
 RUN cd /usr/local && \
     curl -L https://github.do/https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
     tar xzf nvim-linux64.tar.gz && \
-    mv -R /usr/local/nvim-linux64/* /usr/local && \
+    rsync -rvh --size-only /usr/local/nvim-linux64 /usr/local && \
     rm nvim-linux64* && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 

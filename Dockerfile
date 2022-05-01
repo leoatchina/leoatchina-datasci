@@ -13,7 +13,7 @@ RUN apt update -y && apt upgrade -y && \
 
 RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
     apt install -y --fix-missing \
-      vim gdebi-core python2.7-dev git ripgrep zsh bison flex && \
+      vim rsync gdebi-core python2.7-dev git ripgrep zsh bison flex && \
     apt install -y --fix-missing \
       gdal-bin proj-bin psmisc rrdtool libzmq3-dev \
       libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
