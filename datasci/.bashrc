@@ -55,11 +55,6 @@ else
     export PS1="\[\e[31;1m\]\u\[\e[0m\]@\[\e[33;1m\]\h\[\e[0m\]:\[\e[36;1m\]\w\[\e[0m\]\n\$ "
 fi
 
-if [[ ! -v $JUPYTER_SERVER_ROOT ]] && [[ ! $PATH == */opt/miniconda3/bin* ]]; then
-    export PATH=/opt/miniconda3/bin:$PATH
-fi
-export JUPYTERLAB_DIR=$HOME/.jupyterlab
-
 if [[ ! $PATH == */$HOME/.local/bin* ]]; then
     export PATH=$HOME/.local/bin:$PATH
 fi
