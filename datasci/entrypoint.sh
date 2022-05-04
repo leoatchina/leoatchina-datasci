@@ -107,8 +107,8 @@ unset PASSWD
 
 echo ""
 echo "========================= starting services with USER $WKUSER whose UID is $WKUID ================================"
-# rstudio
-# systemctl enable rstudio-server
-# service rstudio-server restart
+# rstudio-server
+systemctl enable rstudio-server
+service rstudio-server restart
 # start sshd with supervisor and codeserver
 /usr/bin/supervisord -c /opt/config/supervisord.conf
