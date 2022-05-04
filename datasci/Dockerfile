@@ -1,23 +1,14 @@
 FROM leoatchina/ubuntu20.04
 
-RUN cd /usr/local && \
-    curl -L https://github.do/https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz -o nvim-linux64.tar.gz && \
-    tar xzf nvim-linux64.tar.gz && \
-    ln -sf /usr/local/nvim-linux64/bin/nvim /usr/local/bin && \
-    rm nvim-linux64.tar.gz && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-
 RUN apt install -y supervisor openssh-server nginx bioperl libdbi-perl && \
-    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
-
-# R language
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
     add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' && \
     apt update -y && apt upgrade -y && \
     apt install -y r-base-dev r-base r-base-core r-recommended && \
     apt install -y openjdk-8-jdk xvfb libswt-gtk-4-java && \
     R CMD javareconf && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+
 RUN cd /tmp && \
     curl https://download1.rstudio.org/desktop/bionic/amd64/rstudio-2022.02.2-485-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \

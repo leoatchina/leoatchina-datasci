@@ -76,9 +76,8 @@ openssl x509 -req -days 3600 -in "/opt/ssl/${WEB}.csr" -sha256 -CA "/opt/ssl/dat
     -CAcreateserial -out "/opt/ssl/${WEB}.crt" -extfile "/opt/ssl/${WEB}.cnf" -extensions server
 chmod 666 /opt/ssl/*.*
 
-# pkgs privilege
-chmod 777 /root /opt/miniconda3/pkgs
 # Rstudio-server
+mkdir -p /usr/lib/rstudio-server/R
 echo "Sys.setenv(PATH='/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/opt/miniconda3/bin')" >> /usr/lib/rstudio-server/R/ServerOptions.R
 # sshd server, allow x11 forword
 mkdir -p /var/run/sshd
@@ -103,14 +102,13 @@ echo "[program:codeserver]" >> /opt/config/supervisord.conf
 echo "autostart=true" >> /opt/config/supervisord.conf
 echo "command=su - $WKUSER -c '/bin/bash /opt/config/start-codeserver.sh'" >> /opt/config/supervisord.conf
 
-
 unset ROOTPASSWD
 unset PASSWD
 
 echo ""
 echo "========================= starting services with USER $WKUSER whose UID is $WKUID ================================"
 # rstudio
-systemctl enable rstudio-server
-service rstudio-server restart
+# systemctl enable rstudio-server
+# service rstudio-server restart
 # start sshd with supervisor and codeserver
 /usr/bin/supervisord -c /opt/config/supervisord.conf
