@@ -7,4 +7,5 @@ echo "/opt/code-server/code-server /root \
 --user-data-dir /root/.config/vscode/config \
 --extensions-dir /root/.config/vscode/extensions \
 --locale en-US" >> /opt/config/start-codeserver.sh
+unset PASSWD
 bash /opt/config/start-codeserver.sh

@@ -45,19 +45,16 @@ RUN cd /tmp && \
     cd global-6.6.8 && ./configure --prefix=/usr --with-sqlite3 && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
+# config dirs
+RUN mkdir -p /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
+
 # code-server
 RUN cd /tmp && \
     curl -L https://github.do/https://github.com/coder/code-server/releases/download/v4.3.0/code-server-4.3.0-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
     mv code-server-4.3.0-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
-
-RUN mkdir -p /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
-
-ENV WKUSER=datasci
 ENV PASSWD=datasci
-
 EXPOSE 8080
 ENTRYPOINT ["bash", "/opt/config/entrypoint.sh"]
-
 COPY entrypoint.sh /opt/config/

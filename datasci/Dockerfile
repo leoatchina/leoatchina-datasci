@@ -31,15 +31,16 @@ COPY .bashrc .inputrc .bash_profile .configrc /opt/rc/
 RUN mkdir -p /etc/rstudio
 # users ports and dirs and configs
 RUN echo "export LC_ALL='C.UTF-8'" >> /etc/profile
+ENV WKUSER=datasci
 ENV LANG C.UTF-8
 ENV COUNTRY=CN
 ENV PROVINCE=ZJ
 ENV CITY=HZ
 ENV ORGANIZE=SELF
-ENV WEB=leatchina.data.sci
+ENV WEB=leatchina.datasci
 ENV IP=0.0.0.0
 ENV CHOWN=1
-EXPOSE 8888 8787 8080 22
+EXPOSE 8787 8080 22
 # config file
 COPY rserver.conf /etc/rstudio/
 COPY supervisord.conf entrypoint.sh /opt/config/
