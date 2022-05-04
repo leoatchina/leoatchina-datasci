@@ -93,8 +93,8 @@ echo "/opt/code-server/code-server /home/$WKUSER \
 --auth password \
 --port 8080 \
 --host 0.0.0.0 \
---user-data-dir /home/$WKUSER/.config/vscode/config \
---extensions-dir /home/$WKUSER/.config/vscode/extensions \
+--user-data-dir /home/$WKUSER/.config/code-server/config \
+--extensions-dir /home/$WKUSER/.config/code-server/extensions \
 --locale en-US">>/opt/config/start-codeserver.sh
 chmod 777 /opt/config/start-codeserver.sh
 
