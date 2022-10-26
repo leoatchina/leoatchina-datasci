@@ -10,7 +10,7 @@ RUN apt install -y supervisor openssh-server nginx bioperl libdbi-perl && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 RUN cd /tmp && \
-    curl https://download2.rstudio.org/server/bionic/amd64/rstudio-server-2022.02.2-485-amd64.deb -o rstudio.deb && \
+    curl https://download2.rstudio.org/server/bionic/amd64/rstudio-server-2022.07.2-576-amd64.deb -o rstudio.deb && \
     gdebi -n rstudio.deb && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
