@@ -20,12 +20,13 @@ RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
+COPY .condarc /root
 RUN conda install -n base -c conda-forge xeus-python libxml2 libxslt libssh2 krb5 bat ranger-fm && \
     /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments python-language-server ueberzug && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 
 # configuration
-COPY .bashrc .inputrc .bash_profile .configrc /opt/rc/
+COPY .bashrc .inputrc .bash_profile .configrc .condarc /opt/rc/
 RUN mkdir -p /etc/rstudio
 # users ports and dirs and configs
 RUN echo "export LC_ALL='C.UTF-8'" >> /etc/profile
