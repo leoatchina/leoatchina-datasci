@@ -19,9 +19,8 @@ ENV PATH=/opt/miniconda3/bin:$PATH
 RUN cd /tmp && \
     curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda3.sh && \
     bash miniconda3.sh -b -p /opt/miniconda3 && \
-    conda install -n base -c conda-forge mamba && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
-RUN mamba install -n base -c conda-forge xeus-python libxml2 libxslt libssh2 krb5 bat ranger-fm && \
+RUN conda install -n base -c conda-forge xeus-python libxml2 libxslt libssh2 krb5 bat ranger-fm && \
     /opt/miniconda3/bin/pip install --no-cache-dir pynvim neovim-remote flake8 pygments python-language-server ueberzug && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/* && conda clean -a -y
 
