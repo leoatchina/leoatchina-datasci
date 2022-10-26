@@ -6,14 +6,16 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt update -y && apt upgrade -y && \
     apt install -y wget curl net-tools iputils-ping \
-      zip unzip bzip2 apt-utils screen \
+      zip unzip bzip2 apt-utils rsync \
       htop xclip cmake sudo tree jq time && \
     apt install -y software-properties-common language-pack-zh-hans locales && locale-gen en_US.UTF-8 && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
     apt install -y --fix-missing \
-      vim rsync gdebi-core python2.7-dev git ripgrep zsh locate bison flex && \
+      vim gdebi-core python2.7-dev git ripgrep zsh locate bison flex && \
+    apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
+RUN apt update -y && \
     apt install -y --fix-missing \
       gdal-bin proj-bin psmisc rrdtool libzmq3-dev \
       libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
@@ -50,9 +52,9 @@ RUN mkdir -p /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
 
 # code-server
 RUN cd /tmp && \
-    curl -L https://github.do/https://github.com/coder/code-server/releases/download/v4.3.0/code-server-4.3.0-linux-amd64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.do/https://github.com/coder/code-server/releases/download/v4.7.1/code-server-4.7.1-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server-4.3.0-linux-amd64 /opt/code-server && \
+    mv code-server-4.7.1-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
 ENV PASSWD=datasci
 EXPOSE 8080
