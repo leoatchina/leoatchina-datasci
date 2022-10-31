@@ -18,8 +18,8 @@ fi
 if [ ! -n "${WKGID+1}" ]; then
     WKGID=$WKUID
 fi
-if [ $WKGID -lt 1000 ]; then
-    echo "WKGID must not be less than 1000"
+if [ $WKGID -lt 0 ]; then
+    echo "WKGID must not be less than 0"
     exit 1
 fi
 
