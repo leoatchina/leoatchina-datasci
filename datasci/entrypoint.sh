@@ -89,7 +89,7 @@ dpkg-reconfigure openssh-server
 
 # code-server
 echo "export PASSWORD=$PASSWD" > /opt/config/start-codeserver.sh
-echo "/opt/code-server/code-server /home/$WKUSER \
+echo "/opt/code-server/bin/code-server /home/$WKUSER \
 --auth password \
 --port 8080 \
 --host 0.0.0.0 \

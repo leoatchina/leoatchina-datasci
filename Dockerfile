@@ -52,9 +52,9 @@ RUN mkdir -p /opt/config /opt/log /opt/rc && chmod -R 755 /opt/config /opt/log
 
 # code-server
 RUN cd /tmp && \
-    curl -L https://github.com/coder/code-server/releases/download/v4.7.1/code-server-4.7.1-linux-amd64.tar.gz -o code-server.tar.gz && \
+    curl -L https://github.com/coder/code-server/releases/download/v4.8.1/code-server-4.8.1-linux-amd64.tar.gz -o code-server.tar.gz && \
     tar xzf code-server.tar.gz && \
-    mv code-server-4.7.1-linux-amd64 /opt/code-server && \
+    mv code-server-4.8.1-linux-amd64 /opt/code-server && \
     rm -rf /tmp/*.*
 ENV PASSWD=datasci
 EXPOSE 8080
