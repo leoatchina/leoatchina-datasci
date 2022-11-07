@@ -17,21 +17,21 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y && apt update -y && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 RUN apt update -y && \
     apt install -y --fix-missing \
+      tmux \
       gdal-bin proj-bin psmisc rrdtool libzmq3-dev \
       libjansson-dev libcairo2-dev libxt-dev librdf0 librdf0-dev \
       libudunits2-dev libproj-dev libapparmor1 libedit2 libc6 apt-transport-https \
       libtool libevent-dev \
       libx11-dev libxext-dev \
       libgdal-dev libgeos-dev \
-      libclang-dev cscope libncurses5-dev && \
+      libharfbuzz-dev libfribidi-dev \
+      libclang-dev cscope libncurses5-dev \
+      python3-pip python3-dev && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 # neovim ctags gtags tmux
 RUN cd /tmp && \
     git clone --depth=1 https://gitclone.com/github.com/universal-ctags/ctags.git && cd ctags && \
-    ./autogen.sh && ./configure --prefix=/usr && make && make install && \
-    cd /tmp && \
-    git clone --depth=1 https://gitclone.com/github.com/tmux/tmux.git && cd tmux && \
     ./autogen.sh && ./configure --prefix=/usr && make && make install && \
     cd /tmp && \
     curl -L https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -o libiconv.tar.gz && \
@@ -45,6 +45,10 @@ RUN cd /tmp && \
     curl -L https://ftp.gnu.org/pub/gnu/global/global-6.6.8.tar.gz -o global.tar.gz && \
     tar xzf global.tar.gz && \
     cd global-6.6.8 && ./configure --prefix=/usr --with-sqlite3 && make && make install && \
+    cd /tmp && \
+    curl -L http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz -o libiconv.tar.gz && \
+    tar xzf libiconv.tar.gz && \
+    cd libiconv-1.17 && ./configure --prefix=/usr && make && make install && \
     apt autoremove -y && apt clean -y && apt purge -y && rm -rf /tmp/* /var/tmp/* /root/.cpan/*
 
 # config dirs
