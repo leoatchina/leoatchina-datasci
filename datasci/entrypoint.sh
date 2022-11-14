@@ -78,7 +78,7 @@ chmod 666 /opt/ssl/*.*
 
 # Rstudio-server
 mkdir -p /usr/lib/rstudio-server/R
-echo "Sys.setenv(PATH='/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/opt/miniconda3/bin')" >> /usr/lib/rstudio-server/R/ServerOptions.R
+echo "Sys.setenv(PATH='/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin)" >> /usr/lib/rstudio-server/R/ServerOptions.R
 # sshd server, allow x11 forword
 mkdir -p /var/run/sshd
 rm -r /etc/ssh/ssh*key
